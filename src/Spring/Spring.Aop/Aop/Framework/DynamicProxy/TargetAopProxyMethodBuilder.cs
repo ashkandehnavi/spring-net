@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,34 +18,23 @@
 
 #endregion
 
-#region Imports
-
-using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
-
-#endregion
 
 namespace Spring.Aop.Framework.DynamicProxy
 {
     /// <summary>
-    /// <see cref="Spring.Proxy.IProxyMethodBuilder"/> implementation 
+    /// <see cref="Spring.Proxy.IProxyMethodBuilder"/> implementation
     /// that delegates method calls to target object.
     /// </summary>
     /// <author>Aleksandar Seovic</author>
     /// <author>Bruno Baia</author>
     public class TargetAopProxyMethodBuilder : AbstractAopProxyMethodBuilder
     {
-        #region Fields
-
         /// <summary>
         /// The local variable to store the target instance.
         /// </summary>
         protected LocalBuilder target;
-
-        #endregion
-
-        #region Constructor(s) / Destructor
 
         /// <summary>
         /// Creates a new instance of the method builder.
@@ -59,18 +48,14 @@ namespace Spring.Aop.Framework.DynamicProxy
         /// implemented explicitly; otherwise <see langword="false"/>.
         /// </param>
         /// <param name="targetMethods">
-        /// The dictionary to cache the list of target 
+        /// The dictionary to cache the list of target
         /// <see cref="System.Reflection.MethodInfo"/>s.
         /// </param>
-        public TargetAopProxyMethodBuilder(TypeBuilder typeBuilder, 
-            IAopProxyTypeGenerator aopProxyGenerator, bool explicitImplementation, IDictionary targetMethods)
+        public TargetAopProxyMethodBuilder(TypeBuilder typeBuilder,
+            IAopProxyTypeGenerator aopProxyGenerator, bool explicitImplementation, IDictionary<string, MethodInfo> targetMethods)
             : base(typeBuilder, aopProxyGenerator, explicitImplementation, targetMethods)
         {
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// Creates local variable declarations.
@@ -82,13 +67,13 @@ namespace Spring.Aop.Framework.DynamicProxy
             base.DeclareLocals(il, method);
             target = il.DeclareLocal(typeof(object));
 
-#if DEBUG
+#if DEBUG && !NETSTANDARD
             target.SetLocalSymInfo("target");
 #endif
         }
 
         /// <summary>
-        /// Generates the IL instructions that pushes 
+        /// Generates the IL instructions that pushes
         /// the target instance on which calls should be delegated to.
         /// </summary>
         /// <param name="il">The IL generator to use.</param>
@@ -137,7 +122,5 @@ namespace Spring.Aop.Framework.DynamicProxy
             else
                 CallDirectTargetMethod(il, method);
         }
-
-        #endregion
     }
 }

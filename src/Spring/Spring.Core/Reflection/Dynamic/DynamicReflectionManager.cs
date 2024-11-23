@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,14 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Security;
-using System.Security.Permissions;
 using Spring.Util;
 
 using NetDynamicMethod = System.Reflection.Emit.DynamicMethod;
-
-#endregion
 
 namespace Spring.Reflection.Dynamic
 {
@@ -83,208 +75,11 @@ namespace Spring.Reflection.Dynamic
     public delegate object ConstructorDelegate(params object[] args);
 
     /// <summary>
-    /// Represents a callback method used to create an <see cref="IDynamicProperty"/> from a <see cref="PropertyInfo"/> instance.
-    /// </summary>
-    internal delegate IDynamicProperty CreatePropertyCallback(PropertyInfo property);
-    /// <summary>
-    /// Represents a callback method used to create an <see cref="IDynamicField"/> from a <see cref="FieldInfo"/> instance.
-    /// </summary>
-    internal delegate IDynamicField CreateFieldCallback(FieldInfo property);
-    /// <summary>
-    /// Represents a callback method used to create an <see cref="IDynamicMethod"/> from a <see cref="MethodInfo"/> instance.
-    /// </summary>
-    internal delegate IDynamicMethod CreateMethodCallback(MethodInfo method);
-    /// <summary>
-    /// Represents a callback method used to create an <see cref="IDynamicConstructor"/> from a <see cref="ConstructorInfo"/> instance.
-    /// </summary>
-    internal delegate IDynamicConstructor CreateConstructorCallback(ConstructorInfo constructor);
-    /// <summary>
-    /// Represents a callback method used to create an <see cref="IDynamicIndexer"/> from a <see cref="PropertyInfo"/> instance.
-    /// </summary>
-    internal delegate IDynamicIndexer CreateIndexerCallback(PropertyInfo indexer);
-
-    /// <summary>
     /// Allows easy access to existing and creation of new dynamic relection members.
     /// </summary>
     /// <author>Aleksandar Seovic</author>
     public sealed class DynamicReflectionManager
     {
-        #region Obsolete Code
-
-
-        #region Fields
-
-        /// <summary>
-        /// The name of the assembly that defines reflection types created.
-        /// </summary>
-        public const string ASSEMBLY_NAME = "Spring.DynamicReflection";
-
-        /// <summary>
-        /// The attributes of the reflection type to generate.
-        /// </summary>
-        private const TypeAttributes TYPE_ATTRIBUTES = TypeAttributes.BeforeFieldInit | TypeAttributes.Public;
-
-        /// <summary>
-        /// Cache for dynamic property types.
-        /// </summary>
-        private readonly static IDictionary<PropertyInfo, IDynamicProperty> propertyCache = new Dictionary<PropertyInfo, IDynamicProperty>();
-        private readonly static object propertyCacheLock = new object();
-
-        /// <summary>
-        /// Cache for dynamic field types.
-        /// </summary>
-        private readonly static IDictionary<FieldInfo, IDynamicField> fieldCache = new Dictionary<FieldInfo, IDynamicField>();
-        private readonly static object fieldCacheLock = new object();
-
-        /// <summary>
-        /// Cache for dynamic indexer types.
-        /// </summary>
-        private readonly static IDictionary<PropertyInfo, IDynamicIndexer> indexerCache = new Dictionary<PropertyInfo, IDynamicIndexer>();
-        private readonly static object indexerCacheLock = new object();
-
-        /// <summary>
-        /// Cache for dynamic method types.
-        /// </summary>
-        private readonly static IDictionary<MethodInfo, IDynamicMethod> methodCache = new Dictionary<MethodInfo, IDynamicMethod>();
-        private readonly static object methodCacheLock = new object();
-
-        /// <summary>
-        /// Cache for dynamic constructor types.
-        /// </summary>
-        private readonly static IDictionary<ConstructorInfo, IDynamicConstructor> constructorCache = new Dictionary<ConstructorInfo, IDynamicConstructor>();
-        private readonly static object constructorCacheLock = new object();
-
-        #endregion
-
-        /// <summary>
-        /// Creates an appropriate type builder.
-        /// </summary>
-        /// <param name="name">
-        /// The base name to use for the reflection type name.
-        /// </param>
-        /// <returns>The type builder to use.</returns>
-        internal static TypeBuilder CreateTypeBuilder(string name)
-        {
-            // Generates type name
-            string typeName = String.Format("{0}.{1}_{2}",
-                ASSEMBLY_NAME, name, Guid.NewGuid().ToString("N"));
-
-            ModuleBuilder module = DynamicCodeManager.GetModuleBuilder(ASSEMBLY_NAME);
-            return module.DefineType(typeName, TYPE_ATTRIBUTES);
-        }
-
-        /// <summary>
-        /// Returns dynamic property if one exists.
-        /// </summary>
-        /// <param name="property">Property to look up.</param>
-        /// <param name="createCallback">callback function that will be called to create the dynamic property</param>
-        /// <returns>An <see cref="IDynamicProperty"/> for the given property info.</returns>
-        internal static IDynamicProperty GetDynamicProperty(PropertyInfo property, CreatePropertyCallback createCallback)
-        {
-            lock (propertyCacheLock)
-            {
-                IDynamicProperty dynamicProperty;
-                if (!propertyCache.TryGetValue(property, out dynamicProperty))
-                {
-                    dynamicProperty = createCallback(property);
-                    propertyCache[property] = dynamicProperty;
-                }
-                return dynamicProperty;
-            }
-        }
-
-        /// <summary>
-        /// Returns dynamic field if one exists.
-        /// </summary>
-        /// <param name="field">Field to look up.</param>
-        /// <param name="createCallback">callback function that will be called to create the dynamic field</param>
-        /// <returns>An <see cref="IDynamicField"/> for the given field info.</returns>
-        internal static IDynamicField GetDynamicField(FieldInfo field, CreateFieldCallback createCallback)
-        {
-            lock (fieldCacheLock)
-            {
-                IDynamicField dynamicField;
-                if (!fieldCache.TryGetValue(field, out dynamicField))
-                {
-                    dynamicField = createCallback(field);
-                    fieldCache[field] = dynamicField;
-                }
-                return dynamicField;
-            }
-        }
-
-        /// <summary>
-        /// Returns dynamic indexer if one exists.
-        /// </summary>
-        /// <param name="indexer">Indexer to look up.</param>
-        /// <param name="createCallback">callback function that will be called to create the dynamic indexer</param>
-        /// <returns>An <see cref="IDynamicIndexer"/> for the given indexer.</returns>
-        internal static IDynamicIndexer GetDynamicIndexer(PropertyInfo indexer, CreateIndexerCallback createCallback)
-        {
-            lock (indexerCacheLock)
-            {
-                IDynamicIndexer dynamicIndexer;
-                if (!indexerCache.TryGetValue(indexer, out dynamicIndexer))
-                {
-                    dynamicIndexer = createCallback(indexer);
-                    indexerCache[indexer] = dynamicIndexer;
-                }
-                return dynamicIndexer;
-            }
-        }
-
-        /// <summary>
-        /// Returns dynamic method if one exists.
-        /// </summary>
-        /// <param name="method">Method to look up.</param>
-        /// <param name="createCallback">callback function that will be called to create the dynamic method</param>
-        /// <returns>An <see cref="IDynamicMethod"/> for the given method.</returns>
-        internal static IDynamicMethod GetDynamicMethod(MethodInfo method, CreateMethodCallback createCallback)
-        {
-            lock (methodCacheLock)
-            {
-                IDynamicMethod dynamicMethod;
-                if (!methodCache.TryGetValue(method, out dynamicMethod))
-                {
-                    dynamicMethod = createCallback(method);
-                    methodCache[method] = dynamicMethod;
-                }
-                return dynamicMethod;
-            }
-        }
-
-        /// <summary>
-        /// Returns dynamic constructor if one exists.
-        /// </summary>
-        /// <param name="constructor">Constructor to look up.</param>
-        /// <param name="createCallback">callback function that will be called to create the dynamic constructor</param>
-        /// <returns>An <see cref="IDynamicConstructor"/> for the given constructor.</returns>
-        internal static IDynamicConstructor GetDynamicConstructor(ConstructorInfo constructor, CreateConstructorCallback createCallback)
-        {
-            lock (constructorCacheLock)
-            {
-                IDynamicConstructor dynamicConstructor;
-                if (!constructorCache.TryGetValue(constructor, out dynamicConstructor))
-                {
-                    dynamicConstructor = createCallback(constructor);
-                    constructorCache[constructor] = dynamicConstructor;
-                }
-                return dynamicConstructor;
-            }
-        }
-
-        /// <summary>
-        /// Saves dynamically generated assembly to disk.
-        /// Can only be called in DEBUG mode, per ConditionalAttribute rules.
-        /// </summary>
-        [Conditional("DEBUG_DYNAMIC")]
-        public static void SaveAssembly()
-        {
-            DynamicCodeManager.SaveAssembly(ASSEMBLY_NAME);
-        }
-
-        #endregion
-
         /// <summary>
         /// Create a new Get method delegate for the specified field using <see cref="System.Reflection.Emit.DynamicMethod"/>
         /// </summary>
@@ -308,7 +103,7 @@ namespace Spring.Reflection.Dynamic
         /// <param name="fieldInfo">the field to create the delegate for</param>
         /// <returns>a delegate that can be used to read the field.</returns>
         /// <remarks>
-        /// If the field's <see cref="FieldInfo.IsLiteral"/> returns true, the returned method 
+        /// If the field's <see cref="FieldInfo.IsLiteral"/> returns true, the returned method
         /// will throw an <see cref="InvalidOperationException"/> when called.
         /// </remarks>
         public static FieldSetterDelegate CreateFieldSetter(FieldInfo fieldInfo)
@@ -328,7 +123,7 @@ namespace Spring.Reflection.Dynamic
         /// <param name="propertyInfo">the property to create the delegate for</param>
         /// <returns>a delegate that can be used to read the property.</returns>
         /// <remarks>
-        /// If the property's <see cref="PropertyInfo.CanRead"/> returns false, the returned method 
+        /// If the property's <see cref="PropertyInfo.CanRead"/> returns false, the returned method
         /// will throw an <see cref="InvalidOperationException"/> when called.
         /// </remarks>
         public static PropertyGetterDelegate CreatePropertyGetter(PropertyInfo propertyInfo)
@@ -349,7 +144,7 @@ namespace Spring.Reflection.Dynamic
         /// <param name="propertyInfo">the property to create the delegate for</param>
         /// <returns>a delegate that can be used to write the property.</returns>
         /// <remarks>
-        /// If the property's <see cref="PropertyInfo.CanWrite"/> returns false, the returned method 
+        /// If the property's <see cref="PropertyInfo.CanWrite"/> returns false, the returned method
         /// will throw an <see cref="InvalidOperationException"/> when called.
         /// </remarks>
         public static PropertySetterDelegate CreatePropertySetter(PropertyInfo propertyInfo)
@@ -404,7 +199,7 @@ namespace Spring.Reflection.Dynamic
         /// Creates a <see cref="System.Reflection.Emit.DynamicMethod"/> instance with the highest possible code access security.
         /// </summary>
         /// <remarks>
-        /// If allowed by security policy, associates the method with the <paramref name="member"/>s declaring type. 
+        /// If allowed by security policy, associates the method with the <paramref name="member"/>s declaring type.
         /// Otherwise associates the dynamic method with <see cref="DynamicReflectionManager"/>.
         /// </remarks>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -414,7 +209,9 @@ namespace Spring.Reflection.Dynamic
             methodName = "_dynamic_" + member.DeclaringType.FullName + "." + methodName;
             try
             {
-                new PermissionSet(PermissionState.Unrestricted).Demand();
+#if !NETSTANDARD
+                new PermissionSet(System.Security.Permissions.PermissionState.Unrestricted).Demand();
+#endif
                 dmGetter = CreateDynamicMethodInternal(methodName, returnType, argumentTypes, member, skipVisibility);
             }
             catch(SecurityException)
@@ -432,7 +229,7 @@ namespace Spring.Reflection.Dynamic
         }
 
         /* TODO (EE): I am not sure, if "skipVisibility" in "CreateDynamicMethodInternal" may be true all the time or if visibility needs to be calculated like below
-         * 
+         *
                 private static bool IsPublic(MemberInfo member)
                 {
                     if (member == null) return true;
@@ -466,7 +263,7 @@ namespace Spring.Reflection.Dynamic
                                 {
                                     return false;
                                 }
-                                if (member.MemberType == MemberTypes.Method 
+                                if (member.MemberType == MemberTypes.Method
                                     && !IsPublic(((MethodInfo)methodBase).ReturnType))
                                 {
                                     return false;
@@ -475,7 +272,7 @@ namespace Spring.Reflection.Dynamic
                                 {
                                     if (!IsPublic(arg.ParameterType)) return false;
                                 }
-                        
+
                                 return true;
                             }
                         case MemberTypes.NestedType:
@@ -801,7 +598,7 @@ namespace Spring.Reflection.Dynamic
         private static readonly MethodInfo FnConvertArgumentIfNecessary = new ChangeTypeDelegate(ConvertValueTypeArgumentIfNecessary).Method;
 
         /// <summary>
-        /// Converts <paramref name="value"/> to an instance of <paramref name="targetType"/> if necessary to 
+        /// Converts <paramref name="value"/> to an instance of <paramref name="targetType"/> if necessary to
         /// e.g. avoid e.g. double/int cast exceptions.
         /// </summary>
         /// <remarks>
@@ -811,7 +608,7 @@ namespace Spring.Reflection.Dynamic
         /// See about implicit, widening type conversions on <a href="http://social.msdn.microsoft.com/Search/en-US/?query=type conversion tables">MSDN - Type Conversion Tables</a>
         /// </para>
         /// <para>
-        /// Note: <paramref name="targetType"/> is expected to be a value type! 
+        /// Note: <paramref name="targetType"/> is expected to be a value type!
         /// </para>
         /// </remarks>
         public static object ConvertValueTypeArgumentIfNecessary(object value, Type targetType, int argIndex)

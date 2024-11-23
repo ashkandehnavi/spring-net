@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,7 @@
 
 #endregion
 
-#region Imports
-
-using System;
-using System.Collections.Generic;
-
 using Spring.Objects.Factory.Config;
-
-#endregion
 
 namespace Spring.Objects.Factory.Support
 {
@@ -46,7 +39,7 @@ namespace Spring.Objects.Factory.Support
         /// Return the constructor argument values for this object.
         /// </summary>
         new ConstructorArgumentValues ConstructorArgumentValues { get; set; }
-		
+
         /// <summary>
         /// The method overrides (if any) for this object.
         /// </summary>
@@ -100,7 +93,7 @@ namespace Spring.Objects.Factory.Support
         /// <see cref="System.Type"/> of the object definition (if any).
         /// </summary>
         new string ObjectTypeName { get; set; }
-        
+
         /// <summary>
         /// Return whether this a <b>Singleton</b>, with a single, shared instance
         /// returned on all calls.
@@ -161,7 +154,7 @@ namespace Spring.Objects.Factory.Support
         /// preparation on startup.
         /// </p>
         /// </remarks>
-        new IList<string> DependsOn { get; set; }
+        new IReadOnlyList<string> DependsOn { get; set; }
 
         /// <summary>
         /// The name of the initializer method.

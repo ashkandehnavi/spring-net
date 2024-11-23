@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Spring.Objects.Factory.Attributes
+﻿namespace Spring.Objects.Factory.Attributes
 {
     /// <summary>
     /// This annotation may be used on a field or parameter as a qualifier for

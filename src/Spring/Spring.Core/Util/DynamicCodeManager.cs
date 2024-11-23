@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,7 @@
 
 #region Imports
 
-using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -37,7 +35,7 @@ namespace Spring.Util
     /// </summary>
     /// <remarks>
     /// <p>
-    /// The purpose of this class is to provide a simple abstraction for creating and managing dynamic assemblies. 
+    /// The purpose of this class is to provide a simple abstraction for creating and managing dynamic assemblies.
     /// </p>
     /// <note>
     /// Using this factory you can't define several modules within a single dynamic assembly - only a simple one2one relation between assembly/module is used.
@@ -67,7 +65,7 @@ namespace Spring.Util
     public sealed class DynamicCodeManager
     {
         private static readonly Hashtable s_moduleCache = new CaseInsensitiveHashtable(); //CollectionsUtil.CreateCaseInsensitiveHashtable();
-        
+
         /// <summary>
         /// prevent instantiation
         /// </summary>
@@ -75,13 +73,13 @@ namespace Spring.Util
         {
             throw new InvalidOperationException();
         }
-        
+
         /// <summary>
         /// Returns the <see cref="ModuleBuilder"/> for the dynamic module within the specified assembly.
         /// </summary>
         /// <remarks>
         /// If the assembly does not exist yet, it will be created.<br/>
-        /// This factory caches any dynamic assembly it creates - calling GetModule() twice with 
+        /// This factory caches any dynamic assembly it creates - calling GetModule() twice with
         /// the same name will *not* create 2 distinct modules!
         /// </remarks>
         /// <param name="assemblyName">The assembly-name of the module to be returned</param>
@@ -95,26 +93,39 @@ namespace Spring.Util
                 {
                     AssemblyName an = new AssemblyName();
                     an.Name = assemblyName;
-                    
-                    AssemblyBuilder assembly;
-#if DEBUG_DYNAMIC
-                    assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.RunAndSave, null, null, null, null,null, true );
-                    module = assembly.DefineDynamicModule(an.Name, an.Name + ".dll", true);
-#else
-                    an.SetPublicKey(Assembly.GetExecutingAssembly().GetName().GetPublicKey());
-                    assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run, null, null, null, null,null, true );
-#if DEBUG                    
-                    module = assembly.DefineDynamicModule(an.Name, true);
-#else
-			        module = assembly.DefineDynamicModule(an.Name, false);
-#endif
-#endif
+                    module = BuildModule(an);
                     s_moduleCache[assemblyName] = module;
                 }
                 return module;
             }
         }
-        
+
+#if !NETSTANDARD
+        private static ModuleBuilder BuildModule(AssemblyName an)
+        {
+#if DEBUG_DYNAMIC
+            AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.RunAndSave, null, null, null, null,null, true );
+            var module = assembly.DefineDynamicModule(an.Name, an.Name + ".dll", true);
+#else
+            an.SetPublicKey(Assembly.GetExecutingAssembly().GetName().GetPublicKey());
+            var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(an, AssemblyBuilderAccess.Run, null, null, null, null,null, true );
+#if DEBUG
+            var module = assembly.DefineDynamicModule(an.Name, true);
+#else
+			var module = assembly.DefineDynamicModule(an.Name, false);
+#endif
+#endif
+            return module;
+        }
+#else
+        private static ModuleBuilder BuildModule(AssemblyName an)
+        {
+            var assembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName(Guid.NewGuid().ToString()), AssemblyBuilderAccess.Run);
+            var module = assembly.DefineDynamicModule(an.Name);
+            return module;
+        }
+#endif
+
         /// <summary>
         /// Persists the specified dynamic assembly to the file-system
         /// </summary>
@@ -122,24 +133,27 @@ namespace Spring.Util
         /// <remarks>
         /// Can only be called in DEBUG_DYNAMIC mode, per ConditionalAttribute rules.
         /// </remarks>
-        [Conditional("DEBUG_DYNAMIC")]        
+        [Conditional("DEBUG_DYNAMIC")]
         public static void SaveAssembly( string assemblyName )
         {
             AssertUtils.ArgumentHasText(assemblyName, "assemblyName");
-            
+
             ModuleBuilder module = null;
             lock(s_moduleCache.SyncRoot)
             {
                 module = (ModuleBuilder) s_moduleCache[assemblyName];
             }
-            
+
             if(module == null)
             {
                 throw new ArgumentException(string.Format("'{0}' is not a valid dynamic assembly name", assemblyName), "assemblyName");
             }
 
             AssemblyBuilder assembly = (AssemblyBuilder) module.Assembly;
-            assembly.Save(assembly.GetName().Name + ".dll");            
+
+#if !NETSTANDARD
+            assembly.Save(assembly.GetName().Name + ".dll");
+#endif
         }
 
         /// <summary>

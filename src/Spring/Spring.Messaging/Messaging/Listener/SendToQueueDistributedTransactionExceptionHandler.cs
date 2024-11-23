@@ -18,16 +18,19 @@
 
 #endregion
 
-
-using System;
-using System.Messaging;
 using Common.Logging;
+
+#if NETSTANDARD
+using Experimental.System.Messaging;
+#else
+using System.Messaging;
+#endif
 
 namespace Spring.Messaging.Listener
 {
     /// <summary>
-    /// detects poison messages by tracking the Message Id  property in memory with a count of how many 
-    /// times an exception has occurred. If that count is greater than the handler's MaxRetry count it 
+    /// detects poison messages by tracking the Message Id  property in memory with a count of how many
+    /// times an exception has occurred. If that count is greater than the handler's MaxRetry count it
     /// will be sent to another queue. The queue to send the message to is specified via the property M
     /// essageQueueObjectName.
     /// </summary>

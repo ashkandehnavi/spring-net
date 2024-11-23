@@ -18,9 +18,6 @@
 
 #endregion
 
-using System;
-using System.Globalization;
-
 using Spring.Util;
 
 namespace Spring.Globalization.Formatters

@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
 using NUnit.Framework;
 using Spring.Core;
 
@@ -44,11 +45,10 @@ namespace Spring.Objects.Factory.Config
 		}
 
 		[Test]
-		[ExpectedException(typeof (ArgumentNullException))]
 		public void BailsWhenStaticPropertyIsSetToNull()
 		{
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
-			fac.StaticProperty = null;
+            Assert.Throws<ArgumentNullException>(() => fac.StaticProperty = null);
 		}
 
 		/// <summary>
@@ -183,37 +183,33 @@ namespace Spring.Objects.Factory.Config
 		}
 
 		[Test]
-		[ExpectedException(typeof (FatalObjectException))]
 		public void BailsWhenReadingIndexedPropertyWithNoArguments()
 		{
 			PropertyObject expected = new PropertyObject();
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
 			fac.TargetObject = expected;
 			fac.TargetProperty = "Item";
-			fac.AfterPropertiesSet();
-			fac.GetObject();
+            Assert.Throws<FatalObjectException>(() => fac.AfterPropertiesSet());
 		}
 
 		[Test]
-		[ExpectedException(typeof (NotWritablePropertyException))]
 		public void BailsOnWriteOnlyProperty()
 		{
 			PropertyObject expected = new PropertyObject();
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
 			fac.TargetObject = expected;
 			fac.TargetProperty = "Greenness";
-			fac.AfterPropertiesSet();
+            Assert.Throws<NotWritablePropertyException>(() => fac.AfterPropertiesSet());
 		}
 
 		[Test]
-		[ExpectedException(typeof (InvalidPropertyException))]
 		public void BailsOnNonExistantProperty()
 		{
 			PropertyObject expected = new PropertyObject();
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
 			fac.TargetObject = expected;
 			fac.TargetProperty = "Blister";
-			fac.AfterPropertiesSet();
+            Assert.Throws<InvalidPropertyException>(() => fac.AfterPropertiesSet());
 		}
 
 		[Test]
@@ -233,46 +229,41 @@ namespace Spring.Objects.Factory.Config
 		}
 
 		[Test]
-		[ExpectedException(typeof (ArgumentException), ExpectedMessage="One of the TargetType or TargetObject properties must be set.")]
 		public void BailsWhenNotConfigured()
 		{
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
-			fac.AfterPropertiesSet();
+            Assert.Throws<ArgumentException>(() => fac.AfterPropertiesSet(), "One of the TargetType or TargetObject properties must be set.");
 		}
 
 		[Test]
-		[ExpectedException(typeof (ArgumentException))]
 		public void BailsWhenJustTargetPropertyIsSet()
 		{
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
 			fac.TargetProperty = "Funk";
-			fac.AfterPropertiesSet();
+            Assert.Throws<ArgumentException>(() => fac.AfterPropertiesSet());
 		}
 
 		[Test]
-		[ExpectedException(typeof (ArgumentException))]
 		public void BailsWhenJustTargetTypeIsSet()
 		{
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
 			fac.TargetType = GetType();
-			fac.AfterPropertiesSet();
+            Assert.Throws<ArgumentException>(() => fac.AfterPropertiesSet());
 		}
 
 		[Test]
-		[ExpectedException(typeof (ArgumentException), ExpectedMessage="The TargetProperty property is required.")]
 		public void BailsWhenJustTargetObjectIsSet()
 		{
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
 			fac.TargetObject = this;
-			fac.AfterPropertiesSet();
+            Assert.Throws<ArgumentException>(() => fac.AfterPropertiesSet(), "The TargetProperty property is required.");
 		}
 
 		[Test]
-		[ExpectedException(typeof (ArgumentException))]
 		public void BailsWhenStaticPropertyPassedGumpfh()
 		{
 			PropertyRetrievingFactoryObject fac = new PropertyRetrievingFactoryObject();
-			fac.StaticProperty = "Boog"; // no field specified
+            Assert.Throws<ArgumentException>(() => fac.StaticProperty = "Boog"); // no field specified
 		}
 
 		[Test]
@@ -297,9 +288,10 @@ namespace Spring.Objects.Factory.Config
 			fac.AfterPropertiesSet();
 			DateTime then = (DateTime) fac.GetObject();
 			Assert.IsNotNull(then);
+			Thread.Sleep(TimeSpan.FromMilliseconds(10));
 			DateTime now = (DateTime) fac.GetObject();
 			Assert.IsNotNull(now);
-			Assert.IsFalse(ReferenceEquals(then, now));
+			Assert.AreNotEqual(then, now);
 		}
 	}
 

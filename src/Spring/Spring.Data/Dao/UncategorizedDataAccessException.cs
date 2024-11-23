@@ -18,16 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Normal superclass when we can't distinguish anything more specific
 	/// than "something went wrong with the underlying resource": for example,
 	/// a SQLException from Sql Server that we can't pinpoint more precisely.
@@ -65,18 +60,7 @@ namespace Spring.Dao
 		public UncategorizedDataAccessException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.UncategorizedDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected UncategorizedDataAccessException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

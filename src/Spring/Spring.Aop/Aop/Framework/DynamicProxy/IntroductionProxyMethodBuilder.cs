@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,34 +18,23 @@
 
 #endregion
 
-#region Imports
-
-using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
-
-#endregion
 
 namespace Spring.Aop.Framework.DynamicProxy
 {
     /// <summary>
-    /// <see cref="Spring.Proxy.IProxyMethodBuilder"/> implementation 
+    /// <see cref="Spring.Proxy.IProxyMethodBuilder"/> implementation
     /// that delegates method calls to introduction object.
     /// </summary>
     /// <author>Aleksandar Seovic</author>
     /// <author>Bruno Baia</author>
     public class IntroductionProxyMethodBuilder : AbstractAopProxyMethodBuilder
     {
-        #region Fields
-
         /// <summary>
         /// The index of the introduction to delegate call to.
         /// </summary>
         protected int index;
-
-        #endregion
-
-        #region Constructor(s) / Destructor
 
         /// <summary>
         /// Creates a new instance of the method builder.
@@ -55,23 +44,19 @@ namespace Spring.Aop.Framework.DynamicProxy
         /// The <see cref="IAopProxyTypeGenerator"/> implementation to use.
         /// </param>
         /// <param name="targetMethods">
-        /// 
+        ///
         /// </param>
         /// <param name="index">index of the introduction to delegate call to</param>
         public IntroductionProxyMethodBuilder(
             TypeBuilder typeBuilder, IAopProxyTypeGenerator aopProxyGenerator,
-            IDictionary targetMethods, int index)
+            IDictionary<string, MethodInfo> targetMethods, int index)
             : base(typeBuilder, aopProxyGenerator, true, targetMethods)
         {
             this.index = index;
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
-        /// Generates the IL instructions that pushes 
+        /// Generates the IL instructions that pushes
         /// the introduction type on stack.
         /// </summary>
         /// <param name="il">The IL generator to use.</param>
@@ -82,7 +67,7 @@ namespace Spring.Aop.Framework.DynamicProxy
         }
 
         /// <summary>
-        /// Generates the IL instructions that pushes 
+        /// Generates the IL instructions that pushes
         /// the introduction instance on stack.
         /// </summary>
         /// <param name="il">The IL generator to use.</param>
@@ -107,7 +92,5 @@ namespace Spring.Aop.Framework.DynamicProxy
         {
             CallDirectTargetMethod(il, interfaceMethod);
         }
-
-        #endregion
     }
 }

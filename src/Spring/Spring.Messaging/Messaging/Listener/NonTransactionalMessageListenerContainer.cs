@@ -18,9 +18,13 @@
 
 #endregion
 
-using System;
-using System.Messaging;
 using Common.Logging;
+
+#if NETSTANDARD
+using Experimental.System.Messaging;
+#else
+using System.Messaging;
+#endif
 
 namespace Spring.Messaging.Listener
 {
@@ -29,7 +33,7 @@ namespace Spring.Messaging.Listener
     /// receive operation with a transaction.
     /// </summary>
     /// <remarks>
-    /// Exceptions that occur during message processing are handled by an instance 
+    /// Exceptions that occur during message processing are handled by an instance
     /// of <see cref="IExceptionHandler"/>.
     /// </remarks>
     /// <author>Mark Pollack</author>

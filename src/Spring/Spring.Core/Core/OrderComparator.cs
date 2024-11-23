@@ -1,14 +1,14 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
- * 
+ * Copyright Â© 2002-2011 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,9 +20,7 @@
 
 #region Imports
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 #endregion
 
@@ -62,6 +60,8 @@ namespace Spring.Core
     [Serializable]
     public class OrderComparator<T> : IComparer<T>
     {
+        public static readonly IComparer<T> Instance = new OrderComparator<T>();
+
         /// <summary>
         /// Compares two objects and returns a value indicating whether one is less than,
         /// equal to or greater than the other.
@@ -81,24 +81,23 @@ namespace Spring.Core
         {
             IOrdered o1lhs = o1 as IOrdered;
             IOrdered o2rhs = o2 as IOrdered;
-            int lhs = o1lhs != null ? o1lhs.Order : Int32.MaxValue;
-            int rhs = o2rhs != null ? o2rhs.Order : Int32.MaxValue;
+            int lhs = o1lhs?.Order ?? int.MaxValue;
+            int rhs = o2rhs?.Order ?? int.MaxValue;
             if (lhs < rhs)
             {
                 return - 1;
             }
-            else if (lhs > rhs)
+
+            if (lhs > rhs)
             {
                 return 1;
             }
-            else
-            {
-                return CompareEqualOrder(o1, o2);
-            }
+
+            return CompareEqualOrder(o1, o2);
         }
 
         /// <summary>
-        /// Handle the case when both objects have equal sort order priority. By default returns 0, 
+        /// Handle the case when both objects have equal sort order priority. By default returns 0,
         /// but may be overriden for handling special cases.
         /// </summary>
         /// <param name="o1">The first object to compare.</param>

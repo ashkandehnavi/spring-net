@@ -20,9 +20,8 @@
 
 #region Imports
 
-using System;
 using System.Globalization;
-using System.Web;
+
 using Spring.Objects.Factory.Config;
 using Spring.Util;
 
@@ -199,10 +198,10 @@ namespace Spring.Objects.Factory.Support
         public override void OverrideFrom(IObjectDefinition other)
         {
             base.OverrideFrom(other);
-            if (other is IWebObjectDefinition)
+            if (other is IWebObjectDefinition definition)
             {
 //                this._scope = ((IWebObjectDefinition) other).Scope;
-                this._pageName = ((IWebObjectDefinition) other).PageName;
+                this._pageName = definition.PageName;
             }
         }
 

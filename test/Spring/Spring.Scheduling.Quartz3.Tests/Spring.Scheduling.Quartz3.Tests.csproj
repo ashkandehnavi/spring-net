@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;$(TargetFullFrameworkVersion)</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Spring\Spring.Core\Spring.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\Spring\Spring.Scheduling.Quartz3\Spring.Scheduling.Quartz3.csproj" />
+    <ProjectReference Include="..\Spring.Core.Tests\Spring.Core.Tests.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" />
+    <PackageReference Include="FakeItEasy.Analyzer.CSharp" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Spring.Core.Tests\TestAssemblySetup.cs" Link="TestAssemblySetup.cs" />
+    <Content Include="App.config" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="*.xml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

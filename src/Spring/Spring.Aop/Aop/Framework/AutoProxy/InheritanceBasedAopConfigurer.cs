@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +14,8 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 using AopAlliance.Aop;
 
@@ -34,20 +27,16 @@ using Spring.Aop.Framework.Adapter;
 using Spring.Aop.Framework.DynamicProxy;
 using Spring.Core;
 
-#endregion
-
 namespace Spring.Aop.Framework.AutoProxy
 {
     /// <summary>
-    /// <see cref="IObjectFactoryPostProcessor"/> implementation that replaces a group of objects 
-    /// with a 'true' inheritance based AOP mechanism that delegates 
+    /// <see cref="IObjectFactoryPostProcessor"/> implementation that replaces a group of objects
+    /// with a 'true' inheritance based AOP mechanism that delegates
     /// to the given interceptors before invoking the object itself.
     /// </summary>
     /// <author>Bruno Baia</author>
     public class InheritanceBasedAopConfigurer : IObjectFactoryPostProcessor, IObjectFactoryAware, IOrdered
     {
-        #region Fields
-
         private IList objectNames;
         private string[] interceptorNames = new string[0];
         private bool proxyTargetAttributes = true;
@@ -58,12 +47,8 @@ namespace Spring.Aop.Framework.AutoProxy
         private int order = int.MaxValue;
         private IAdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.Instance;
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
-        /// Set the names of the objects in IList fashioned way 
+        /// Set the names of the objects in IList fashioned way
         /// that should automatically get intercepted.
         /// </summary>
         /// <remarks>
@@ -75,19 +60,19 @@ namespace Spring.Aop.Framework.AutoProxy
             set { objectNames = value; }
         }
 
-        /// <summary> 
-        /// Sets the common interceptors, a list of <see cref="AopAlliance.Aop.IAdvice"/>, 
+        /// <summary>
+        /// Sets the common interceptors, a list of <see cref="AopAlliance.Aop.IAdvice"/>,
         /// <see cref="Spring.Aop.IAdvisor"/> and introduction object names.
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If this property isn't set, there will be zero common interceptors. 
+        /// If this property isn't set, there will be zero common interceptors.
         /// This is perfectly valid, if "specific" interceptors such as
         /// matching Advisors are all we want.
         /// </para>
         /// </remarks>
         /// <value>
-        /// The list of <see cref="AopAlliance.Aop.IAdvice"/>, 
+        /// The list of <see cref="AopAlliance.Aop.IAdvice"/>,
         /// <see cref="Spring.Aop.IAdvisor"/> and introduction object names.
         /// </value>
         /// <seealso cref="AopAlliance.Aop.IAdvice"/>
@@ -98,7 +83,7 @@ namespace Spring.Aop.Framework.AutoProxy
         }
 
         /// <summary>
-        /// Is target type attributes, method attributes, method's return type attributes 
+        /// Is target type attributes, method attributes, method's return type attributes
         /// and method's parameter attributes to be proxied in addition
         /// to any interfaces declared on the proxied <see cref="System.Type"/>?
         /// </summary>
@@ -112,7 +97,7 @@ namespace Spring.Aop.Framework.AutoProxy
         /// Gets or sets a value indicating whether inherited members should be proxied.
         /// </summary>
         /// <value>
-        /// <see langword="true"/> if inherited members should be proxied; 
+        /// <see langword="true"/> if inherited members should be proxied;
         /// otherwise, <see langword="false"/>.
         /// </value>
         public bool ProxyDeclaredMembersOnly
@@ -125,7 +110,7 @@ namespace Spring.Aop.Framework.AutoProxy
         /// Gets or sets a value indicating whether interfaces members should be proxied.
         /// </summary>
         /// <value>
-        /// <see langword="true"/> if interfaces members should be proxied; 
+        /// <see langword="true"/> if interfaces members should be proxied;
         /// otherwise, <see langword="false"/>.
         /// </value>
         public bool ProxyInterfaces
@@ -133,10 +118,6 @@ namespace Spring.Aop.Framework.AutoProxy
             get { return proxyInterfaces; }
             set { proxyInterfaces = value; }
         }
-
-        #endregion
-
-        #region IObjectFactoryAware Members
 
         /// <summary>
         /// Callback that supplies the owning factory to an object instance.
@@ -162,10 +143,6 @@ namespace Spring.Aop.Framework.AutoProxy
             set { objectFactory = value; }
         }
 
-        #endregion
-
-        #region IObjectFactoryPostProcessor Members
-
         /// <summary>
         /// Allows for custom modification of an application context's object definitions.
         /// </summary>
@@ -176,7 +153,7 @@ namespace Spring.Aop.Framework.AutoProxy
         /// </remarks>
         public void PostProcessObjectFactory(IConfigurableListableObjectFactory factory)
         {
-            IList<string> objectDefinitionNames = factory.GetObjectDefinitionNames();
+            var objectDefinitionNames = factory.GetObjectDefinitionNames();
             for (int i = 0; i < objectDefinitionNames.Count; ++i)
             {
                 string name = objectDefinitionNames[i];
@@ -201,10 +178,6 @@ namespace Spring.Aop.Framework.AutoProxy
             }
         }
 
-        #endregion
-
-        #region IOrdered Members
-
         /// <summary>
         /// Return the order value of this object, where a higher value means greater in
         /// terms of sorting.
@@ -220,10 +193,6 @@ namespace Spring.Aop.Framework.AutoProxy
             get { return order; }
             set { order = value; }
         }
-
-        #endregion
-
-        #region Protected methods
 
         /// <summary>
         /// Determines whether the object is an infrastructure type,
@@ -302,10 +271,6 @@ namespace Spring.Aop.Framework.AutoProxy
             return false;
         }
 
-        #endregion
-
-        #region Private Methods
-
         private IList<IAdvisor> ResolveInterceptorNames()
         {
             List<IAdvisor> advisors = new List<IAdvisor>();
@@ -324,12 +289,8 @@ namespace Spring.Aop.Framework.AutoProxy
             return advisors;
         }
 
-        #endregion
-
-        #region InheritanceBasedAopTargetSource inner class definition
-
         [Serializable]
-        private class InheritanceBasedAopTargetSource : ITargetSource
+        private class InheritanceBasedAopTargetSource : ITargetSource, ISerializable
         {
             private readonly Type _targetType;
 
@@ -338,7 +299,19 @@ namespace Spring.Aop.Framework.AutoProxy
                 _targetType = targetType;
             }
 
-            #region ITargetSource Members
+
+            /// <inheritdoc />
+            private InheritanceBasedAopTargetSource(SerializationInfo info, StreamingContext context)
+            {
+                var type = info.GetString("TargetType");
+                _targetType = type != null ? Type.GetType(type) : null;
+            }
+
+            /// <inheritdoc />
+            public void GetObjectData(SerializationInfo info, StreamingContext context)
+            {
+                info.AddValue("TargetType", _targetType?.AssemblyQualifiedName);
+            }
 
             public object GetTarget()
             {
@@ -358,10 +331,6 @@ namespace Spring.Aop.Framework.AutoProxy
             {
                 get { return _targetType; }
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

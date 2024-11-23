@@ -1,14 +1,12 @@
-#region Licence
-
 /*
- * Copyright © 2002-2011 the original author or authors.
- * 
+ * Copyright ï¿½ 2002-2011 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,37 +14,24 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
 using System.Collections;
 using System.Data;
-using Spring.Collections;
 using Spring.Dao;
 using Spring.Data.Common;
 using Spring.Data.Support;
 
-#endregion
-
 namespace Spring.Data.Objects
 {
 	/// <summary>
-	/// A superclass for object based abstractions of RDBMS stored procedures. 
+	/// A superclass for object based abstractions of RDBMS stored procedures.
 	/// </summary>
 	/// <author>Mark Pollack (.NET)</author>
 	public abstract class StoredProcedure : AdoOperation
 	{
-		#region Fields
-        
-	    //A collection of NamedResultSetProcessor
-        private IList resultProcessors = new LinkedList();
+		//A collection of NamedResultSetProcessor
+        private readonly List<NamedResultSetProcessor> resultProcessors = new List<NamedResultSetProcessor>();
 	    private bool usingDerivedParameters = false;
-	    
-	    
-		#endregion
 
-		#region Constructor (s)
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StoredProcedure"/> class.
         /// </summary>
@@ -64,23 +49,13 @@ namespace Spring.Data.Objects
         {
     	    CommandType = CommandType.StoredProcedure;
         }
-	    
-	    
 
-		#endregion
-
-		#region Properties
-
-		#endregion
-
-		#region Methods
-
-	    public void DeriveParameters()
+		public void DeriveParameters()
 	    {
 	        DeriveParameters(false);
 	    }
-	    
-	    
+
+
         public void DeriveParameters(bool includeReturnParameter)
         {
             //TODO does this account for offsets?
@@ -89,11 +64,11 @@ namespace Spring.Data.Objects
             {
                 IDataParameter parameter = derivedParameters[i];
                 DeclaredParameters.AddParameter(parameter);
-            } 
+            }
             usingDerivedParameters = true;
         }
-	    
-	    
+
+
         public void AddResultSetExtractor(string name, IResultSetExtractor resultSetExtractor)
         {
             if (Compiled)
@@ -102,7 +77,7 @@ namespace Spring.Data.Objects
             }
             resultProcessors.Add(new NamedResultSetProcessor(name, resultSetExtractor));
         }
-        
+
         public void AddRowCallback(string name, IRowCallback rowCallback)
         {
             if (Compiled)
@@ -111,7 +86,7 @@ namespace Spring.Data.Objects
             }
             resultProcessors.Add(new NamedResultSetProcessor(name,rowCallback));
         }
-        
+
         public void AddRowMapper(string name, IRowMapper rowMapper)
         {
             if (Compiled)
@@ -120,26 +95,26 @@ namespace Spring.Data.Objects
             }
             resultProcessors.Add(new NamedResultSetProcessor(name,rowMapper));
         }
-	    
-	    
+
+
 	    protected virtual IDictionary ExecuteScalar(params object[] inParameterValues)
 	    {
             ValidateParameters(inParameterValues);
-            return AdoTemplate.ExecuteScalar(NewCommandCreatorWithParamValues(inParameterValues));		        
+            return AdoTemplate.ExecuteScalar(NewCommandCreatorWithParamValues(inParameterValues));
 	    }
-	    
+
         protected virtual IDictionary ExecuteNonQuery(params object[] inParameterValues)
         {
             ValidateParameters(inParameterValues);
-            return AdoTemplate.ExecuteNonQuery(NewCommandCreatorWithParamValues(inParameterValues));		        
+            return AdoTemplate.ExecuteNonQuery(NewCommandCreatorWithParamValues(inParameterValues));
         }
 
         protected virtual IDictionary Query(params object[] inParameterValues)
         {
             ValidateParameters(inParameterValues);
-            return AdoTemplate.QueryWithCommandCreator(NewCommandCreatorWithParamValues(inParameterValues), resultProcessors);		        
+            return AdoTemplate.QueryWithCommandCreator(NewCommandCreatorWithParamValues(inParameterValues), resultProcessors);
         }
-	    
+
 	    /// <summary>
 	    /// Execute the stored procedure using 'ExecuteScalar'
 	    /// </summary>
@@ -148,20 +123,20 @@ namespace Spring.Data.Objects
         /// scalar under the key "scalar".</returns>
 	    protected virtual IDictionary ExecuteScalarByNamedParam(IDictionary inParams)
 	    {
-            ValidateNamedParameters(inParams);                        
-            return AdoTemplate.ExecuteScalar(NewCommandCreator(inParams));	        
+            ValidateNamedParameters(inParams);
+            return AdoTemplate.ExecuteScalar(NewCommandCreator(inParams));
 	    }
-	    
+
         protected virtual IDictionary ExecuteNonQueryByNamedParam(IDictionary inParams)
         {
-            ValidateNamedParameters(inParams);                        
+            ValidateNamedParameters(inParams);
             return AdoTemplate.ExecuteNonQuery(NewCommandCreator(inParams));
-        }	    
-	       
-	    
+        }
+
+
         protected virtual IDictionary QueryByNamedParam(IDictionary inParams)
         {
-            ValidateNamedParameters(inParams);                        
+            ValidateNamedParameters(inParams);
             return AdoTemplate.QueryWithCommandCreator(NewCommandCreator(inParams), resultProcessors);
         }
 
@@ -171,14 +146,11 @@ namespace Spring.Data.Objects
             {
                 //Can only count Input, derived output parameters are incorrectly classified as input-output
                 return (parameter.Direction == ParameterDirection.Input);
-            }     
+            }
             else
             {
                 return base.IsInputParameter(parameter);
             }
         }
-	    
-		#endregion
-
 	}
 }

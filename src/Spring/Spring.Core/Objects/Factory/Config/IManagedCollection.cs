@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,7 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Collections;
-using Spring.Objects.Factory.Config;
-
-#endregion
 
 namespace Spring.Objects.Factory.Config
 {
@@ -76,21 +70,21 @@ namespace Spring.Objects.Factory.Config
 	/// </p>
 	/// <code language="C#">
 	/// using System;
-	/// 
+	///
 	/// using Spring.Objects.Factory.Support;
-	/// 
+	///
 	/// namespace MyNamespace
 	/// {
 	///		public sealed class Bag : ICollection
 	///		{
 	///			// ICollection implementation elided for clarity...
-	///			
+	///
 	///			public void Add(object o)
 	///			{
 	///				// implementation elided for clarity...
 	///			}
 	///		}
-	///		
+	///
 	///		public class ManagedBag : Bag, IManagedCollection
 	///		{
 	///			public ICollection Resolve(

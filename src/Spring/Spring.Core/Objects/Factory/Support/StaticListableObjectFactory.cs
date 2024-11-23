@@ -1,31 +1,22 @@
-#region License
 /*
- * Copyright © 2002-2011 the original author or authors.
- * 
+ * Copyright Â© 2002-2011 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#endregion
 
-#region Imports
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
-
 using Spring.Objects.Factory.Config;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Objects.Factory.Support
 {
@@ -62,10 +53,7 @@ namespace Spring.Objects.Factory.Support
         /// <summary>
         /// Determine whether this object factory treats object names case-sensitive or not.
         /// </summary>
-        public bool IsCaseSensitive
-        {
-            get { return true; }
-        }
+        public bool IsCaseSensitive => true;
 
         /// <summary>
         /// Return the number of objects defined in the factory.
@@ -73,10 +61,7 @@ namespace Spring.Objects.Factory.Support
         /// <value>
         /// The number of objects defined in the factory.
         /// </value>
-        public int ObjectDefinitionCount
-        {
-            get { return objects.Count; }
-        }
+        public int ObjectDefinitionCount => objects.Count;
 
         /// <summary>
         /// Return an instance of the given object name.
@@ -84,10 +69,7 @@ namespace Spring.Objects.Factory.Support
         /// <param name="name">The name of the object to return.</param>
         /// <returns>The instance of the object.</returns>
         /// <seealso cref="Spring.Objects.Factory.IObjectFactory.GetObject(string)"/>
-        public object this[string name]
-        {
-            get { return GetObject(name); }
-        }
+        public object this[string name] => GetObject(name);
 
         /// <summary>
         /// Determines whether the object with the given name matches the specified type.
@@ -410,14 +392,14 @@ namespace Spring.Objects.Factory.Support
         /// always return independent instances?
         /// </summary>
         /// <remarks>This method returning false does not clearly indicate a singleton object.
-        /// It indicated non-independent instances, which may correspond to a scoped object as 
-        /// well.  use the IsSingleton property to explicitly check for a shared 
+        /// It indicated non-independent instances, which may correspond to a scoped object as
+        /// well.  use the IsSingleton property to explicitly check for a shared
         /// singleton instance.
         /// <para>Translates aliases back to the corresponding canonical object name.  Will ask the
         /// parent factory if the object can not be found in this factory instance.
         /// </para>
         /// </remarks>
-        /// 
+        ///
         /// <param name="name">The name of the object to query</param>
         /// <returns>
         /// 	<c>true</c> if the specified object name will always deliver independent instances; otherwise, <c>false</c>.
@@ -498,7 +480,7 @@ namespace Spring.Objects.Factory.Support
         /// <exception cref="Spring.Objects.Factory.NoSuchObjectDefinitionException">
         /// If there's no such object definition.
         /// </exception>
-        public IList<string> GetAliases(string name)
+        public IReadOnlyList<string> GetAliases(string name)
         {
             return StringUtils.EmptyStrings;
         }
@@ -551,7 +533,7 @@ namespace Spring.Objects.Factory.Support
         /// The names of all objects defined in this factory, or an empty array if none
         /// are defined.
         /// </returns>
-        public IList<string> GetObjectDefinitionNames()
+        public IReadOnlyList<string> GetObjectDefinitionNames()
         {
             List<string> names = new List<string>(objects.Keys);
             return names;
@@ -563,12 +545,12 @@ namespace Spring.Objects.Factory.Support
         /// </summary>
         /// <param name="includeAncestors">to include parent factories in result</param>
         /// <returns>
-        /// The names of all objects defined in this factory, if <code>includeAncestors</code> is <code>true</code> includes all 
+        /// The names of all objects defined in this factory, if <code>includeAncestors</code> is <code>true</code> includes all
         /// objects defined in parent factories, or an empty array if none are defined.
         /// </returns>
-        public IList<string> GetObjectDefinitionNames(bool includeAncestors)
+        public IReadOnlyList<string> GetObjectDefinitionNames(bool includeAncestors)
         {
-            throw new NotSupportedException("StaticListableObjectFactory does not contain object definitions.");            
+            throw new NotSupportedException("StaticListableObjectFactory does not contain object definitions.");
         }
 
         /// <summary>
@@ -626,7 +608,7 @@ namespace Spring.Objects.Factory.Support
         /// The names of all objects defined in this factory, or an empty array if none
         /// are defined.
         /// </returns>
-        public IList<string> GetObjectNamesForType(Type type)
+        public IReadOnlyList<string> GetObjectNamesForType(Type type)
         {
             return GetObjectNamesForType(type, true, true);
         }
@@ -654,7 +636,7 @@ namespace Spring.Objects.Factory.Support
         /// The names of all objects defined in this factory, or an empty array if none
         /// are defined.
         /// </returns>
-        public IList<string> GetObjectNames<T>()
+        public IReadOnlyList<string> GetObjectNames<T>()
         {
             return GetObjectNamesForType(typeof(T));
         }
@@ -688,7 +670,7 @@ namespace Spring.Objects.Factory.Support
         /// are defined.
         /// </returns>
         /// <seealso cref="Spring.Objects.Factory.IListableObjectFactory.GetObjectNamesForType(Type, bool, bool)"/>
-        public IList<string> GetObjectNamesForType(Type type, bool includePrototypes, bool includeFactoryObjects)
+        public IReadOnlyList<string> GetObjectNamesForType(Type type, bool includePrototypes, bool includeFactoryObjects)
         {
             bool isFactoryType = (type != null && typeof(IFactoryObject).IsAssignableFrom(type));
             List<string> matches = new List<string>();
@@ -741,18 +723,18 @@ namespace Spring.Objects.Factory.Support
         /// for all object names.
         /// </typeparam>
         /// <param name="includePrototypes">
-        /// Whether to include prototype objects too or just singletons (also applies to
-        /// <see cref="Spring.Objects.Factory.IFactoryObject"/>s).
+        ///     Whether to include prototype objects too or just singletons (also applies to
+        ///     <see cref="Spring.Objects.Factory.IFactoryObject"/>s).
         /// </param>
         /// <param name="includeFactoryObjects">
-        /// Whether to include <see cref="Spring.Objects.Factory.IFactoryObject"/>s too
-        /// or just normal objects.
+        ///     Whether to include <see cref="Spring.Objects.Factory.IFactoryObject"/>s too
+        ///     or just normal objects.
         /// </param>
         /// <returns>
         /// The names of all objects defined in this factory, or an empty array if none
         /// are defined.
         /// </returns>
-        public IList<string> GetObjectNames<T>(bool includePrototypes, bool includeFactoryObjects)
+        public IReadOnlyList<string> GetObjectNames<T>(bool includePrototypes, bool includeFactoryObjects)
         {
             return GetObjectNamesForType(typeof(T), includePrototypes, includeFactoryObjects);
         }
@@ -797,7 +779,7 @@ namespace Spring.Objects.Factory.Support
         /// <exception cref="Spring.Objects.ObjectsException">
         /// If the objects could not be created.
         /// </exception>
-        public IDictionary<string, object> GetObjectsOfType(Type type)
+        public IReadOnlyDictionary<string, object> GetObjectsOfType(Type type)
         {
             return GetObjectsOfType(type, true, true);
         }
@@ -829,7 +811,7 @@ namespace Spring.Objects.Factory.Support
         /// <exception cref="Spring.Objects.ObjectsException">
         /// If the objects could not be created.
         /// </exception>
-        public IDictionary<string, T> GetObjects<T>()
+        public IReadOnlyDictionary<string, T> GetObjects<T>()
         {
             Dictionary<string, T> collector = new Dictionary<string, T>();
             DoGetObjectsOfType(typeof(T), true, true, collector);
@@ -862,7 +844,7 @@ namespace Spring.Objects.Factory.Support
         /// <exception cref="Spring.Objects.ObjectsException">
         /// If the objects could not be created.
         /// </exception>
-        public IDictionary<string, object> GetObjectsOfType(Type type, bool includePrototypes, bool includeFactoryObjects)
+        public IReadOnlyDictionary<string, object> GetObjectsOfType(Type type, bool includePrototypes, bool includeFactoryObjects)
         {
             Dictionary<string, object> collector = new Dictionary<string, object>();
             DoGetObjectsOfType(type, includeFactoryObjects, includePrototypes, collector);
@@ -930,11 +912,11 @@ namespace Spring.Objects.Factory.Support
         /// <exception cref="Spring.Objects.ObjectsException">
         /// If the objects could not be created.
         /// </exception>
-        public IDictionary<string, T> GetObjects<T>(bool includePrototypes, bool includeFactoryObjects)
+        public IReadOnlyDictionary<string, T> GetObjects<T>(bool includePrototypes, bool includeFactoryObjects)
         {
             Dictionary<string, T> collector = new Dictionary<string, T>();
             DoGetObjectsOfType(typeof(T), includeFactoryObjects, includePrototypes, collector);
-            return collector; 
+            return collector;
         }
 
         /// <summary>
@@ -968,7 +950,7 @@ namespace Spring.Objects.Factory.Support
         /// </exception>
         public T GetObject<T>()
         {
-            IList<string> objectNamesForType = GetObjectNamesForType(typeof(T));
+            var objectNamesForType = GetObjectNamesForType(typeof(T));
             if ((objectNamesForType == null) || (objectNamesForType.Count == 0))
             {
                 throw new NoSuchObjectDefinitionException(typeof(T).FullName, "Requested Type not Defined in the Context.");

@@ -18,9 +18,9 @@
 
 #endregion
 
+using System.Collections.Generic;
 using Apache.NMS;
 using NUnit.Framework;
-using Spring.Collections;
 
 namespace Spring.Messaging.Nms.Connections
 {
@@ -59,7 +59,7 @@ namespace Spring.Messaging.Nms.Connections
 
         private CachedSession CreateCachedSession(ISession targetSession)
         {
-            return new CachedSession(targetSession, new LinkedList(), new CachingConnectionFactory());
+            return new CachedSession(targetSession, new List<ISession>(), new CachingConnectionFactory());
         }
     }
 }

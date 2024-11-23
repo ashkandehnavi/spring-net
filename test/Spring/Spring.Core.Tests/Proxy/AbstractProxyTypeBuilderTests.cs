@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +14,16 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
 using System;
-using System.Net;
-using System.Security.Permissions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections;
-using System.Diagnostics;
-using System.Web.Services;
 using System.Runtime.InteropServices;
 
 using NUnit.Framework;
 
 using Spring.Objects;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Proxy
 {
@@ -137,7 +125,7 @@ namespace Spring.Proxy
         {
             ConstructorInfo ci = typeof(FakeServiceKnownTypeAttribute).GetConstructor(new Type[] { typeof(Type) });
             CustomAttributeBuilder cab = new CustomAttributeBuilder(ci, new object[] { typeof(TestObject) });
-            
+
             IProxyTypeBuilder builder = GetProxyBuilder();
             builder.TargetType = typeof(ClassWithFakeServiceKnownTypeAttribute);
             builder.TypeAttributes.Add(cab);
@@ -257,6 +245,7 @@ namespace Spring.Proxy
             Assert.AreEqual(AttributeTargets.All, pepa.Data);
         }
 
+#if !NETCOREAPP
         // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=161522
         // should not fail
         // Use CustomAttributeData if patch applied (.NET 2.0 SP1).
@@ -273,15 +262,18 @@ namespace Spring.Proxy
             object[] attrs = proxy.GetCustomAttributes(false);
             Assert.IsNotNull(attrs, "Should have had 1 attribute applied to the target type.");
             Assert.AreEqual(1, attrs.Length, "Should have had 1 attribute applied to the target type.");
-            Assert.AreEqual(typeof(WebServiceAttribute), attrs[0].GetType(), "Wrong System.Type of Attribute applied to the target type.");
+            Assert.AreEqual(typeof(System.Web.Services.WebServiceAttribute), attrs[0].GetType(), "Wrong System.Type of Attribute applied to the target type.");
 
-            WebServiceAttribute wsa = attrs[0] as WebServiceAttribute;
+            var wsa = attrs[0] as System.Web.Services.WebServiceAttribute;
             Assert.AreEqual("blah", wsa.Name);
             Assert.AreEqual("http://mynamespace.com", wsa.Namespace);
         }
-#if !MONO
+#endif
+
+#if !MONO && !NETCOREAPP
         // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=94803
         [Test]
+        [Platform("Win")]
         public void ProxySecurityAttribute()
         {
             IProxyTypeBuilder builder = GetProxyBuilder();
@@ -295,6 +287,7 @@ namespace Spring.Proxy
             Assert.AreEqual(2, attrs.Length, "Should have had 2 attribute applied to the target type.");
         }
 #endif
+
         [Test]
         public void ProxySpecificTargetTypeAttributeWithArrayConstructor()
         {
@@ -528,8 +521,6 @@ namespace Spring.Proxy
             Assert.AreEqual(0, attrs.Length, "Should not have attribute applied to the method's return value.");
         }
 
-        #region ProxyGenericMethod
-
         [Test]
         public void ProxyGenericMethod()
         {
@@ -616,10 +607,6 @@ namespace Spring.Proxy
             { }
         }
 
-        #endregion
-
-        #region ProxyGenericInterface
-
         [Test]
         public void ProxyGenericInterface()
         {
@@ -664,11 +651,7 @@ namespace Spring.Proxy
             }
         }
 
-        #endregion
-
         protected abstract IProxyTypeBuilder GetProxyBuilder();
-
-        #region Helper inner classes definition
 
         public interface InnerInterface
         {
@@ -677,12 +660,7 @@ namespace Spring.Proxy
         public class InnerClass : InnerInterface
         {
         }
-
-        #endregion
-
     }
-
-    #region Helper classes definition
 
     public class DoesntImplementAnyInterfaces
     {
@@ -832,11 +810,13 @@ namespace Spring.Proxy
         }
     }
 
+#if !NETCOREAPP
     // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=161522
-    [WebService(Namespace = "http://mynamespace.com", Name = "blah")]
+    [System.Web.Services.WebService(Namespace = "http://mynamespace.com", Name = "blah")]
     public class ClassWithWebServiceAttribute : IMarkerInterface
     {
     }
+#endif
 
     [FakeGenerateScriptType("ScriptName")]
     public class ClassWithFakeGenerateScriptTypeAttribute : IMarkerInterface
@@ -858,14 +838,16 @@ namespace Spring.Proxy
         }
     }
 
+#if !NETCOREAPP
     // http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=94803
     [Marker]
 #pragma warning disable 618
-    [WebPermission(SecurityAction.Deny)]
+    [System.Net.WebPermission(System.Security.Permissions.SecurityAction.Deny)]
 #pragma warning restore 618
     public class ClassWithSecurityAttribute : IMarkerInterface
     {
     }
+#endif
 
     public class ClassWithArrayConstructorAttribute : ISomeMarkerInterface
     {
@@ -1003,21 +985,13 @@ namespace Spring.Proxy
 
     public class MultipleInterfaces : IInherited
     {
-        #region IInherited Members
-
         public void Inherited()
         {
         }
 
-        #endregion
-
-        #region IBase Members
-
         public void Base()
         {
         }
-
-        #endregion
     }
 
     public interface ITargetObjectTest
@@ -1077,7 +1051,4 @@ namespace Spring.Proxy
 
         public void ApplicationMethod() { }
     }
-
-    #endregion
-
 }

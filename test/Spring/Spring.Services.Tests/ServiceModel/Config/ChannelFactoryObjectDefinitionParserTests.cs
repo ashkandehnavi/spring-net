@@ -20,8 +20,6 @@
 
 #region Imports
 
-using System.Collections;
-using System.Collections.Generic;
 using System.ServiceModel;
 
 using Spring.Context;
@@ -104,7 +102,7 @@ namespace Spring.ServiceModel.Config
             IApplicationContext ctx = new XmlApplicationContext(
                 ReadOnlyXmlTestResource.GetFilePath("ChannelFactoryObjectDefinitionParserTests.WithoutId.xml", this.GetType()));
 
-            IDictionary<string, IContract> channels = ctx.GetObjects<IContract>();
+            var channels = ctx.GetObjects<IContract>();
             Assert.AreEqual(1, channels.Count);
         }
 

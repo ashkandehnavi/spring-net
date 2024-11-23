@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,13 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Globalization;
 using System.Reflection;
 
 using Common.Logging;
-using Spring.Core;
+
 using Spring.Core.TypeResolution;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Objects.Factory.Support
 {
@@ -45,7 +40,7 @@ namespace Spring.Objects.Factory.Support
     /// </remarks>
     /// <author>Rod Johnson</author>
     /// <author>Rick Evans (.NET)</author>
-    /// <seealso cref="Spring.Objects.Factory.Support.MethodInjectingInstantiationStrategy"/> 
+    /// <seealso cref="Spring.Objects.Factory.Support.MethodInjectingInstantiationStrategy"/>
     [Serializable]
     public class SimpleInstantiationStrategy : IInstantiationStrategy
     {

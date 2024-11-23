@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +14,8 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
-
-using Spring.Core;
 using Spring.Core.TypeResolution;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Objects.Factory.Support
 {
@@ -45,14 +34,12 @@ namespace Spring.Objects.Factory.Support
     [Serializable]
     public class DefaultObjectDefinitionFactory : IObjectDefinitionFactory
 	{
-	    #region IObjectDefinitionFactory Members
-
-        /// <summary>
+	    /// <summary>
         /// Factory style method for getting concrete
         /// <see cref="IConfigurableObjectDefinition"/>
         /// instances.
         /// </summary>
-        /// /// <remarks>If no parent is specified, a RootObjectDefinition is created, otherwise a 
+        /// /// <remarks>If no parent is specified, a RootObjectDefinition is created, otherwise a
         /// ChildObjectDefinition.</remarks>
         /// <param name="typeName">The <see cref="System.Type"/> of the defined object.</param>
         /// <param name="parent">The name of the parent object definition (if any).</param>
@@ -78,7 +65,7 @@ namespace Spring.Objects.Factory.Support
             if (StringUtils.IsNullOrEmpty(parent))
             {
                 if (objectType != null)
-                {                    
+                {
                     return new RootObjectDefinition(objectType);
 
                 }
@@ -105,9 +92,5 @@ namespace Spring.Objects.Factory.Support
                 }
             }
 	    }
-
-	    #endregion
-
-
 	}
 }

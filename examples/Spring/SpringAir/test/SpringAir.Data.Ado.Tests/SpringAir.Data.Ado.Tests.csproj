@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(TargetFullFrameworkVersion)</TargetFramework>
+    <RootNamespace>SpringAir</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Data\Ado\ReflectiveDbConnectionFactoryTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SpringAir.Core\SpringAir.Core.csproj" />
+    <ProjectReference Include="..\..\src\SpringAir.Data.Ado\SpringAir.Data.Ado.csproj" />
+  </ItemGroup>
+</Project>

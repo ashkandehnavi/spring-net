@@ -18,12 +18,16 @@
 
 #endregion
 
-using System;
-using System.Messaging;
 using Spring.Context;
 using Spring.Messaging.Support.Converters;
 using Spring.Objects.Factory.Support;
 using Spring.Transaction.Support;
+
+#if NETSTANDARD
+using Experimental.System.Messaging;
+#else
+using System.Messaging;
+#endif
 
 namespace Spring.Messaging.Core
 {
@@ -37,11 +41,11 @@ namespace Spring.Messaging.Core
         /// Registers the default message converter with the application context.
         /// </summary>
         /// <param name="applicationContext">The application context.</param>
-        /// <returns>The name of the message converter to use for lookups with 
+        /// <returns>The name of the message converter to use for lookups with
         /// <see cref="DefaultMessageQueueFactory"/>.
         /// </returns>
         public static string RegisterDefaultMessageConverter(IApplicationContext applicationContext)
-        {                
+        {
             //Create a default message converter to use.
             RootObjectDefinition rod = new RootObjectDefinition(typeof(XmlMessageConverter));
             rod.PropertyValues.Add("TargetTypes", new Type[] { typeof(String) });
@@ -54,7 +58,7 @@ namespace Spring.Messaging.Core
                 of.RegisterObjectDefinition(messageConverterObjectName, rod);
             }
             return messageConverterObjectName;
-            
+
         }
 
         /// <summary>
@@ -75,7 +79,7 @@ namespace Spring.Messaging.Core
             else
             {
                 return null;
-            }                
+            }
         }
 
     }
@@ -122,7 +126,7 @@ namespace Spring.Messaging.Core
 
         public void BeforeCommit(bool readOnly)
         {
-            
+
         }
 
         public void AfterCommit()

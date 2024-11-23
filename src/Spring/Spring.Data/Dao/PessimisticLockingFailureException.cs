@@ -18,20 +18,15 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Exception thrown on a pessimistic locking violation.
 	/// </summary>
 	/// <remarks>
-	/// <para>Serves as a superclass for more specific exceptions, like 
+	/// <para>Serves as a superclass for more specific exceptions, like
 	/// CannotAcquireLockException and DeadlockLoserDataAccessException
 	/// </para>
 	/// <para>
@@ -72,18 +67,7 @@ namespace Spring.Dao
 		public PessimisticLockingFailureException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.CannotAcquireLockException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
         protected PessimisticLockingFailureException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

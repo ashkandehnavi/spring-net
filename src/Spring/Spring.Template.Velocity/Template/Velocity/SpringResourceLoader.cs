@@ -18,8 +18,6 @@
 
 #endregion
 
-using System;
-using System.IO;
 using Common.Logging;
 using Commons.Collections;
 using NVelocity.Runtime.Resource;
@@ -29,19 +27,19 @@ using Spring.Core.IO;
 namespace Spring.Template.Velocity {
     /// <summary>
     /// NVelocity's abstract ResourceLoader extension which serves
-    ///  as an adapter that loads templates  via a Spring IResourceLoader. 
-    /// 
+    ///  as an adapter that loads templates  via a Spring IResourceLoader.
+    ///
     /// <br/>
-    /// Used by VelocityEngineFactory for any resource loader path that 
-    /// cannot be resolved to a File or an Assembly or for 
-    /// implementations which rely on spring's IResourceLoader 
+    /// Used by VelocityEngineFactory for any resource loader path that
+    /// cannot be resolved to a File or an Assembly or for
+    /// implementations which rely on spring's IResourceLoader
     /// mechanism.
-    /// 
+    ///
     /// <br/>
     /// <b>Important</b>: this loader does not allow for modification detection.
     ///<br/>
-    /// Expects "spring.resource.loader" (IResourceLoader implementations) 
-    /// and "spring.resource.loader.path" application attributes in the 
+    /// Expects "spring.resource.loader" (IResourceLoader implementations)
+    /// and "spring.resource.loader.path" application attributes in the
     /// NVelocity runtime.
     /// </summary>
     /// <see cref="VelocityEngineFactory.ResourceLoaderPath"/>
@@ -50,7 +48,6 @@ namespace Spring.Template.Velocity {
     /// <see cref="ResourceLoader"/>
     /// <see cref="AssemblyResourceLoader"/>
     /// <author>Erez Mazor (.NET) </author>
-    [CLSCompliant(false)]
     public class SpringResourceLoader : ResourceLoader {
         ///<summary>
         /// Prefix used for the NVelocity Configuration
@@ -63,7 +60,7 @@ namespace Spring.Template.Velocity {
         public const string SPRING_RESOURCE_LOADER_CLASS = "spring.resource.loader.class";
 
         /// <summary>
-        /// A flag indicating weather a template cache is used 
+        /// A flag indicating weather a template cache is used
         /// </summary>
         public const string SPRING_RESOURCE_LOADER_CACHE = "spring.resource.loader.cache";
 
@@ -92,8 +89,8 @@ namespace Spring.Template.Velocity {
         /// </summary>
         /// <param name="configuration">The ExtendedProperties representing the Velocity configuration.</param>
         public override void Init(ExtendedProperties configuration) {
-            resourceLoader = (IResourceLoader)rsvc.GetApplicationAttribute(SPRING_RESOURCE_LOADER);
-            string resourceLoaderPath = (string)rsvc.GetApplicationAttribute(SPRING_RESOURCE_LOADER_PATH);
+            resourceLoader = (IResourceLoader)runtimeServices.GetApplicationAttribute(SPRING_RESOURCE_LOADER);
+            string resourceLoaderPath = (string)runtimeServices.GetApplicationAttribute(SPRING_RESOURCE_LOADER_PATH);
             if (resourceLoader == null) {
                 throw new ArgumentException("'resourceLoader' application attribute must be present for SpringResourceLoader");
             }

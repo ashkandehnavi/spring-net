@@ -1,0 +1,67 @@
+<Project>
+
+  <PropertyGroup>
+
+    <OutputPath>..\..\..\build\$(Configuration)\$(MSBuildProjectName)</OutputPath>
+
+    <RootNamespace>Spring</RootNamespace>
+
+    <AssemblyOriginatorKeyFile>..\..\..\Spring.Net.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <SignAssembly>True</SignAssembly>
+    <Deterministic>true</Deterministic>
+
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <Product>Spring.NET</Product>
+    <Company>SpringSource</Company>
+    <Copyright>Copyright 2002-2021 Spring.NET Framework Team.</Copyright>
+    <Trademark>Apache License, Version 2.0</Trademark>
+
+    <Authors>SpringSource</Authors>
+    <PackageIcon>SpringSource_Leaves32x32.png</PackageIcon>
+    <PackageIconUrl>https://springframework.net/images/SpringSource_Leaves32x32.png</PackageIconUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://www.springframework.net/</PackageProjectUrl>
+    <PackageTags>Library</PackageTags>
+
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <WarningsAsErrors>True</WarningsAsErrors>
+
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+
+    <ComVisible>False</ComVisible>
+
+    <DebugSymbols>True</DebugSymbols>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+
+    <LangVersion>latest</LangVersion>
+    <TargetFullFrameworkVersion>net462</TargetFullFrameworkVersion>
+
+    <ImplicitUsings>enable</ImplicitUsings>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>Full</DebugType>
+    <DefineConstants>$(DefineConstants);DEBUG_DYNAMIC;</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\SpringSource_Leaves32x32.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+</Project>

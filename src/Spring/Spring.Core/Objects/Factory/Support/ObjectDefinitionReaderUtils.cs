@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using Spring.Objects.Factory.Config;
 using Spring.Objects.Factory.Xml;
 using Spring.Objects.Support;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Objects.Factory.Support
 {
@@ -54,7 +48,7 @@ namespace Spring.Objects.Factory.Support
         /// time that the name becomes unique.
         /// </p>
         /// </remarks>
-        public const string GENERATED_OBJECT_NAME_SEPARATOR = ObjectFactoryUtils.GENERATED_OBJECT_NAME_SEPARATOR;
+        public const string GENERATED_OBJECT_NAME_SEPARATOR = ObjectFactoryUtils.GeneratedObjectNameSeparator;
 
         /// <summary>
         /// Registers the supplied <paramref name="objectDefinition"/> with the
@@ -64,7 +58,7 @@ namespace Spring.Objects.Factory.Support
         /// <p>
         /// This is a convenience method that registers the
         /// <see cref="Spring.Objects.Factory.Config.ObjectDefinitionHolder.ObjectDefinition"/>
-        /// of the supplied <paramref name="objectDefinition"/> under the 
+        /// of the supplied <paramref name="objectDefinition"/> under the
         /// <see cref="Spring.Objects.Factory.Config.ObjectDefinitionHolder.ObjectName"/>
         /// property value of said <paramref name="objectDefinition"/>. If the
         /// supplied <paramref name="objectDefinition"/> has any
@@ -96,7 +90,7 @@ namespace Spring.Objects.Factory.Support
             AssertUtils.ArgumentNotNull(registry, "registry");
 
             registry.RegisterObjectDefinition(objectDefinition.ObjectName, objectDefinition.ObjectDefinition);
-            IList<string> aliases = objectDefinition.Aliases;
+            var aliases = objectDefinition.Aliases;
             for (int i = 0; i < aliases.Count; ++i)
             {
                 string alias = aliases[i];

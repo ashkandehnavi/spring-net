@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +14,10 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Core
 {
@@ -37,8 +28,6 @@ namespace Spring.Core
     [Serializable]
     public class InvalidPropertyException : FatalReflectionException
     {
-        #region Constructor (s) / Destructor
-
         /// <summary>
         /// Creates a new instance of the
         /// <see cref="InvalidPropertyException"/> class.
@@ -151,13 +140,10 @@ namespace Spring.Core
         protected InvalidPropertyException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
-            offendingObjectType = info.GetValue("ObjectType", typeof (Type)) as Type;
+            var typeName = info.GetString("ObjectTypeName");
+            offendingObjectType = typeName != null ? Type.GetType(typeName) : null;
             offendingPropertyName = info.GetString("OffendingPropertyName");
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// The <see cref="System.Type"/> that is (or rather was) the source of the
@@ -176,10 +162,6 @@ namespace Spring.Core
             get { return offendingPropertyName; }
         }
 
-        #endregion
-
-        #region Methods
-
         /// <summary>
         /// Populates a <see cref="System.Runtime.Serialization.SerializationInfo"/> with
         /// the data needed to serialize the target object.
@@ -197,17 +179,11 @@ namespace Spring.Core
             SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("ObjectType", ObjectType, typeof (Type));
+            info.AddValue("ObjectTypeName", ObjectType?.AssemblyQualifiedNameWithoutVersion());
             info.AddValue("OffendingPropertyName", OffendingPropertyName);
         }
 
-        #endregion
-
-        #region Fields
-
         private Type offendingObjectType;
         private string offendingPropertyName;
-
-        #endregion
     }
 }

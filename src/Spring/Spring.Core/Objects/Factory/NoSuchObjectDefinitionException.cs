@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,10 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Objects.Factory
 {
@@ -148,7 +143,8 @@ namespace Spring.Objects.Factory
 			: base(info, context)
 		{
 			_objectName = info.GetString("ObjectName");
-			_objectType = info.GetValue("ObjectType", typeof (Type)) as Type;
+			var typeName = info.GetString("ObjectTypeName");
+			_objectType = typeName != null ? Type.GetType(typeName) : null;
 		}
 
 		#endregion
@@ -173,7 +169,7 @@ namespace Spring.Objects.Factory
 		{
 			base.GetObjectData(info, context);
 			info.AddValue("ObjectName", ObjectName);
-			info.AddValue("ObjectType", ObjectType);
+			info.AddValue("ObjectTypeName", ObjectType?.AssemblyQualifiedNameWithoutVersion());
 		}
 
 		#endregion

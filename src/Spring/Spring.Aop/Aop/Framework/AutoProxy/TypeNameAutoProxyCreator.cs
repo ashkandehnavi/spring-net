@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using Spring.Aop.Support;
 using Spring.Util;
 
@@ -41,7 +40,7 @@ namespace Spring.Aop.Framework.AutoProxy
         ///</summary>
         public string[] TypeNames
         {
-            get 
+            get
             {
                 if (_typeNameFilter != null)
                 {
@@ -64,7 +63,7 @@ namespace Spring.Aop.Framework.AutoProxy
         /// </remarks>
         /// <param name="targetType">the object's type</param>
         /// <param name="targetName">the name of the object</param>
-        /// <seealso cref="AbstractAutoProxyCreator.ShouldSkip"/>        
+        /// <seealso cref="AbstractAutoProxyCreator.ShouldSkip"/>
         /// <returns>whether the given object shall be proxied.</returns>
         protected override bool IsEligibleForProxying(Type targetType, string targetName)
         {

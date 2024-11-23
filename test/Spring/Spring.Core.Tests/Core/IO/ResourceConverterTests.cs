@@ -39,11 +39,11 @@ namespace Spring.Core.IO
 		/// <summary>
 		/// The setup logic executed before the execution of this test fixture.
 		/// </summary>
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void FixtureSetUp()
 		{
 			// enable (null appender) logging, just to ensure that the logging code is correct
-            LogManager.Adapter = new NoOpLoggerFactoryAdapter(); 
+            LogManager.Adapter = new NoOpLoggerFactoryAdapter();
 		}
 
 		[Test]
@@ -66,22 +66,21 @@ namespace Spring.Core.IO
 		}
 
 		[Test]
-		[ExpectedException(typeof (NotSupportedException))]
 		public void ConvertFromNullReference()
 		{
 			ResourceConverter vrt = new ResourceConverter();
-			vrt.ConvertFrom(null);
+            Assert.Throws<NotSupportedException>(() => vrt.ConvertFrom(null));
 		}
 
 		[Test]
-		[ExpectedException(typeof (NotSupportedException))]
 		public void ConvertFromNonSupportedOptionBails()
 		{
 			ResourceConverter vrt = new ResourceConverter();
-			vrt.ConvertFrom(new TestFixtureAttribute());
+            Assert.Throws<NotSupportedException>(() => vrt.ConvertFrom(new TestFixtureAttribute()));
 		}
 
 		[Test]
+		[Platform("Win")]
 		public void ConvertFromWithEnvironmentVariableExpansion()
 		{
             string filename = Guid.NewGuid().ToString();

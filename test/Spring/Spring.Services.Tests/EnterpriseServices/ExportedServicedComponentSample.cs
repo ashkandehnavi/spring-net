@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,11 @@
 
 #endregion
 
-#if !MONO
-
-#region Imports
-
 using System;
 using System.Diagnostics;
 using System.EnterpriseServices;
 using System.IO;
 using System.Reflection;
-using System.Xml;
-using Spring.Context.Support;
-using Spring.Objects;
-using Spring.Util;
-
-#endregion
 
 /*
 The code below is only for reverse engineering generated code in reflector
@@ -79,4 +69,3 @@ namespace Spring.EnterpriseServices
         }
     }
 }
-#endif

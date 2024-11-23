@@ -1,8 +1,5 @@
-using System;
 using IEnumerator = System.Collections.IEnumerator;
 
-using IToken = Spring.Expressions.Parser.antlr.IToken;
-	
 namespace Spring.Expressions.Parser.antlr.collections
 {
 	/*ANTLR Translator Generator

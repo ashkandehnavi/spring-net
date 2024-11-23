@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +14,10 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
 using System.Reflection;
-using Spring.Core;
+using System.Runtime.Serialization;
 
-#endregion
+using Spring.Core;
 
 namespace Spring.Aop.Support
 {
@@ -42,19 +35,13 @@ namespace Spring.Aop.Support
 	/// <author>Rod Johnson</author>
 	/// <author>Simon White (.NET)</author>
 	[Serializable]
-	public class ControlFlowPointcut : IPointcut, ITypeFilter, IMethodMatcher
+	public class ControlFlowPointcut : IPointcut, ITypeFilter, IMethodMatcher, ISerializable
 	{
-		#region Fields
-
-		private Type _type;
+	    private Type _type;
 		private string _methodName;
 		private int _evaluationCount;
 
-		#endregion
-
-		#region Constructor (s) / Destructor
-
-		/// <summary>
+	    /// <summary>
 		/// Creates a new instance of the <see cref="ControlFlowPointcut"/>
 		/// class.
 		/// </summary>
@@ -88,11 +75,24 @@ namespace Spring.Aop.Support
 			_methodName = methodName;
 		}
 
-		#endregion
+	    /// <inheritdoc />
+	    private ControlFlowPointcut(SerializationInfo info, StreamingContext context)
+	    {
+	        var type = info.GetString("Type");
+	        _type = type != null ? Type.GetType(type) : null;
+	        _methodName = info.GetString("MethodName");
+	        _evaluationCount = info.GetInt32("EvaluationCount");
+	    }
 
-		#region Properties
+	    /// <inheritdoc />
+	    public void GetObjectData(SerializationInfo info, StreamingContext context)
+	    {
+	        info.AddValue("Type", _type?.AssemblyQualifiedName);
+	        info.AddValue("MethodName", _methodName);
+	        info.AddValue("EvaluationCount", _evaluationCount);
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// The <see cref="Spring.Aop.ITypeFilter"/> for this pointcut.
 		/// </summary>
 		/// <value>
@@ -154,11 +154,7 @@ namespace Spring.Aop.Support
 			get { return true; }
 		}
 
-		#endregion
-
-		#region Methods
-
-		/// <summary>
+	    /// <summary>
 		/// Should the pointcut apply to the supplied <see cref="System.Type"/>?
 		/// </summary>
 		/// <remarks>
@@ -237,7 +233,5 @@ namespace Spring.Aop.Support
 				? cflow.Under(_type, _methodName)
 				: cflow.Under(_type);
 		}
-
-		#endregion
 	}
 }

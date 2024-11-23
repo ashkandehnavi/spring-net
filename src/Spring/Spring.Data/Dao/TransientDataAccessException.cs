@@ -18,17 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-    /// <summary> 
-    /// Root of the hierarchy of data access exception that are considered transient - 
+    /// <summary>
+    /// Root of the hierarchy of data access exception that are considered transient -
     /// where a previously failed operation might be able to succeed when the operation
     /// is retried without any intervention by application-level functionality.
     /// </summary>
@@ -65,18 +60,7 @@ namespace Spring.Dao
 		public TransientDataAccessException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-        /// <see cref="Spring.Dao.TransientDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
         protected TransientDataAccessException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

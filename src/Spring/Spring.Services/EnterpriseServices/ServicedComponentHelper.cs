@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,14 @@
 
 #endregion
 
-#if !MONO
-
-#region Imports
-
-using System;
 using System.Diagnostics;
 using System.EnterpriseServices;
-using System.IO;
 using System.Reflection;
 using Spring.Context;
 using Spring.Context.Support;
 using Spring.Core.IO;
 using Spring.Objects.Factory.Config;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.EnterpriseServices
 {
@@ -100,13 +92,13 @@ namespace Spring.EnterpriseServices
                     {
                         Trace.WriteLine(string.Format("configuring COM InProc Server '{0}' using section <spring/context name={1}> from app.config", componentAssemblyFile.FullName, componentType.Name));
                         _appContext = ContextRegistry.GetContext(componentType.Name);
-                    } 
+                    }
                     else
                     {
                         Trace.WriteLine(string.Format("configuring COM InProc Server '{0}' using section <spring/context> from file '{1}'", componentAssemblyFile.FullName, configFile.FullName));
-                        _appContext = ContextRegistry.GetContext();                        
+                        _appContext = ContextRegistry.GetContext();
                     }
-                    return;                    
+                    return;
                 }
                 throw ConfigurationUtils.CreateConfigurationException("Spring-exported COM components require <spring/context> section in configuration file '" + configFile.FullName + "'");
             }
@@ -120,7 +112,7 @@ namespace Spring.EnterpriseServices
                 Trace.WriteLine(string.Format("configuring COM OutProc Server '{0}' using '{1}'", componentAssemblyFile.FullName, configFile.FullName));
                 // read in config file
                 ExeConfigurationSystem comConfig = new ExeConfigurationSystem(assemblyFile.FullName);
-                // make the config "global" for this process, replacing any 
+                // make the config "global" for this process, replacing any
                 // existing configuration that might already have been loaded
                 ConfigurationUtils.SetConfigurationSystem(comConfig, true);
                 _appContext = ContextRegistry.GetContext();
@@ -151,7 +143,7 @@ namespace Spring.EnterpriseServices
         }
 
         ///<summary>
-        /// Called by a <see cref="ServicedComponent"/> exported by <see cref="EnterpriseServicesExporter"/> 
+        /// Called by a <see cref="ServicedComponent"/> exported by <see cref="EnterpriseServicesExporter"/>
         /// to obtain a reference to the service it proxies.
         ///</summary>
         public static object GetObject(ServicedComponent sender, string targetName)
@@ -170,5 +162,3 @@ namespace Spring.EnterpriseServices
         }
     }
 }
-
-#endif

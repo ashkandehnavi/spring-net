@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(TargetFullFrameworkVersion)</TargetFramework>
+    <RootNamespace>Spring</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Spring\Spring.DataQuickStart\Spring.DataQuickStart.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Spring.Core">
+      <HintPath>..\..\..\..\..\..\build\$(Configuration)\Spring.Core\$(TargetFramework)\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Data">
+      <HintPath>..\..\..\..\..\..\build\$(Configuration)\Spring.Data\$(TargetFramework)\Spring.Data.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DataQuickStart\GenericTemplate\ExampleTests.xml" />
+    <EmbeddedResource Include="DataQuickStart\Template\ExampleTests.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+</Project>

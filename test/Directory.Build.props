@@ -1,0 +1,40 @@
+<Project>
+
+  <PropertyGroup>
+
+    <NoWarn>618, 1591</NoWarn>
+
+    <OutputPath>..\..\..\build\$(Configuration)\$(MSBuildProjectName)</OutputPath>
+
+    <RootNamespace>Spring</RootNamespace>
+    <Deterministic>true</Deterministic>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <ComVisible>False</ComVisible>
+    <DebugSymbols>True</DebugSymbols>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+
+    <LangVersion>latest</LangVersion>
+    <TargetFullFrameworkVersion>net462</TargetFullFrameworkVersion>
+
+    <IsPackable>false</IsPackable>
+
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>	
+
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>Full</DebugType>
+    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+</Project>

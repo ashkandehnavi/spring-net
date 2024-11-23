@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.Serialization;
 
 namespace Spring.Transaction
@@ -14,7 +13,7 @@ namespace Spring.Transaction
         /// </summary>
         public TransactionTimedOutException() : base()
         {
-            
+
         }
         /// <summary>
         /// Creates a new instance of the
@@ -38,18 +37,7 @@ namespace Spring.Transaction
         public TransactionTimedOutException(string message, Exception rootCause)
             : base(message, rootCause) {}
 
-        /// <summary>
-        /// Creates a new instance of the
-        /// <see cref="Spring.Transaction.TransactionTimedOutException"/> class.
-        /// </summary>
-        /// <param name="info">
-        /// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-        /// that holds the serialized object data about the exception being thrown.
-        /// </param>
-        /// <param name="context">
-        /// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-        /// that contains contextual information about the source or destination.
-        /// </param>
+		/// <inheritdoc />
         protected TransactionTimedOutException(
             SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

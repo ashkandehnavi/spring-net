@@ -18,11 +18,8 @@
 
 #endregion
 
-using System.Collections;
-using System.Collections.Generic;
 using Spring.Expressions;
 using Spring.Objects.Factory;
-using System;
 
 namespace Spring.Validation
 {
@@ -140,7 +137,7 @@ namespace Spring.Validation
         {
             bool valid = true;
 
-            if (When == null || 
+            if (When == null ||
                 Convert.ToBoolean(When.GetValue(validationContext, contextParams)))
             {
                 if (Context != null)

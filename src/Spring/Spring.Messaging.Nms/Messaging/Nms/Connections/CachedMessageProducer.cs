@@ -18,7 +18,6 @@
 
 #endregion
 
-using System;
 using Apache.NMS;
 
 namespace Spring.Messaging.Nms.Connections
@@ -112,6 +111,32 @@ namespace Spring.Messaging.Nms.Connections
             target.Send(destination, message, deliveryMode, priority, timeToLive);
         }
 
+        public TimeSpan DeliveryDelay
+        {
+            get { return target.DeliveryDelay; }
+            set { target.DeliveryDelay = value; }
+        }
+        
+        public Task SendAsync(IMessage message)
+        {
+            return target.SendAsync(message);
+        }
+
+        public Task SendAsync(IMessage message, MsgDeliveryMode deliveryMode, MsgPriority priority, TimeSpan timeToLive)
+        {
+            return target.SendAsync(message, deliveryMode, priority, timeToLive);
+        }
+
+        public Task SendAsync(IDestination destination, IMessage message)
+        {
+            return target.SendAsync(destination, message);
+        }
+
+        public Task SendAsync(IDestination destination, IMessage message, MsgDeliveryMode deliveryMode, MsgPriority priority, TimeSpan timeToLive)
+        {
+            return target.SendAsync(destination, message, deliveryMode, priority, timeToLive);
+        }
+
         #region Odd Message Creationg Methods on IMessageProducer - not in-line with JMS APIs.
         /// <summary>
         /// Creates the message.
@@ -122,6 +147,11 @@ namespace Spring.Messaging.Nms.Connections
             return target.CreateMessage();
         }
 
+        public Task<IMessage> CreateMessageAsync()
+        {
+            return target.CreateMessageAsync();
+        }
+
         /// <summary>
         /// Creates the text message.
         /// </summary>
@@ -129,6 +159,11 @@ namespace Spring.Messaging.Nms.Connections
         public ITextMessage CreateTextMessage()
         {
             return target.CreateTextMessage();
+        }
+
+        public Task<ITextMessage> CreateTextMessageAsync()
+        {
+            return target.CreateTextMessageAsync();
         }
 
         /// <summary>
@@ -141,6 +176,11 @@ namespace Spring.Messaging.Nms.Connections
             return target.CreateTextMessage(text);
         }
 
+        public Task<ITextMessage> CreateTextMessageAsync(string text)
+        {
+            return target.CreateTextMessageAsync(text);
+        }
+
         /// <summary>
         /// Creates the map message.
         /// </summary>
@@ -148,6 +188,11 @@ namespace Spring.Messaging.Nms.Connections
         public IMapMessage CreateMapMessage()
         {
             return target.CreateMapMessage();
+        }
+
+        public Task<IMapMessage> CreateMapMessageAsync()
+        {
+            return target.CreateMapMessageAsync();
         }
 
         /// <summary>
@@ -160,6 +205,11 @@ namespace Spring.Messaging.Nms.Connections
             return target.CreateObjectMessage(body);
         }
 
+        public Task<IObjectMessage> CreateObjectMessageAsync(object body)
+        {
+            return target.CreateObjectMessageAsync(body);
+        }
+
         /// <summary>
         /// Creates the bytes message.
         /// </summary>
@@ -167,6 +217,11 @@ namespace Spring.Messaging.Nms.Connections
         public IBytesMessage CreateBytesMessage()
         {
             return target.CreateBytesMessage();
+        }
+
+        public Task<IBytesMessage> CreateBytesMessageAsync()
+        {
+            return target.CreateBytesMessageAsync();
         }
 
         /// <summary>
@@ -179,6 +234,11 @@ namespace Spring.Messaging.Nms.Connections
             return target.CreateBytesMessage(body);
         }
 
+        public Task<IBytesMessage> CreateBytesMessageAsync(byte[] body)
+        {
+            return target.CreateBytesMessageAsync(body);
+        }
+
         /// <summary>
         /// Creates the stream message.
         /// </summary>
@@ -187,6 +247,12 @@ namespace Spring.Messaging.Nms.Connections
         {
             return target.CreateStreamMessage();
         }
+
+        public Task<IStreamMessage> CreateStreamMessageAsync()
+        {
+            return target.CreateStreamMessageAsync();
+        }
+
 
         /// <summary>
         /// A delegate that is called each time a Message is sent from this Producer which allows
@@ -303,7 +369,13 @@ namespace Spring.Messaging.Nms.Connections
                 originalDisableMessageTimestamp = null;
             }
         }
-
+        
+        public Task CloseAsync()
+        {
+            Close();
+            return Task.FromResult(true);
+        }
+        
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

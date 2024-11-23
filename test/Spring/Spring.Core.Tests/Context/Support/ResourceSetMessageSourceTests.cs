@@ -18,24 +18,15 @@
 
 #endregion
 
-#region Imports
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Resources;
-using System.Text;
 using NUnit.Framework;
 using Spring.Globalization;
 using Spring.Objects;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Context.Support
 {
@@ -54,13 +45,13 @@ namespace Spring.Context.Support
         private const string ResourceBaseName = ResourceNamespace + "." + ResourceFileName;
         private IList<object> resourceManagerList;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void TestFixtureSetUp()
         {
             CultureTestScope.Set();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
             CultureTestScope.Reset();
@@ -109,17 +100,17 @@ namespace Spring.Context.Support
 
             // MessageSourceAccessor functionality
             MessageSourceAccessor accessor = new MessageSourceAccessor(ac);
-            Assert.AreEqual("message3", accessor.GetMessage("code3", CultureInfo.CurrentUICulture, (object[])null));
+            Assert.AreEqual("message3", accessor.GetMessage("code3", CultureInfo.CurrentUICulture, null));
 
             // IMessageSourceResolveable
-            Assert.AreEqual("message3", ac.GetMessage("code3", CultureInfo.CurrentUICulture, (object[])null));
+            Assert.AreEqual("message3", ac.GetMessage("code3", CultureInfo.CurrentUICulture, null));
             IMessageSourceResolvable resolvable = new DefaultMessageSourceResolvable("code3");
 
             Assert.AreEqual("message3", ac.GetMessage(resolvable, CultureInfo.CurrentUICulture));
             resolvable = new DefaultMessageSourceResolvable(new string[] { "code4", "code3" });
             Assert.AreEqual("message3", ac.GetMessage(resolvable, CultureInfo.CurrentUICulture));
 
-            Assert.AreEqual("message3", ac.GetMessage("code3", CultureInfo.CurrentUICulture, (object[])null));
+            Assert.AreEqual("message3", ac.GetMessage("code3", CultureInfo.CurrentUICulture, null));
             resolvable = new DefaultMessageSourceResolvable(new string[] { "code4", "code3" });
             Assert.AreEqual("message3", ac.GetMessage(resolvable, CultureInfo.CurrentUICulture));
 
@@ -131,7 +122,7 @@ namespace Spring.Context.Support
             Assert.AreEqual("default", ac.GetMessage(null, "default", CultureInfo.CurrentUICulture, null));
             Assert.AreEqual("default", ac.GetMessage(null, "default", CultureInfo.CurrentUICulture, arguments));
 
-            /* not supported 
+            /* not supported
             Assert.AreEqual("{0}, default", ac.GetMessage(null, "{0}, default", CultureInfo.CurrentUICulture, null));
              */
 
@@ -143,7 +134,7 @@ namespace Spring.Context.Support
             resolvable = new DefaultMessageSourceResolvable(null, arguments, "default");
             Assert.AreEqual("default", ac.GetMessage(resolvable, CultureInfo.CurrentUICulture));
 
-            /* not supported 
+            /* not supported
                 resolvable = new DefaultMessageSourceResolvable(null, null, "{0}, default");
                 Assert.AreEqual("{0}, default", ac.GetMessage(resolvable, CultureInfo.CurrentUICulture));
             */
@@ -155,12 +146,12 @@ namespace Spring.Context.Support
             // test message args
             Assert.AreEqual("Arg1, Arg2", ac.GetMessage("hello", CultureInfo.CurrentUICulture, new object[] { "Arg1", "Arg2" }));
 
-            /* not supported 
+            /* not supported
                 Assert.AreEqual("{0}, {1}", ac.GetMessage("hello", CultureInfo.CurrentUICulture, null));
             */
 
 
-            /* not supported 
+            /* not supported
                 Assert.AreEqual("Hello\nWorld", ac.GetMessage("escaped"));
             }
             else
@@ -274,6 +265,7 @@ namespace Spring.Context.Support
                 Assert.AreEqual("Ovo je Spring.NET",
                                 msgSource.GetMessage("MyMessage", new CultureInfo(CultureInfoUtils.SerbianLatinCultureName), new object[] { "Spring", ".NET" }), "message not as expected");
 
+
                 Assert.AreEqual("Ово је Spring.NET",
                                 msgSource.GetMessage("MyMessage", new CultureInfo(CultureInfoUtils.SerbianCyrillicCultureName),
                                                          new object[] { "Spring", ".NET" }), "message not as expected");
@@ -286,6 +278,7 @@ namespace Spring.Context.Support
             }
         }
 
+#if !NETCOREAPP
         /// <summary>
         /// Test the happy day scenario of returning an object
         /// </summary>
@@ -300,7 +293,7 @@ namespace Spring.Context.Support
             messageSource.ResourceManagers = resourceManagerList;
             object obj = messageSource.GetResourceObject("bubblechamber", CultureInfo.CurrentCulture);
             Assert.IsNotNull(obj, "expected to retrieve object form resource set");
-            Bitmap bitMap = null;
+            System.Drawing.Bitmap bitMap = null;
 
             //.NET 1.0 returns this as a base64 string while .NET 1.1 returns it as a Bitmap
             //There are some isues with resx compatability between framework versions.
@@ -311,13 +304,13 @@ namespace Spring.Context.Support
                 string ImageText = obj as string;
                 Byte[] bitmapData = new Byte[ImageText.Length];
                 bitmapData = Convert.FromBase64String(FixBase64ForImage(ImageText));
-                MemoryStream streamBitmap = new MemoryStream(bitmapData);
-                bitMap = new Bitmap((Bitmap)Image.FromStream(streamBitmap));
+                var streamBitmap = new System.IO.MemoryStream(bitmapData);
+                bitMap = new System.Drawing.Bitmap((System.Drawing.Bitmap) System.Drawing.Image.FromStream(streamBitmap));
 
             }
             else
             {
-                bitMap = obj as Bitmap;
+                bitMap = obj as System.Drawing.Bitmap;
             }
             Assert.IsNotNull(bitMap, "expected to retrieve BitMap. Instead Type = " + obj.GetType());
             Assert.AreEqual(146, bitMap.Size.Width, "Width of image wrong");
@@ -329,7 +322,7 @@ namespace Spring.Context.Support
 
         private string FixBase64ForImage(string Image)
         {
-            StringBuilder sbText = new StringBuilder(Image, Image.Length);
+            var sbText = new System.Text.StringBuilder(Image, Image.Length);
             sbText.Replace("\r\n", String.Empty);
             sbText.Replace(" ", String.Empty);
             return sbText.ToString();
@@ -343,7 +336,7 @@ namespace Spring.Context.Support
         {
             //Add another resource manager to the list
             TestObject to = new TestObject();
-            ComponentResourceManager mgr = new ComponentResourceManager(to.GetType());
+            var mgr = new System.ComponentModel.ComponentResourceManager(to.GetType());
             resourceManagerList.Add(mgr);
             messageSource.ResourceManagers = resourceManagerList;
 
@@ -351,6 +344,7 @@ namespace Spring.Context.Support
             Assert.AreEqual("Mark", to.Name);
             Assert.AreEqual(35, to.Age);
         }
+#endif
 
         /// <summary>
         /// Test when the code being resolves itself implements IMessageResolvable.
@@ -369,11 +363,10 @@ namespace Spring.Context.Support
         /// Get exception when resource doesn't exist.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(NoSuchMessageException))]
         public void ResourceSetMessageSourceGetNonExistantResource()
         {
             messageSource.ResourceManagers = resourceManagerList;
-            messageSource.GetMessage("MyNonExistantMessage", CultureInfo.CurrentCulture, new object[] { "Spring", ".NET" });
+            Assert.Throws<NoSuchMessageException>(() => messageSource.GetMessage("MyNonExistantMessage", CultureInfo.CurrentCulture, new object[] { "Spring", ".NET" }));
         }
 
         /// <summary>
@@ -417,7 +410,7 @@ namespace Spring.Context.Support
             //Repeat the test for the first resource manager
 
             Assert.AreEqual("This is Spring.NET",
-                            messageSource.GetMessage("MyMessage",  new CultureInfo("en"), new object[] { "Spring", ".NET" }), "message not as expected");
+                            messageSource.GetMessage("MyMessage", new CultureInfo("en"), new object[] { "Spring", ".NET" }), "message not as expected");
 
             //Now with the newly added one
             Assert.AreEqual("Hello Mr. Anderson",

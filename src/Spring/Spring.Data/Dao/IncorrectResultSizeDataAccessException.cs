@@ -18,16 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Data access exception thrown when a result was not of the expected size,
 	/// for example when expecting a single row but getting 0 or more than 1 rows.
 	/// </summary>
@@ -130,43 +125,19 @@ namespace Spring.Dao
             this._actualSize = -1;
         }
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.CleanupFailureDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected IncorrectResultSizeDataAccessException( SerializationInfo info, StreamingContext context ) : base( info, context )
 		{
 			_expectedSize = info.GetInt32( "expectedSize" );
 			_actualSize = info.GetInt32( "actualSize" );
 		}
 
-		#region ISerializable Members
-		/// <summary>
-		/// Override of <see cref="System.Exception.GetObjectData(SerializationInfo, StreamingContext)"/>
-		/// to allow for private serialization.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue( "expectedSize", _expectedSize );
 			info.AddValue( "actualSize", _actualSize );
 			base.GetObjectData( info, context );
 		}
-		#endregion
 	}
 }

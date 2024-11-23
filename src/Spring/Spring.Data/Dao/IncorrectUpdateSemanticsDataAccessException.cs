@@ -18,16 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Data access exception thrown when something unintended appears to have
 	/// happened with an update, but the transaction hasn't already been rolled back.
 	/// </summary>
@@ -78,18 +73,7 @@ namespace Spring.Dao
 		protected IncorrectUpdateSemanticsDataAccessException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.IncorrectUpdateSemanticsDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected IncorrectUpdateSemanticsDataAccessException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

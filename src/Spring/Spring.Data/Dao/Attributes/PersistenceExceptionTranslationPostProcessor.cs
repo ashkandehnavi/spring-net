@@ -18,10 +18,8 @@
 
 #endregion
 
-using System;
 using Spring.Aop.Framework;
 using Spring.Core;
-using Spring.Dao;
 using Spring.Dao.Support;
 using Spring.Objects.Factory;
 using Spring.Objects.Factory.Config;

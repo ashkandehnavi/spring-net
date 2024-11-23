@@ -18,16 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Exception thrown on failure to complete a transaction in serialized mode due to
 	/// update conflicts.
 	/// </summary>
@@ -70,18 +65,7 @@ namespace Spring.Dao
 		public CannotSerializeTransactionException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.CannotSerializeTransactionException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected CannotSerializeTransactionException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

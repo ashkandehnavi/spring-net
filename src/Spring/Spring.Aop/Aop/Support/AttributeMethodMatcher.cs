@@ -18,8 +18,9 @@
 
 #endregion
 
-using System;
 using System.Reflection;
+using System.Runtime.Serialization;
+
 using Spring.Util;
 
 namespace Spring.Aop.Support
@@ -33,13 +34,13 @@ namespace Spring.Aop.Support
     /// <author>Mark Pollack</author>
     /// <seealso cref="AttributeMatchingPointcut"/>
     [Serializable]
-    public class AttributeMethodMatcher : StaticMethodMatcher
+    public class AttributeMethodMatcher : StaticMethodMatcher, ISerializable
     {
         private readonly Type attributeType;
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AttributeMethodMatcher"/> class for the 
+        /// Initializes a new instance of the <see cref="AttributeMethodMatcher"/> class for the
         /// given atribute type.
         /// </summary>
         /// <param name="attributeType">Type of the attribute to look for.</param>
@@ -47,6 +48,19 @@ namespace Spring.Aop.Support
         {
             ValidateAttributeTypeArgument(attributeType);
             this.attributeType = attributeType;
+        }
+
+        /// <inheritdoc />
+        private AttributeMethodMatcher(SerializationInfo info, StreamingContext context)
+        {
+            var type = info.GetString("AttributeType");
+            attributeType = type != null ? Type.GetType(type) : null;
+        }
+
+        /// <inheritdoc />
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("AttributeType", attributeType?.AssemblyQualifiedName);
         }
 
         /// <summary>
@@ -75,7 +89,7 @@ namespace Spring.Aop.Support
             }
             else
             {
-                
+
                     Type[] parameterTypes = ReflectionUtils.GetParameterTypes(method);
 
                     // Also check whether the attribute is defined on a method implemented from an interface.
@@ -90,7 +104,7 @@ namespace Spring.Aop.Support
                             return true;
                         }
                     }
-                
+
                 return false;
             }
         }

@@ -18,10 +18,7 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Security.Permissions;
 
 using Spring.Context.Support;
 using Spring.Core.TypeResolution;
@@ -246,14 +243,19 @@ namespace Spring.Core.IO
 
             lock (syncRoot)
             {
-                SecurityCritical.ExecutePrivileged( new SecurityPermission(SecurityPermissionFlag.Infrastructure), delegate
+                Action callback = () =>
                 {
                     // register generic uri parser for this scheme
                     if (!UriParser.IsKnownScheme(protocolName))
                     {
                         UriParser.Register(new TolerantUriParser(), protocolName, 0);
                     }
-                });
+                };
+#if NETSTANDARD
+                callback();
+#else
+                SecurityCritical.ExecutePrivileged(new System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityPermissionFlag.Infrastructure), callback);
+#endif
                 IDynamicConstructor ctor = GetResourceConstructor(handlerType);
                 resourceHandlers[protocolName] = ctor;
             }

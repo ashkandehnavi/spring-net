@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 
@@ -128,25 +127,12 @@ namespace Spring.Aop.Target
 			return "EmptyTargetSource: no target";
 		}
 
-		/// <summary>
-		/// Populates a <see cref="System.Runtime.Serialization.SerializationInfo"/> with
-		/// the data needed to serialize the target object.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/> to populate
-		/// with data.
-		/// </param>
-		/// <param name="context">
-		/// The destination (see <see cref="System.Runtime.Serialization.StreamingContext"/>)
-		/// for this serialization.
-		/// </param>
+		/// <inheritdoc />
 		[SecurityPermission(SecurityAction.Demand, SerializationFormatter=true)]
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.SetType(typeof (EmptyTargetSourceObjectReference));
 		}
-
-
 
 		[Serializable]
 		private sealed class EmptyTargetSourceObjectReference : IObjectReference

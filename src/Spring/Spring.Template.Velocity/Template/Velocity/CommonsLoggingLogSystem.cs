@@ -18,8 +18,6 @@
 
 #endregion
 
-using System;
-
 using Common.Logging;
 using NVelocity.Runtime;
 using NVelocity.Runtime.Log;
@@ -29,11 +27,11 @@ using LogManager=Common.Logging.LogManager;
 namespace Spring.Template.Velocity
 {
     /// <summary>
-    /// NVelocity LogSystem implementation for Commons Logging. 
+    /// NVelocity LogSystem implementation for Commons Logging.
     /// </summary>
     /// <author>Erez Mazor</author>
     public class CommonsLoggingLogSystem : ILogSystem {
-        
+
         /// <summary>
         /// Shared logger instance.
         /// </summary>
@@ -43,7 +41,6 @@ namespace Spring.Template.Velocity
         /// Initializes the specified runtime services.  No-op in current implementatin
         /// </summary>
         /// <param name="runtimeServices">the runtime services.</param>
-        [CLSCompliant(false)]
         public void Init(IRuntimeServices runtimeServices)
         {
         }
@@ -53,7 +50,6 @@ namespace Spring.Template.Velocity
         /// </summary>
         /// <param name="level">LogLevel to match</param>
         /// <param name="message">message to log</param>
-        [CLSCompliant(false)]
         public void LogVelocityMessage(LogLevel level, string message)
         {
             switch (level) {

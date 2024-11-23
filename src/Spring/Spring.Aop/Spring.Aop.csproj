@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;$(TargetFullFrameworkVersion)</TargetFrameworks>
+    <Description>Interfaces and classes that provide AOP support in Spring.Net</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr3.Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spring.Core\Spring.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Aop\Config\spring-aop-1.1.xsx" DependentUpon="spring-aop-1.1.xsd" />
+    <EmbeddedResource Include="Aop\Config\spring-aop-1.1.xsd" />
+  </ItemGroup>
+
+</Project>

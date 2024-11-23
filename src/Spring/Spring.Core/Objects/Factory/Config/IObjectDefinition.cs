@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#endregion
-
-#region Imports
-
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -65,7 +58,7 @@ namespace Spring.Objects.Factory.Config
 
         /// <summary>
         /// Is this object definition a "template", i.e. not meant to be instantiated
-        /// itself but rather just serving as an object definition for configuration 
+        /// itself but rather just serving as an object definition for configuration
         /// templates used by <see cref="Spring.Objects.Factory.IObjectFactory.ConfigureObject(object, string)"/>.
         /// </summary>
         /// <value>
@@ -143,11 +136,11 @@ namespace Spring.Objects.Factory.Config
         /// </summary>
         /// <remarks>Note that this does not have to be the actual type name used at runtime,
         /// in case of a child definition overrding/inheriting the the type name from its
-        /// parent.  It can be modifed during object factory post-processing, typically 
+        /// parent.  It can be modifed during object factory post-processing, typically
         /// replacing the original class name with a parsed variant of it.
         /// Hence, do not consider this to be the definitive bean type at runtime
         /// but rather only use it for parsing purposes at the individual object
-        /// definition level. 
+        /// definition level.
         /// </remarks>
         string ObjectTypeName { get; set;}
 
@@ -179,7 +172,7 @@ namespace Spring.Objects.Factory.Config
         /// preparation on startup.
         /// </p>
         /// </remarks>
-        IList<string> DependsOn { get; }
+        IReadOnlyList<string> DependsOn { get; }
 
         /// <summary>
         /// The name of the initializer method.

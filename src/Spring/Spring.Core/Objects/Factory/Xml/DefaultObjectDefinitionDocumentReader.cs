@@ -1,5 +1,3 @@
-#region License
-
 /*
  * Copyright  2002-2005 the original author or authors.
  *
@@ -16,25 +14,17 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
 using System.Globalization;
-using System.IO;
 using System.Xml;
 using Common.Logging;
 using Spring.Core.IO;
 using Spring.Objects.Factory.Config;
 using Spring.Objects.Factory.Support;
 
-#endregion
-
 namespace Spring.Objects.Factory.Xml
 {
     /// <summary>
-    /// XML resource reader. 
+    /// XML resource reader.
     /// </summary>
     /// <remarks>
     /// <p>
@@ -47,23 +37,13 @@ namespace Spring.Objects.Factory.Xml
     /// <author>Rick Evans (.NET)</author>
     public class DefaultObjectDefinitionDocumentReader : IObjectDefinitionDocumentReader
     {
-        #region Constants
-
         /// <summary>
-        /// The shared <see cref="Common.Logging.ILog"/> instance for this class (and derived classes). 
+        /// The shared <see cref="Common.Logging.ILog"/> instance for this class (and derived classes).
         /// </summary>
         protected static readonly ILog log =
             LogManager.GetLogger(typeof(DefaultObjectDefinitionDocumentReader));
 
-        #endregion
-
-        #region Fields
-
         private XmlReaderContext readerContext;
-
-        #endregion
-
-        #region Constructor (s) / Destructor
 
         /// <summary>
         /// Creates a new instance of the DefaultObjectDefinitionDocumentReader class.
@@ -71,10 +51,6 @@ namespace Spring.Objects.Factory.Xml
         public DefaultObjectDefinitionDocumentReader()
         {
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// Gets the reader context.
@@ -84,10 +60,6 @@ namespace Spring.Objects.Factory.Xml
         {
             get { return readerContext; }
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Read object definitions from the given DOM element, and register
@@ -109,14 +81,10 @@ namespace Spring.Objects.Factory.Xml
 
             this.readerContext = readerContext;
 
-            #region Instrumentation
-
             if (log.IsDebugEnabled)
             {
                 log.Debug("Loading object definitions.");
             }
-
-            #endregion
 
             XmlElement root = doc.DocumentElement;
 
@@ -129,22 +97,15 @@ namespace Spring.Objects.Factory.Xml
 
             PostProcessXml(root);
 
-            #region Instrumentation
-
             if (log.IsDebugEnabled)
             {
                 log.Debug(
-                    string.Format(
-                        "Found {0} <{1}> elements defining objects.",
-                        readerContext.Registry.ObjectDefinitionCount,
-                        ObjectDefinitionConstants.ObjectElement));
+                    $"Found {readerContext.Registry.ObjectDefinitionCount} <{ObjectDefinitionConstants.ObjectElement}> elements defining objects.");
             }
-
-            #endregion
         }
 
         /// <summary>
-        /// Parses object definitions starting at the given <see cref="XmlElement"/> 
+        /// Parses object definitions starting at the given <see cref="XmlElement"/>
         /// using the passed <see cref="ObjectDefinitionParserHelper"/>.
         /// </summary>
         /// <param name="root">The root element to start parsing from.</param>
@@ -209,7 +170,7 @@ namespace Spring.Objects.Factory.Xml
         /// </summary>
         protected virtual void ProcessAlias(XmlElement element)
         {
-            this.ParseAlias(element, this.ReaderContext.Registry);    
+            this.ParseAlias(element, this.ReaderContext.Registry);
         }
 
         /// <summary>
@@ -227,14 +188,10 @@ namespace Spring.Objects.Factory.Xml
                 }
                 bdHolder = helper.DecorateObjectDefinitionIfRequired(element, bdHolder);
 
-                #region Instrumentation
-
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(string.Format(CultureInfo.InvariantCulture, "Registering object definition with id '{0}'.", bdHolder.ObjectName));
                 }
-
-                #endregion
 
                 ObjectDefinitionReaderUtils.RegisterObjectDefinition(bdHolder, ReaderContext.Registry);
                 // TODO: Send registration event.
@@ -247,7 +204,7 @@ namespace Spring.Objects.Factory.Xml
             catch (Exception ex)
             {
                 throw new ObjectDefinitionStoreException(
-                    string.Format("Failed parsing object definition '{0}'", element.OuterXml), ex);
+                    $"Failed parsing object definition '{element.OuterXml}'", ex);
             }
         }
 
@@ -264,16 +221,12 @@ namespace Spring.Objects.Factory.Xml
             string location = resource.GetAttribute(ObjectDefinitionConstants.ImportResourceAttribute);
             try
             {
-                #region Instrumentation
-
                 if (log.IsDebugEnabled)
                 {
                     log.Debug(string.Format(
                                   CultureInfo.InvariantCulture,
                                   "Attempting to import object definitions from '{0}'.", location));
                 }
-
-                #endregion
 
                 IResource importResource = ReaderContext.Resource.CreateRelative(location);
                 ReaderContext.Reader.LoadObjectDefinitions(importResource);
@@ -370,7 +323,5 @@ namespace Spring.Objects.Factory.Xml
 //        {
 //            return "There is no parser registered for namespace '" + namespaceURI + "'";
 //        }
-
-        #endregion
     }
 }

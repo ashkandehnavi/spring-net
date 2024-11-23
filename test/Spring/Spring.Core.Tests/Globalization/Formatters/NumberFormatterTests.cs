@@ -28,15 +28,13 @@ namespace Spring.Globalization.Formatters
 	/// Unit tests for NumberFormatter class.
 	/// </summary>
     /// <author>Aleksandar Seovic</author>
-    [TestFixture]
     public class NumberFormatterTests
 	{
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FormatNullValue()
         {
             NumberFormatter fmt = new NumberFormatter();
-            fmt.Format(null);
+            Assert.Throws<ArgumentNullException>(() => fmt.Format(null));
         }
 
         [Test]
@@ -48,14 +46,14 @@ namespace Spring.Globalization.Formatters
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void FormatNonNumber()
         {
             NumberFormatter fmt = new NumberFormatter();
-            fmt.Format("not a number");
+            Assert.Throws<ArgumentException>(() => fmt.Format("not a number"));
         }
 
         [Test]
+        [Platform("Win")]
         public void FormatUsingDefaults()
         {
             NumberFormatter fmt = new NumberFormatter("en-US");
@@ -65,13 +63,21 @@ namespace Spring.Globalization.Formatters
             Assert.AreEqual("-1,234.56", fmt.Format(-1234.56));
 
             fmt = new NumberFormatter("sr-SP-Latn");
+#if NETFRAMEWORK
             Assert.AreEqual("1.234,00", fmt.Format(1234));
             Assert.AreEqual("1.234,56", fmt.Format(1234.56));
             Assert.AreEqual("-1.234,00", fmt.Format(-1234));
             Assert.AreEqual("-1.234,56", fmt.Format(-1234.56));
+#else
+            Assert.AreEqual("1.234,000", fmt.Format(1234));
+            Assert.AreEqual("1.234,560", fmt.Format(1234.56));
+            Assert.AreEqual("-1.234,000", fmt.Format(-1234));
+            Assert.AreEqual("-1.234,560", fmt.Format(-1234.56));
+#endif
         }
 
         [Test]
+        [Platform("Win")]
         public void ParseUsingDefaults()
         {
             NumberFormatter fmt = new NumberFormatter("en-US");
@@ -88,6 +94,7 @@ namespace Spring.Globalization.Formatters
         }
 
         [Test]
+        [Platform("Win")]
         public void FormatUsingCustomSettings()
         {
             NumberFormatter fmt = new NumberFormatter("en-US");
@@ -101,10 +108,18 @@ namespace Spring.Globalization.Formatters
             fmt = new NumberFormatter("sr-SP-Cyrl");
             fmt.GroupSizes = new int[] {1, 2};
             fmt.GroupSeparator = "'";
+            
+#if NETFRAMEWORK
             Assert.AreEqual("1'23'4,00", fmt.Format(1234));
             Assert.AreEqual("1'23'4,56", fmt.Format(1234.56));
             Assert.AreEqual("-1'23'4,00", fmt.Format(-1234));
             Assert.AreEqual("-1'23'4,56", fmt.Format(-1234.56));
+#else
+            Assert.AreEqual("1'23'4,000", fmt.Format(1234));
+            Assert.AreEqual("1'23'4,560", fmt.Format(1234.56));
+            Assert.AreEqual("-1'23'4,000", fmt.Format(-1234));
+            Assert.AreEqual("-1'23'4,560", fmt.Format(-1234.56));
+#endif
         }
 
         [Test]

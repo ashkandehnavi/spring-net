@@ -1,14 +1,14 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
- * 
+ * Copyright ï¿½ 2002-2011 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +18,7 @@
 
 #endregion
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using Common.Logging;
@@ -50,7 +48,7 @@ namespace Spring.Data.Generic
         #region Fields
 
         private Core.AdoTemplate classicAdoTemplate;
-       
+
         #endregion
 
         #region Constructors
@@ -110,12 +108,12 @@ namespace Spring.Data.Generic
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to lazily initialize the 
-        /// IAdoExceptionTranslator for this accessor, on first encounter of a 
+        /// Gets or sets a value indicating whether to lazily initialize the
+        /// IAdoExceptionTranslator for this accessor, on first encounter of a
         /// exception from the data provider.  Default is "true"; can be switched to
         /// "false" for initialization on startup.
         /// </summary>
-        /// <value><c>true</c> if to lazy initialize the IAdoExceptionTranslator; 
+        /// <value><c>true</c> if to lazy initialize the IAdoExceptionTranslator;
         /// otherwise, <c>false</c>.</value>
         public override bool LazyInit
         {
@@ -136,8 +134,8 @@ namespace Spring.Data.Generic
 
 
         /// <summary>
-        /// Gets or set the System.Type to use to create an instance of IDataReaderWrapper 
-        /// for the purpose of having defaults values to use in case of DBNull values read 
+        /// Gets or set the System.Type to use to create an instance of IDataReaderWrapper
+        /// for the purpose of having defaults values to use in case of DBNull values read
         /// from IDataReader.
         /// </summary>
         /// <value>The type of the data reader wrapper.</value>
@@ -273,7 +271,7 @@ namespace Spring.Data.Generic
                 {
                     throw new InvalidDataAccessApiUsageException(
                         "Providers implementation of IDbCommand does not inherit from System.Data.Common.DbCommand.  Use the alternative overloaded Execute method that specifies IDbCommandDelegate as a parameter.");
-                }            
+                }
             }
             catch (Exception e)
             {
@@ -504,7 +502,7 @@ namespace Spring.Data.Generic
         /// </summary>
         /// <remarks>This allows for implementing abritrary data access operations
         /// on a single DataAdapter within Spring's managed ADO.NET environment.
-        /// </remarks>        
+        /// </remarks>
         /// <typeparam name="T">The type of object returned from the callback.</typeparam>
         /// <param name="dataAdapterCallback">The delegate called with a IDbDataAdapter object.</param>
         /// <returns>A result object returned by the callback or null</returns>
@@ -628,7 +626,7 @@ namespace Spring.Data.Generic
         /// <summary>
         /// Execute the query with the specified command text.
         /// </summary>
-        /// <remarks>No parameters are used.  As with 
+        /// <remarks>No parameters are used.  As with
         /// IDbCommand.ExecuteScalar, it returns the first column of the first row in the result set
         /// returned by the query.  Extra columns or row are ignored.</remarks>
         /// <param name="cmdType">The command type</param>
@@ -685,7 +683,7 @@ namespace Spring.Data.Generic
         }
 
         /// <summary>
-        /// Execute the query with a command created via IDbCommandCreator and 
+        /// Execute the query with a command created via IDbCommandCreator and
         /// parameters
         /// </summary>
         /// <remarks>Output parameters can be retrieved via the returned
@@ -706,9 +704,9 @@ namespace Spring.Data.Generic
         #region Queries with RowCallback
 
         /// <summary>
-        /// Execute a query given IDbCommand's type and text by 
-        /// passing the created IDbCommand to a ICommandSetter implementation 
-        /// that knows how to bind values to the IDbCommand, reading a 
+        /// Execute a query given IDbCommand's type and text by
+        /// passing the created IDbCommand to a ICommandSetter implementation
+        /// that knows how to bind values to the IDbCommand, reading a
         /// single result set on a per-row basis with a <see cref="IRowCallback"/>.
         /// </summary>
         /// <param name="cmdType">The type of command</param>
@@ -723,7 +721,7 @@ namespace Spring.Data.Generic
             classicAdoTemplate.QueryWithRowCallback(cmdType, cmdText, rowCallback, commandSetter);
         }
         /// <summary>
-        /// Execute a query given IDbCommand's type and text, reading a 
+        /// Execute a query given IDbCommand's type and text, reading a
         /// single result set on a per-row basis with a <see cref="IRowCallback"/>.
         /// </summary>
         /// <param name="cmdType">The type of command</param>
@@ -738,7 +736,7 @@ namespace Spring.Data.Generic
 
         /// <summary>
         /// Execute a query given IDbCommand's type and text and provided parameter
-        /// information, reading a 
+        /// information, reading a
         /// single result set on a per-row basis with a <see cref="IRowCallback"/>.
         /// </summary>
         /// <param name="cmdType">The type of command</param>
@@ -795,7 +793,7 @@ namespace Spring.Data.Generic
 
         }
 
-        public void QueryWithRowCallbackDelegate(CommandType cmdType, string sql, RowCallbackDelegate rowCallbackDelegate, IDbParameters parameters)
+        public virtual void QueryWithRowCallbackDelegate(CommandType cmdType, string sql, RowCallbackDelegate rowCallbackDelegate, IDbParameters parameters)
         {
             classicAdoTemplate.QueryWithRowCallbackDelegate(cmdType, sql, rowCallbackDelegate, parameters);
 
@@ -805,28 +803,28 @@ namespace Spring.Data.Generic
 
         #region Queries with RowMapper<T>
 
-        public IList<T> QueryWithRowMapper<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper)
+        public virtual IList<T> QueryWithRowMapper<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapper));
 
         }
 
 
-        public IList<T> QueryWithRowMapper<T>(CommandType cmdType, String cmdText, IRowMapper<T> rowMapper,
+        public virtual IList<T> QueryWithRowMapper<T>(CommandType cmdType, String cmdText, IRowMapper<T> rowMapper,
                                               ICommandSetter commandSetter)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapper), commandSetter);
 
         }
 
-        public IList<T> QueryWithRowMapper<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper,
+        public virtual IList<T> QueryWithRowMapper<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper,
                                               string parameterName, Enum dbType, int size, object parameterValue)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapper), parameterName, dbType, size, parameterValue);
 
         }
 
-        public IList<T> QueryWithRowMapper<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper, IDbParameters parameters)
+        public virtual IList<T> QueryWithRowMapper<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper, IDbParameters parameters)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapper), parameters);
 
@@ -838,27 +836,27 @@ namespace Spring.Data.Generic
 
         #region Queries with RowMapperDelegate<T>
 
-        public IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate)
+        public virtual IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapperDelegate));
 
         }
 
-        public IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
+        public virtual IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
                                                       ICommandSetter commandSetter)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapperDelegate),
                                                commandSetter);
         }
 
-        public IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
+        public virtual IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
                                                       string parameterName, Enum dbType, int size, object parameterValue)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapperDelegate),
                                                parameterName, dbType, size, parameterValue);
         }
 
-        public IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
+        public virtual IList<T> QueryWithRowMapperDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
                                                IDbParameters parameters)
         {
             return QueryWithResultSetExtractor(cmdType, cmdText, new RowMapperResultSetExtractor<T>(rowMapperDelegate),
@@ -868,7 +866,7 @@ namespace Spring.Data.Generic
 
         #region Queries with ResultSetExtractor<T>
 
-        public T QueryWithResultSetExtractor<T>(CommandType cmdType,
+        public virtual T QueryWithResultSetExtractor<T>(CommandType cmdType,
                                                 string cmdText,
                                                 IResultSetExtractor<T> resultSetExtractor)
         {
@@ -880,7 +878,7 @@ namespace Spring.Data.Generic
             return Execute<T>(new QueryCallback<T>(this, cmdType, cmdText, resultSetExtractor, null));
         }
 
-        public T QueryWithResultSetExtractor<T>(CommandType commandType, string cmdText, IResultSetExtractor<T> resultSetExtractor,
+        public virtual T QueryWithResultSetExtractor<T>(CommandType commandType, string cmdText, IResultSetExtractor<T> resultSetExtractor,
                                                 string name, Enum dbType, int size, object parameterValue)
         {
             AssertUtils.ArgumentNotNull(resultSetExtractor, "resultSetExtractor", "Result Set Extractor must not be null");
@@ -888,7 +886,7 @@ namespace Spring.Data.Generic
                                                    CreateDbParameters(name, dbType, size, parameterValue)));
         }
 
-        public T QueryWithResultSetExtractor<T>(CommandType commandType, string cmdText,
+        public virtual T QueryWithResultSetExtractor<T>(CommandType commandType, string cmdText,
                                                 IResultSetExtractor<T> resultSetExtractor,
                                                 IDbParameters parameters)
         {
@@ -896,7 +894,7 @@ namespace Spring.Data.Generic
             return Execute<T>(new QueryCallback<T>(this, commandType, cmdText, resultSetExtractor, parameters));
         }
 
-        public T QueryWithResultSetExtractor<T>(CommandType cmdType, string cmdText,
+        public virtual T QueryWithResultSetExtractor<T>(CommandType cmdType, string cmdText,
                                                 IResultSetExtractor<T> resultSetExtractor,
                                                 ICommandSetter commandSetter)
         {
@@ -906,7 +904,7 @@ namespace Spring.Data.Generic
                                                                     commandSetter));
         }
 
-        public T QueryWithResultSetExtractor<T>(CommandType cmdType, string cmdText,
+        public virtual T QueryWithResultSetExtractor<T>(CommandType cmdType, string cmdText,
                                                 IResultSetExtractor<T> resultSetExtractor,
                                                 CommandSetterDelegate commandSetterDelegate)
         {
@@ -921,7 +919,7 @@ namespace Spring.Data.Generic
 
         #region Queries with ResultSetExtractorDelegate<T>
 
-        public T QueryWithResultSetExtractorDelegate<T>(CommandType cmdType,
+        public virtual T QueryWithResultSetExtractorDelegate<T>(CommandType cmdType,
                                                         string cmdText,
                                                         ResultSetExtractorDelegate<T> resultSetExtractorDelegate)
         {
@@ -935,7 +933,7 @@ namespace Spring.Data.Generic
             return Execute<T>(new QueryCallback<T>(this, cmdType, cmdText, resultSetExtractorDelegate, null));
         }
 
-        public T QueryWithResultSetExtractorDelegate<T>(CommandType commandType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
+        public virtual T QueryWithResultSetExtractorDelegate<T>(CommandType commandType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
                                                         string paramenterName, Enum dbType, int size, object parameterValue)
         {
             AssertUtils.ArgumentNotNull(cmdText, "cmdText", "CommandText must not be null");
@@ -944,7 +942,7 @@ namespace Spring.Data.Generic
                                                    CreateDbParameters(paramenterName, dbType, size, parameterValue)));
         }
 
-        public T QueryWithResultSetExtractorDelegate<T>(CommandType commandType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
+        public virtual T QueryWithResultSetExtractorDelegate<T>(CommandType commandType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
                                                 IDbParameters parameters)
         {
             AssertUtils.ArgumentNotNull(cmdText, "cmdText", "CommandText must not be null");
@@ -952,7 +950,7 @@ namespace Spring.Data.Generic
             return Execute<T>(new QueryCallback<T>(this, commandType, cmdText, resultSetExtractorDelegate, parameters));
         }
 
-        public T QueryWithResultSetExtractorDelegate<T>(CommandType cmdType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
+        public virtual T QueryWithResultSetExtractorDelegate<T>(CommandType cmdType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
                                                         ICommandSetter commandSetter)
         {
             AssertUtils.ArgumentNotNull(cmdText, "cmdText", "CommandText must not be null");
@@ -962,7 +960,7 @@ namespace Spring.Data.Generic
                                                                     commandSetter));
         }
 
-        public T QueryWithResultSetExtractorDelegate<T>(CommandType cmdType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
+        public virtual T QueryWithResultSetExtractorDelegate<T>(CommandType cmdType, string cmdText, ResultSetExtractorDelegate<T> resultSetExtractorDelegate,
                                                         CommandSetterDelegate commandSetterDelegate)
         {
             AssertUtils.ArgumentNotNull(resultSetExtractorDelegate, "resultSetExtractorDelegate", "Result set extractor delegate must not be null");
@@ -975,26 +973,26 @@ namespace Spring.Data.Generic
 
         #region Query for Object<T>
 
-        public T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper)
+        public virtual T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper)
         {
             IList<T> results = QueryWithRowMapper(cmdType, cmdText, rowMapper);
             return DataAccessUtils.RequiredUniqueResultSet(results);
         }
 
-        public T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper, ICommandSetter commandSetter)
+        public virtual T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper, ICommandSetter commandSetter)
         {
             IList<T> results = QueryWithRowMapper(cmdType, cmdText, rowMapper, commandSetter);
             return DataAccessUtils.RequiredUniqueResultSet(results);
         }
 
-        public T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper, IDbParameters parameters)
+        public virtual T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper, IDbParameters parameters)
         {
             IList<T> results = QueryWithRowMapper(cmdType, cmdText, rowMapper, parameters);
             return DataAccessUtils.RequiredUniqueResultSet(results);
         }
 
 
-        public T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper,
+        public virtual T QueryForObject<T>(CommandType cmdType, string cmdText, IRowMapper<T> rowMapper,
                                    string parameterName, Enum dbType, int size, object parameterValue)
         {
             IList<T> results = QueryWithRowMapper(cmdType, cmdText, rowMapper, parameterName, dbType, size, parameterValue);
@@ -1004,26 +1002,26 @@ namespace Spring.Data.Generic
 
         #region Query for ObjectDelegate<T>
 
-        public T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate)
+        public virtual T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate)
         {
             IList<T> results = QueryWithRowMapperDelegate(cmdType, cmdText, rowMapperDelegate);
             return DataAccessUtils.RequiredUniqueResultSet(results);
         }
 
-        public T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate, ICommandSetter commandSetter)
+        public virtual T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate, ICommandSetter commandSetter)
         {
             IList<T> results = QueryWithRowMapperDelegate(cmdType, cmdText, rowMapperDelegate, commandSetter);
             return DataAccessUtils.RequiredUniqueResultSet(results);
         }
 
-        public T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate, IDbParameters parameters)
+        public virtual T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate, IDbParameters parameters)
         {
             IList<T> results = QueryWithRowMapperDelegate(cmdType, cmdText, rowMapperDelegate, parameters);
             return DataAccessUtils.RequiredUniqueResultSet(results);
         }
 
 
-        public T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
+        public virtual T QueryForObjectDelegate<T>(CommandType cmdType, string cmdText, RowMapperDelegate<T> rowMapperDelegate,
                                    string parameterName, Enum dbType, int size, object parameterValue)
         {
             IList<T> results = QueryWithRowMapperDelegate(cmdType, cmdText, rowMapperDelegate, parameterName, dbType, size, parameterValue);
@@ -1034,22 +1032,22 @@ namespace Spring.Data.Generic
 
         #region Query with CommandCreator
 
-        public T QueryWithCommandCreator<T>(IDbCommandCreator cc, IResultSetExtractor<T> rse)
+        public virtual T QueryWithCommandCreator<T>(IDbCommandCreator cc, IResultSetExtractor<T> rse)
         {
             return QueryWithCommandCreator<T>(cc, rse, null);
         }
 
-        public void QueryWithCommandCreator(IDbCommandCreator cc, IRowCallback rowCallback)
+        public virtual void QueryWithCommandCreator(IDbCommandCreator cc, IRowCallback rowCallback)
         {
             classicAdoTemplate.QueryWithCommandCreator(cc, rowCallback, null);
         }
 
-        public IList<T> QueryWithCommandCreator<T>(IDbCommandCreator cc, IRowMapper<T> rowMapper)
+        public virtual IList<T> QueryWithCommandCreator<T>(IDbCommandCreator cc, IRowMapper<T> rowMapper)
         {
             return QueryWithCommandCreator<T>(cc, rowMapper, null);
         }
 
-        public T QueryWithCommandCreator<T>(IDbCommandCreator cc, IResultSetExtractor<T> rse, IDictionary returnedParameters)
+        public virtual T QueryWithCommandCreator<T>(IDbCommandCreator cc, IResultSetExtractor<T> rse, IDictionary returnedParameters)
         {
             if (rse == null)
             {
@@ -1060,13 +1058,13 @@ namespace Spring.Data.Generic
         }
 
 
-        public void QueryWithCommandCreator(IDbCommandCreator cc, IRowCallback rowCallback, IDictionary returnedParameters)
+        public virtual void QueryWithCommandCreator(IDbCommandCreator cc, IRowCallback rowCallback, IDictionary returnedParameters)
         {
             classicAdoTemplate.QueryWithCommandCreator(cc, rowCallback, returnedParameters);
         }
 
 
-        public IList<T> QueryWithCommandCreator<T>(IDbCommandCreator cc, IRowMapper<T> rowMapper, IDictionary returnedParameters)
+        public virtual IList<T> QueryWithCommandCreator<T>(IDbCommandCreator cc, IRowMapper<T> rowMapper, IDictionary returnedParameters)
         {
             if (rowMapper == null)
             {
@@ -1077,13 +1075,13 @@ namespace Spring.Data.Generic
         }
 
 
-        public IDictionary QueryWithCommandCreator<T>(IDbCommandCreator cc, IList namedResultSetProcessors)
+        public virtual IDictionary QueryWithCommandCreator<T>(IDbCommandCreator cc, IList namedResultSetProcessors)
         {
             return classicAdoTemplate.Execute(cc, new AdoResultProcessorsQueryCommandCallback<T>(this, namedResultSetProcessors)) as IDictionary;
         }
-        
 
-        public IDictionary QueryWithCommandCreator<T,U>(IDbCommandCreator cc, IList namedResultSetProcessors)
+
+        public virtual IDictionary QueryWithCommandCreator<T,U>(IDbCommandCreator cc, IList namedResultSetProcessors)
         {
             return classicAdoTemplate.Execute(cc, new AdoResultProcessorsQueryCommandCallback<T,U>(this, namedResultSetProcessors)) as IDictionary;
         }
@@ -1483,7 +1481,7 @@ namespace Spring.Data.Generic
                     //TODO On >= .NET 2.0 platforms make use of DbDataReader.HasRows property to
                     //     see if there is a result set.  now currently assuming matching
                     //     NamedResultSetProcessor/ResultSet pairs.
-             
+
                     do
                     {
                         if (namedResultSetProcessors.Count == 0)
@@ -1607,7 +1605,7 @@ namespace Spring.Data.Generic
                                               ", is not of expected type NamedResultSetProcessor<T>  Type = " +
                                               namedResultSetProcessors[resultSetIndex].GetType() +
                                               "; Skipping processing for this result set.");
-                                    continue;                                    
+                                    continue;
                                 }
                             } else if (resultSetIndex == 1)
                             {

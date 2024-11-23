@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(TargetFullFrameworkVersion)</TargetFramework>
+    <RootNamespace>Spring</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Spring\Spring.TxQuickStart\Spring.TxQuickStart.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Spring.Aop">
+      <HintPath>..\..\..\..\..\..\build\$(Configuration)\Spring.Aop\$(TargetFramework)\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core">
+      <HintPath>..\..\..\..\..\..\build\$(Configuration)\Spring.Core\$(TargetFramework)\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Data">
+      <HintPath>..\..\..\..\..\..\build\$(Configuration)\Spring.Data\$(TargetFramework)\Spring.Data.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TxQuickStart\*.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Common.Logging.Log4Net1215" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+</Project>

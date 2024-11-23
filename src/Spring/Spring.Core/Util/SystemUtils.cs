@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using System.Reflection;
 using System.Threading;
 
@@ -38,12 +37,10 @@ namespace Spring.Util
         private static readonly object assemblyResolverLock;
 
         private static readonly bool isMono;
-        private static readonly bool isClr4;
 
         static SystemUtils()
         {
-            isMono = Type.GetType("Mono.Runtime") == null ? false : true;
-            isClr4 = Environment.Version.Major == 4 ? true : false;
+            isMono = Type.GetType("Mono.Runtime") != null;
             assemblyResolverLock = new object();
         }
 
@@ -94,16 +91,8 @@ namespace Spring.Util
         }
 
         /// <summary>
-        /// Returns true if running on CLR 4.0 under InProc SxS mode
-        /// </summary>
-        public static bool Clr4Runtime
-        {
-            get { return isClr4; }
-        }
-
-        /// <summary>
         /// Gets the thread id for the current thread. Use thread name is available,
-        /// otherwise use CurrentThread.GetHashCode() for .NET 1.0/1.1 and 
+        /// otherwise use CurrentThread.GetHashCode() for .NET 1.0/1.1 and
         /// CurrentThread.ManagedThreadId otherwise.
         /// </summary>
         /// <value>The thread id.</value>

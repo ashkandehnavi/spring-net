@@ -20,11 +20,9 @@
 
 #region Imports
 
-using System;
 using System.Collections;
 using Spring.Collections;
 using Spring.Core;
-using Spring.Util;
 
 #endregion
 
@@ -65,7 +63,7 @@ namespace Spring.Web.Support
         }
 
         /// <summary>
-        /// Gets or sets map of result names to <see cref="IResult"/> instances or their textual representations. 
+        /// Gets or sets map of result names to <see cref="IResult"/> instances or their textual representations.
         /// See <see cref="ResultFactoryRegistry"/> for information on parsing textual <see cref="IResult"/> representations.
         /// </summary>
         /// <seealso cref="IResult"/>
@@ -126,7 +124,7 @@ namespace Spring.Web.Support
         }
 
         /// <summary>
-        /// Determines, whether this navigator or one of its parents can 
+        /// Determines, whether this navigator or one of its parents can
         /// navigate to the destination specified in <paramref name="destination"/>.
         /// </summary>
         /// <param name="destination">the name of the navigation destination</param>
@@ -169,9 +167,9 @@ namespace Spring.Web.Support
         }
 
         /// <summary>
-        /// Returns a redirect url string that points to the 
+        /// Returns a redirect url string that points to the
         /// <see cref="Spring.Web.Support.Result.TargetPage"/> defined by this
-        /// result evaluated using this Page for expression 
+        /// result evaluated using this Page for expression
         /// </summary>
         /// <param name="resultName">Name of the result.</param>
         /// <param name="sender">the instance that issued this request</param>
@@ -198,7 +196,7 @@ namespace Spring.Web.Support
         }
 
         /// <summary>
-        /// Obtain the named result instance from the <see cref="Results"/> dictionary. If necessary, the actual representation of the result 
+        /// Obtain the named result instance from the <see cref="Results"/> dictionary. If necessary, the actual representation of the result
         /// will be converted to an <see cref="IResult"/> instance by this method.
         /// </summary>
         /// <param name="name"></param>

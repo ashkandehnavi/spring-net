@@ -2,13 +2,13 @@
 
 /*
 * Copyright 2002-2010 the original author or authors.
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *      http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,22 +20,23 @@
 
 #region Imports
 
-using System;
 using System.Reflection;
+using System.Runtime.Serialization;
+
 using Spring.Util;
 
 #endregion
 
 namespace Spring.Aop.Support
 {
-	/// <summary> 
+	/// <summary>
 	/// <see cref="Spring.Aop.IPointcut"/> implementation that matches methods
 	/// that have been decorated with a specified <see cref="System.Attribute"/>.
 	/// </summary>
 	/// <author>Aleksandar Seovic</author>
     /// <author>Ronald Wildenberg</author>
 	[Serializable]
-    public class AttributeMatchMethodPointcut : StaticMethodMatcherPointcut
+    public class AttributeMatchMethodPointcut : StaticMethodMatcherPointcut, ISerializable
 	{
 		private Type _attribute;
 		private bool _inherit = true;
@@ -101,6 +102,23 @@ namespace Spring.Aop.Support
             CheckInterfaces = checkInterfaces;
         }
 
+	    /// <inheritdoc />
+	    protected AttributeMatchMethodPointcut(SerializationInfo info, StreamingContext context)
+	    {
+	        Inherit = info.GetBoolean("Inherit");
+	        CheckInterfaces = info.GetBoolean("CheckInterfaces");
+	        var type = info.GetString("Attribute");
+	        Attribute = type != null ? Type.GetType(type) : null;
+	    }
+
+	    /// <inheritdoc />
+	    public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+	    {
+	        info.AddValue("Attribute", Attribute?.AssemblyQualifiedName);
+	        info.AddValue("Inherit", Inherit);
+	        info.AddValue("CheckInterfaces", CheckInterfaces);
+	    }
+
 		/// <summary>
 		/// The <see cref="System.Attribute"/> to match.
 		/// </summary>
@@ -143,7 +161,7 @@ namespace Spring.Aop.Support
 		}
 
         /// <summary>
-        /// Is the interfaces attributes of the method to be included in the search for theg 
+        /// Is the interfaces attributes of the method to be included in the search for theg
         /// <see cref="Attribute"/>?
         /// </summary>
         /// <remarks>

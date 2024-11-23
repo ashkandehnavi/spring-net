@@ -18,16 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Generic exception thrown when the current process was
 	/// a deadlock loser, and its transaction rolled back.
 	/// </summary>
@@ -64,18 +59,7 @@ namespace Spring.Dao
 		public DeadlockLoserDataAccessException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.DeadlockLoserDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected DeadlockLoserDataAccessException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

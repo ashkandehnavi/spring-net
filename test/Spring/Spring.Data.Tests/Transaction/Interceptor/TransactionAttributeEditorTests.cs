@@ -1,6 +1,5 @@
 using System;
 using System.Data;
-using System.Runtime.Remoting;
 using NUnit.Framework;
 
 namespace Spring.Transaction.Interceptor
@@ -39,11 +38,10 @@ namespace Spring.Transaction.Interceptor
 		}
 
 		[Test]
-		[ExpectedException( typeof ( ArgumentException ) )]
 		public void InvalidPropagationCodeOnly()
 		{
 			TransactionAttributeEditor editor = new TransactionAttributeEditor( );
-			editor.SetAsText( "INVALIDPROPAGATIONCODE" );
+			Assert.Throws<ArgumentException>(() => editor.SetAsText( "INVALIDPROPAGATIONCODE" ));
 		}
 
 		[Test]
@@ -58,13 +56,13 @@ namespace Spring.Transaction.Interceptor
 		}
 
 		[Test]
-		[ExpectedException( typeof ( ArgumentException ) )]
 		public void ValidPropagationAndIsolationCodeAndInvalidRollbackRule()
 		{
 			TransactionAttributeEditor editor = new TransactionAttributeEditor( );
-			editor.SetAsText( "PROPAGATION_REQUIRED,ISOLATION_READUNCOMMITTED,XXX" );
+            Assert.Throws<ArgumentException>(() => editor.SetAsText( "PROPAGATION_REQUIRED,ISOLATION_READUNCOMMITTED,XXX" ));
 		}
 
+#if !NETCOREAPP
 		[Test]
 		public void ValidPropagationCodeAndIsolationCodeAndRollbackRules1()
 		{
@@ -76,10 +74,10 @@ namespace Spring.Transaction.Interceptor
 			Assert.IsTrue( ta.TransactionIsolationLevel == IsolationLevel.RepeatableRead );
 			Assert.IsTrue( ta.TransactionTimeout == 10 );
 			Assert.IsFalse( ta.ReadOnly );
-			Assert.IsTrue( ta.RollbackOn( new SystemException( ) ) );
+			Assert.IsTrue( ta.RollbackOn(new SystemException( ) ) );
 			// Check for our bizarre customized rollback rules
-			Assert.IsTrue( ta.RollbackOn( new DataException( ) ) );
-			Assert.IsTrue( !ta.RollbackOn( new RemotingException( ) ) );
+			Assert.IsTrue( ta.RollbackOn(new DataException( ) ) );
+			Assert.IsTrue( !ta.RollbackOn(new System.Runtime.Remoting.RemotingException( ) ) );
 		}
 
 		[Test]
@@ -95,9 +93,10 @@ namespace Spring.Transaction.Interceptor
 			Assert.IsTrue( ta.ReadOnly );
 			Assert.IsTrue( ta.RollbackOn( new SystemException( ) ) );
 			// Check for our bizarre customized rollback rules
-			Assert.IsFalse( ta.RollbackOn( new DataException( ) ) );
-			Assert.IsTrue( ta.RollbackOn( new RemotingException( ) ) );
+			Assert.IsFalse( ta.RollbackOn(new DataException( ) ) );
+			Assert.IsTrue( ta.RollbackOn(new System.Runtime.Remoting.RemotingException( ) ) );
 		}
+#endif
 
 		[Test]
 		public void DefaultTransactionAttributeToString()
@@ -147,7 +146,7 @@ namespace Spring.Transaction.Interceptor
 			Assert.IsTrue( ta.ReadOnly );
 			Assert.IsTrue(ta.RollbackOn(new ArgumentException()));
 			Assert.IsFalse( ta.RollbackOn(new IllegalTransactionStateException()));
-		
+
 			source.ClearRollbackRules();
 			Assert.IsFalse( ta == source );
 			source.AddRollbackRule( new RollbackRuleAttribute("ArgumentException"));

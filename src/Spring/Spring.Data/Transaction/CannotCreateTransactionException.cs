@@ -18,12 +18,11 @@
 
 #endregion
 
-using System;
 using System.Runtime.Serialization;
 
 namespace Spring.Transaction
 {
-	/// <summary> 
+	/// <summary>
 	/// Exception thrown when a transaction can't be created using an
 	/// underlying transaction API such as COM+.
 	/// </summary>
@@ -60,18 +59,7 @@ namespace Spring.Transaction
 		public CannotCreateTransactionException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Transaction.CannotCreateTransactionException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected CannotCreateTransactionException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

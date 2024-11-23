@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Common.Logging;
 using Spring.Context;
 using Spring.Messaging.Support;
@@ -56,7 +54,7 @@ namespace Spring.Messaging.Core
         /// </summary>
         public void Initialize()
         {
-            IDictionary<string, MessageQueueFactoryObject> messageQueueDictionary = configurableApplicationContext.GetObjects<MessageQueueFactoryObject>();
+            var messageQueueDictionary = configurableApplicationContext.GetObjects<MessageQueueFactoryObject>();
             lock (itemStore.SyncRoot)
             {
                 foreach (KeyValuePair<string, MessageQueueFactoryObject> entry in messageQueueDictionary)

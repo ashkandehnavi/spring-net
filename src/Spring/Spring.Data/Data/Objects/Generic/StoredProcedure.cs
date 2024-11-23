@@ -1,14 +1,12 @@
-#region Licence
-
 /*
- * Copyright © 2002-2011 the original author or authors.
- * 
+ * Copyright ï¿½ 2002-2011 the original author or authors.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,68 +14,45 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
 using System.Collections;
 using System.Data;
-using Spring.Collections;
 using Spring.Dao;
 using Spring.Data.Common;
 using Spring.Data.Generic;
 using Spring.Data.Support;
 
-#endregion
-
 namespace Spring.Data.Objects.Generic
 {
 	/// <summary>
-	/// A superclass for object based abstractions of RDBMS stored procedures. 
+	/// A superclass for object based abstractions of RDBMS stored procedures.
 	/// </summary>
 	/// <author>Mark Pollack (.NET)</author>
 	public abstract class StoredProcedure : AdoOperation
 	{
-		#region Fields
-        
 	    //A collection of NamedResultSetProcessor
-	     
-        private IList resultProcessors = new LinkedList();
-	    private bool usingDerivedParameters = false;
-	    
-	    
-		#endregion
 
-		#region Constructor (s)
-		/// <summary>
+        private List<object> resultProcessors = new List<object>();
+	    private bool usingDerivedParameters = false;
+
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="StoredProcedure"/> class.
         /// </summary>
 		public StoredProcedure()
 		{
             CommandType = CommandType.StoredProcedure;
 		}
-	    
+
         public StoredProcedure(IDbProvider dbProvider, string procedureName) : base(dbProvider, procedureName)
         {
     	    CommandType = CommandType.StoredProcedure;
         }
-	    
-	    
-
-		#endregion
-
-		#region Properties
-
-		#endregion
-
-		#region Methods
 
 	    public void DeriveParameters()
 	    {
 	        DeriveParameters(false);
 	    }
-	    
-	    
+
+
         public void DeriveParameters(bool includeReturnParameter)
         {
             //TODO does this account for offsets?
@@ -86,13 +61,11 @@ namespace Spring.Data.Objects.Generic
             {
                 IDataParameter parameter = derivedParameters[i];
                 DeclaredParameters.AddParameter(parameter);
-            } 
+            }
             usingDerivedParameters = true;
         }
 
-
-        #region Non-generic result set processors 
-        public void AddResultSetExtractor(string name, IResultSetExtractor resultSetExtractor)
+	    public void AddResultSetExtractor(string name, IResultSetExtractor resultSetExtractor)
         {
             if (Compiled)
             {
@@ -119,11 +92,7 @@ namespace Spring.Data.Objects.Generic
             resultProcessors.Add(new NamedResultSetProcessor(name, rowMapper));
         }
 
-        #endregion
-
-        #region Generic result set processors
-
-        public void AddResultSetExtractor<T>(string name, IResultSetExtractor<T> resultSetExtractor)
+	    public void AddResultSetExtractor<T>(string name, IResultSetExtractor<T> resultSetExtractor)
         {
             if (Compiled)
             {
@@ -131,7 +100,7 @@ namespace Spring.Data.Objects.Generic
             }
             resultProcessors.Add(new NamedResultSetProcessor<T>(name, resultSetExtractor));
         }
-        
+
 
         public void AddRowMapper<T>(string name, IRowMapper<T> rowMapper)
         {
@@ -141,15 +110,13 @@ namespace Spring.Data.Objects.Generic
             }
             resultProcessors.Add(new NamedResultSetProcessor<T>(name,rowMapper));
         }
-        #endregion
 
-        #region Operations that use derived parameters
-        protected virtual IDictionary ExecuteScalar(params object[] inParameterValues)
+	    protected virtual IDictionary ExecuteScalar(params object[] inParameterValues)
 	    {
             ValidateParameters(inParameterValues);
-            return AdoTemplate.ExecuteScalar(NewCommandCreatorWithParamValues(inParameterValues));		        
+            return AdoTemplate.ExecuteScalar(NewCommandCreatorWithParamValues(inParameterValues));
 	    }
-	    
+
         protected virtual IDictionary ExecuteNonQuery(params object[] inParameterValues)
         {
             ValidateParameters(inParameterValues);
@@ -157,14 +124,14 @@ namespace Spring.Data.Objects.Generic
         }
 
 
-        public System.Collections.Generic.IList<T> QueryWithRowMapper<T>(params object[] inParameterValues)
+        public IList<T> QueryWithRowMapper<T>(params object[] inParameterValues)
         {
             ValidateParameters(inParameterValues);
             if (resultProcessors.Count == 0)
             {
                 throw new InvalidDataAccessApiUsageException("No row mapper is specified.");
             }
-            
+
             NamedResultSetProcessor<T> resultSetProcessor = resultProcessors[0] as NamedResultSetProcessor<T>;
             if (resultSetProcessor == null)
             {
@@ -176,8 +143,8 @@ namespace Spring.Data.Objects.Generic
                 throw new InvalidDataAccessApiUsageException("No row mapper is specified as first result set processor.");
             }
             IDictionary outParams = Query<T>(inParameterValues);
-            return outParams[resultSetProcessor.Name] as System.Collections.Generic.IList<T>;
-            
+            return outParams[resultSetProcessor.Name] as IList<T>;
+
         }
 
         protected virtual IDictionary Query<T>(params object[] inParameterValues)
@@ -194,11 +161,7 @@ namespace Spring.Data.Objects.Generic
 
         }
 
-        #endregion
-
-
-        #region Operations that used provided named parameters
-        /// <summary>
+	    /// <summary>
 	    /// Execute the stored procedure using 'ExecuteScalar'
 	    /// </summary>
 	    /// <param name="inParams">Value of input parameters.</param>
@@ -206,20 +169,20 @@ namespace Spring.Data.Objects.Generic
         /// scalar under the key "scalar".</returns>
 	    protected virtual IDictionary ExecuteScalarByNamedParam(IDictionary inParams)
 	    {
-            ValidateNamedParameters(inParams);                        
-            return AdoTemplate.ExecuteScalar(NewCommandCreator(inParams));	        
+            ValidateNamedParameters(inParams);
+            return AdoTemplate.ExecuteScalar(NewCommandCreator(inParams));
 	    }
-	    
+
         protected virtual IDictionary ExecuteNonQueryByNamedParam(IDictionary inParams)
         {
-            ValidateNamedParameters(inParams);                        
+            ValidateNamedParameters(inParams);
             return AdoTemplate.ExecuteNonQuery(NewCommandCreator(inParams));
-        }	    
-	       
-	    
+        }
+
+
         protected virtual IDictionary QueryByNamedParam<T>(IDictionary inParams)
         {
-            ValidateNamedParameters(inParams);                        
+            ValidateNamedParameters(inParams);
             return AdoTemplate.QueryWithCommandCreator<T>(NewCommandCreator(inParams), resultProcessors);
         }
 
@@ -229,22 +192,17 @@ namespace Spring.Data.Objects.Generic
             return AdoTemplate.QueryWithCommandCreator<T,U>(NewCommandCreator(inParams), resultProcessors);
         }
 
-        #endregion
-
-        protected override bool IsInputParameter(IDataParameter parameter)
+	    protected override bool IsInputParameter(IDataParameter parameter)
         {
             if (usingDerivedParameters)
             {
                 //Can only count Input, derived output parameters are incorrectly classified as input-output
                 return (parameter.Direction == ParameterDirection.Input);
-            }     
+            }
             else
             {
                 return base.IsInputParameter(parameter);
             }
         }
-	    
-		#endregion
-
 	}
 }

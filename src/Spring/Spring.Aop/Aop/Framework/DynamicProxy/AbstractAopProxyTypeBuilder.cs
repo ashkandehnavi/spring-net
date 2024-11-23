@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using System.Collections;
 using System.Reflection.Emit;
 
@@ -32,17 +31,17 @@ using Spring.Proxy;
 namespace Spring.Aop.Framework.DynamicProxy
 {
 	/// <summary>
-	/// Base class for proxy builders that can be used 
+	/// Base class for proxy builders that can be used
     /// to create an AOP proxy for any object.
 	/// </summary>
     /// <author>Bruno Baia</author>
-    public abstract class AbstractAopProxyTypeBuilder : 
+    public abstract class AbstractAopProxyTypeBuilder :
         AbstractProxyTypeBuilder, IAopProxyTypeGenerator
     {
         #region IProxyTypeGenerator Members
 
         /// <summary>
-        /// Generates the IL instructions that pushes 
+        /// Generates the IL instructions that pushes
         /// the target instance on which calls should be delegated to.
         /// </summary>
         /// <param name="il">The IL generator to use.</param>
@@ -58,8 +57,8 @@ namespace Spring.Aop.Framework.DynamicProxy
         #region IAopProxyTypeGenerator Members
 
         /// <summary>
-        /// Generates the IL instructions that pushes  
-        /// the current <see cref="Spring.Aop.Framework.DynamicProxy.AdvisedProxy"/> 
+        /// Generates the IL instructions that pushes
+        /// the current <see cref="Spring.Aop.Framework.DynamicProxy.AdvisedProxy"/>
         /// instance on stack.
         /// </summary>
         /// <param name="il">The IL generator to use.</param>
@@ -69,17 +68,7 @@ namespace Spring.Aop.Framework.DynamicProxy
 
         #region Protected Methods
 
-        /// <summary>
-        /// Calculates and returns the list of attributes that apply to the
-        /// specified type.
-        /// </summary>
-        /// <remarks>
-        /// Removes <see cref="System.SerializableAttribute"/> from the list.
-        /// </remarks>
-        /// <param name="type">The type to find attributes for.</param>
-        /// <returns>
-        /// A list of custom attributes that should be applied to type.
-        /// </returns>
+        /// <inheritdoc />
         protected override IList GetTypeAttributes(Type type)
         {
             IList attrs = base.GetTypeAttributes(type);
@@ -98,7 +87,7 @@ namespace Spring.Aop.Framework.DynamicProxy
 
             return attrs;
         }
-        
+
 
         #endregion
     }

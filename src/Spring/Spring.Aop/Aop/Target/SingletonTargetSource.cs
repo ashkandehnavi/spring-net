@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +14,9 @@
  * limitations under the License.
  */
 
-#endregion
+using System.Runtime.Serialization;
 
-#region Imports
-
-using System;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Aop.Target
 {
@@ -42,7 +35,7 @@ namespace Spring.Aop.Target
 	/// <author>Rod Johnson</author>
 	/// <author>Aleksandar Seovic (.NET)</author>
     [Serializable]
-    public sealed class SingletonTargetSource : ITargetSource
+    public sealed class SingletonTargetSource : ITargetSource, ISerializable
 	{
 		private readonly object target;
 	    private readonly Type targetType;
@@ -80,7 +73,13 @@ namespace Spring.Aop.Target
 		    this.targetType = targetType;
 		}
 
-	    #region ITarget Source impl
+	    /// <inheritdoc />
+	    private SingletonTargetSource(SerializationInfo info, StreamingContext context)
+	    {
+	        target = info.GetValue("Target", typeof(object));
+	        var type = info.GetString("TargetTypeName");
+	        targetType = type != null ? Type.GetType(type) : null;
+	    }
 
 	    /// <summary>
 		/// The <see cref="System.Type"/> of the target object.
@@ -124,10 +123,15 @@ namespace Spring.Aop.Target
 		/// <param name="target">The target object to release.</param>
 		public void ReleaseTarget(object target)
 		{
-          
+
 		}
 
-	    #endregion
+	    /// <inheritdoc />
+	    public void GetObjectData(SerializationInfo info, StreamingContext context)
+	    {
+	        info.AddValue("TargetTypeName", targetType?.AssemblyQualifiedName);
+	        info.AddValue("Target", target);
+	    }
 
 	    /// <summary>
 		/// Returns a stringified representation of this target source.
@@ -142,7 +146,7 @@ namespace Spring.Aop.Target
 
 	    /// <summary>
 	    /// Determines whether the specified <see cref="System.Object"/>
-	    /// is equal to the current <see cref="System.Object"/>.  
+	    /// is equal to the current <see cref="System.Object"/>.
 	    /// </summary>
 	    /// <param name="other">The target source to compare with.</param>
 	    /// <returns>

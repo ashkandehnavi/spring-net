@@ -18,24 +18,17 @@
 
 #endregion
 
-#region Imports
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 using NUnit.Framework;
 
 using Spring.Objects;
 using Spring.Objects.Factory;
 using Spring.Objects.Factory.Attributes;
-
-#endregion
 
 [assembly: InternalsVisibleTo("ReflectionUtils.IsTypeVisible.AssemblyTestName")]
 
@@ -279,31 +272,27 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetParameterTypesWithNullMethodInfo()
         {
-            ReflectionUtils.GetParameterTypes((MethodInfo)null);
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.GetParameterTypes((MethodInfo) null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetParameterTypesWithNullParametersArgs()
         {
-            ReflectionUtils.GetParameterTypes((ParameterInfo[])null);
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.GetParameterTypes((ParameterInfo[]) null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetMatchingMethodsWithNullTypeToFindOn()
         {
-            ReflectionUtils.GetMatchingMethods(null, new MethodInfo[] { }, true);
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.GetMatchingMethods(null, new MethodInfo[] { }, true));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetMatchingMethodsWithNullMethodsToFind()
         {
-            ReflectionUtils.GetMatchingMethods(GetType(), null, true);
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.GetMatchingMethods(GetType(), null, true));
         }
 
         [Test]
@@ -315,12 +304,11 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void GetMatchingMethodsWithBadMatchStrict()
         {
             // lets include a protected method that ain't declared on the ReflectionUtilsObject class...
             MethodInfo[] clonesMethods = typeof(ReflectionUtilsObjectClone).GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance);
-            ReflectionUtils.GetMatchingMethods(typeof(ReflectionUtilsObject), clonesMethods, true);
+            Assert.Throws<Exception>(() => ReflectionUtils.GetMatchingMethods(typeof(ReflectionUtilsObject), clonesMethods, true));
         }
 
         [Test]
@@ -334,12 +322,11 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(Exception))]
         public void GetMatchingMethodsWithBadReturnTypeMatchStrict()
         {
             // lets include a method that return type is different...
             MethodInfo[] clonesMethods = typeof(ReflectionUtilsObjectBadClone).GetMethods(BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
-            ReflectionUtils.GetMatchingMethods(typeof(ReflectionUtilsObject), clonesMethods, true);
+            Assert.Throws<Exception>(() => ReflectionUtils.GetMatchingMethods(typeof(ReflectionUtilsObject), clonesMethods, true));
         }
 
         [Test]
@@ -401,19 +388,17 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void MethodIsOnOneOfTheseInterfacesWithNonInterfaceType()
         {
             MethodInfo method = typeof(ReflectionUtilsObject).GetMethod("Spanglish");
-            Assert.IsFalse(ReflectionUtils.MethodIsOnOneOfTheseInterfaces(method, new Type[] { GetType() }));
+            Assert.Throws<ArgumentException>(() => ReflectionUtils.MethodIsOnOneOfTheseInterfaces(method, new Type[] { GetType() }));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void MethodIsOnOneOfTheseInterfacesWithNullMethod()
         {
             MethodInfo method = null;
-            Assert.IsFalse(ReflectionUtils.MethodIsOnOneOfTheseInterfaces(method, new Type[] { GetType() }));
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.MethodIsOnOneOfTheseInterfaces(method, new Type[] { GetType() }));
         }
 
         [Test]
@@ -433,10 +418,9 @@ namespace Spring.Util
 
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ParameterTypesMatchWithNullArgs()
         {
-            ReflectionUtils.ParameterTypesMatch(null, null);
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.ParameterTypesMatch(null, null));
         }
 
         [Test]
@@ -465,12 +449,10 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void ToInterfaceArrayFromTypeWithNonInterface()
         {
-            ReflectionUtils.ToInterfaceArray(typeof(ExplicitFoo));
+            Assert.Throws<ArgumentException>(() => ReflectionUtils.ToInterfaceArray(typeof(ExplicitFoo)));
         }
-
 
         [Test]
         public void GetMethod()
@@ -503,18 +485,15 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException),
-            ExpectedMessage = "[Spring.Util.ReflectionUtilsTests] does not derive from the [System.Attribute] class.")]
         public void CreateCustomAttributeForNonAttributeType()
         {
-            ReflectionUtils.CreateCustomAttribute(GetType());
+            Assert.Throws<ArgumentException>(() => ReflectionUtils.CreateCustomAttribute(GetType()), "[Spring.Util.ReflectionUtilsTests] does not derive from the [System.Attribute] class.");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void CreateCustomAttributeWithNullType()
         {
-            ReflectionUtils.CreateCustomAttribute((Type)null);
+            Assert.Throws<ArgumentNullException>(() => ReflectionUtils.CreateCustomAttribute((Type) null));
         }
 
         [Test]
@@ -543,10 +522,11 @@ namespace Spring.Util
             // TODO : actually emit the attribute and check it...
         }
 
+#if !NETCOREAPP
         [Test]
         public void CreatCustomAttriubtesFromCustomAttributeData()
         {
-            Type control = typeof(Control);
+            Type control = typeof(System.Windows.Forms.Control);
             MethodInfo mi = control.GetMethod("get_Font");
             System.Collections.Generic.IList<CustomAttributeData> attributes = CustomAttributeData.GetCustomAttributes(mi.ReturnParameter);
             CustomAttributeBuilder builder = null;
@@ -555,8 +535,8 @@ namespace Spring.Util
                 builder = ReflectionUtils.CreateCustomAttribute(customAttributeData);
                 Assert.IsNotNull(builder);
             }
-
         }
+#endif
 
         [Test]
         public void CreatCustomAttriubtesFromCustomAttributeDataWithSingleEnum()
@@ -731,6 +711,7 @@ namespace Spring.Util
 
         }
 
+#if !NETCOREAPP
         [Test]
         public void CreateCustomAttributeUsingDefaultValuesForTheConstructor()
         {
@@ -798,6 +779,7 @@ namespace Spring.Util
             Assert.AreEqual(expectedAge, att.Age);
             Assert.IsFalse(att.HasSwallowedExplosives);
         }
+#endif
 
         [Test]
         public void HasAtLeastOneMethodWithName()
@@ -826,10 +808,9 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(NullReferenceException))]
         public void GetTypeOfOrTypeWithNull()
         {
-            ReflectionUtils.TypeOfOrType(null);
+            Assert.Throws<NullReferenceException>(() => ReflectionUtils.TypeOfOrType(null));
         }
 
         [Test]
@@ -875,10 +856,9 @@ namespace Spring.Util
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void GetDefaultValueWithZeroValueEnumType()
         {
-            ReflectionUtils.GetDefaultValue(typeof(EnumWithNoValues));
+            Assert.Throws<ArgumentException>(() => ReflectionUtils.GetDefaultValue(typeof(EnumWithNoValues)));
         }
 
         [Test]
@@ -939,7 +919,7 @@ namespace Spring.Util
             Assert.IsNotNull(candidateMethods[1]);
             Assert.IsNotNull(candidateMethods[2]);
             Assert.AreEqual("ParamArrayMatch", foo.MethodWithSimilarArguments(1, new object()));
-            Assert.AreEqual("ExactMatch", foo.MethodWithSimilarArguments(1, (GetMethodByArgumentValuesTarget.DummyArgumentType[])typedArg));
+            Assert.AreEqual("ExactMatch", foo.MethodWithSimilarArguments(1, typedArg));
             Assert.AreEqual("AssignableMatch", foo.MethodWithSimilarArguments(1, (ICollection)typedArg));
 
             MethodInfo resolvedMethod = ReflectionUtils.GetMethodByArgumentValues(candidateMethods, new object[] { 1, typedArg });
@@ -967,7 +947,7 @@ namespace Spring.Util
             Assert.IsNotNull(candidateMethods[2]);
             Assert.IsNotNull(candidateMethods[3]);
             Assert.AreEqual("ParamArrayMatch", foo.MethodWithSimilarArguments(1, new object()));
-            Assert.AreEqual("ExactMatch", foo.MethodWithSimilarArguments(1, (GetMethodByArgumentValuesTarget.DummyArgumentType[])typedArg));
+            Assert.AreEqual("ExactMatch", foo.MethodWithSimilarArguments(1, typedArg));
             Assert.AreEqual("AssignableMatch", foo.MethodWithSimilarArguments(1, (ICollection)typedArg));
             Assert.AreEqual("NullableArgumentMatch", foo.MethodWithNullableArgument(null));
 
@@ -992,7 +972,7 @@ namespace Spring.Util
             Assert.IsNotNull(candidateConstructors[1]);
             Assert.IsNotNull(candidateConstructors[2]);
             Assert.AreEqual("ParamArrayMatch", new GetMethodByArgumentValuesTarget(1, new object()).SelectedConstructor);
-            Assert.AreEqual("ExactMatch", new GetMethodByArgumentValuesTarget(1, (GetMethodByArgumentValuesTarget.DummyArgumentType[])typedArg).SelectedConstructor);
+            Assert.AreEqual("ExactMatch", new GetMethodByArgumentValuesTarget(1, typedArg).SelectedConstructor);
             Assert.AreEqual("AssignableMatch", new GetMethodByArgumentValuesTarget(1, (ICollection)typedArg).SelectedConstructor);
 
             ConstructorInfo resolvedConstructor = ReflectionUtils.GetConstructorByArgumentValues(candidateConstructors, new object[] { 1, typedArg });
@@ -1225,7 +1205,11 @@ namespace Spring.Util
         {
             IList attrs = ReflectionUtils.GetCustomAttributes(typeof(ClassWithAttributes));
 
+#if NETCOREAPP
+            Assert.AreEqual(1, attrs.Count);
+#else
             Assert.AreEqual(2, attrs.Count);
+#endif
         }
 
         [Test]
@@ -1233,7 +1217,11 @@ namespace Spring.Util
         {
             IList attrs = ReflectionUtils.GetCustomAttributes(typeof(ClassWithAttributes).GetMethod("MethodWithAttributes"));
 
+#if NETCOREAPP
+            Assert.AreEqual(1, attrs.Count);
+#else
             Assert.AreEqual(2, attrs.Count);
+#endif
         }
 
         #endregion
@@ -1297,6 +1285,7 @@ namespace Spring.Util
             return one + two;
         }
 
+#if !NETCOREAPP
         private Attribute CheckForPresenceOfCustomAttribute(
             CustomAttributeBuilder attBuilder, Type attType)
         {
@@ -1320,14 +1309,14 @@ namespace Spring.Util
         {
             AssemblyName assemblyName = new AssemblyName();
             assemblyName.Name = "AnAssembly";
-            AssemblyBuilder asmBuilder = Thread.GetDomain().DefineDynamicAssembly(
+            AssemblyBuilder asmBuilder = System.Threading.Thread.GetDomain().DefineDynamicAssembly(
                 assemblyName, AssemblyBuilderAccess.Run);
             ModuleBuilder modBuilder = asmBuilder.DefineDynamicModule("AModule");
             TypeBuilder classBuilder = modBuilder.DefineType("AClass", TypeAttributes.Public);
             classBuilder.SetCustomAttribute(attBuilder);
             return classBuilder.CreateType();
         }
-
+#endif
         #endregion
     }
 

@@ -1,0 +1,17 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+
+  publish:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish
+        run: ./build.cmd test publish
+        env:
+          NuGetApiKey: ${{ secrets.NUGET_API_KEY }}

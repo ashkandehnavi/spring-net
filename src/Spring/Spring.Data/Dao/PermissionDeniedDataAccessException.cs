@@ -18,17 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
-    /// Exception thrown when the underlyingresource denied a permission to 
+	/// <summary>
+    /// Exception thrown when the underlyingresource denied a permission to
     /// access a specific element, such as a specific database table.
 	/// </summary>
 	/// <author>Juergen Hoeller</author>
@@ -64,18 +59,7 @@ namespace Spring.Dao
 		public PermissionDeniedDataAccessException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.PermissionDeniedDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected PermissionDeniedDataAccessException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,11 @@
 
 #region Imports
 
-using System;
 using System.Configuration;
 using System.Globalization;
 using System.Xml;
 
-using Spring.Core;
 using Spring.Core.TypeResolution;
-using Spring.Objects;
 using Spring.Objects.Factory.Xml;
 using Spring.Util;
 

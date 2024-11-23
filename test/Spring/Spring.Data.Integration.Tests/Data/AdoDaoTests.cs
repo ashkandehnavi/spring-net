@@ -1,8 +1,6 @@
-using System;
 using NUnit.Framework;
 using Spring.Context;
 using Spring.Context.Support;
-using Spring.Dao;
 using Spring.Objects;
 using Spring.Testing.NUnit;
 
@@ -143,6 +141,12 @@ namespace Spring.Data
             }
 	    }
 
-	    #endregion
+        protected override void OnSetUp()
+        {
+            TestObjectDao.Cleanup();
+            base.OnSetUp();
+        }
+
+        #endregion
 	}
 }

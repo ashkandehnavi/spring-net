@@ -18,13 +18,12 @@
 
 #endregion
 
-using System;
 using System.Runtime.Serialization;
 
 namespace Spring.Transaction
 {
-	/// <summary> 
-	/// Superclass for exceptions caused by inappropriate usage of 
+	/// <summary>
+	/// Superclass for exceptions caused by inappropriate usage of
 	/// a <a href="http://www.springframework.net/">Spring.NET</a> transaction API.
 	/// </summary>
 	/// <author>Juergen Hoeller</author>
@@ -60,18 +59,7 @@ namespace Spring.Transaction
 		public TransactionUsageException(string message, Exception rootCause)
 			: base(message, rootCause) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Transaction.TransactionUsageException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected TransactionUsageException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

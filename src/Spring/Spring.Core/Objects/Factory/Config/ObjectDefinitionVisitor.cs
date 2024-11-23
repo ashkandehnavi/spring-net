@@ -18,17 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 
 using Spring.Collections;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Objects.Factory.Config
 {
@@ -64,7 +58,7 @@ namespace Spring.Objects.Factory.Config
         /// </summary>
         /// <remarks>Subclasses should override the <code>ResolveStringValue</code> method</remarks>
         protected ObjectDefinitionVisitor()
-        {           
+        {
         }
 
         /// <summary>
@@ -87,7 +81,7 @@ namespace Spring.Objects.Factory.Config
         }
 
         /// <summary>
-        /// Visits the ObjectDefinition property ObjectTypeName, replacing string values using 
+        /// Visits the ObjectDefinition property ObjectTypeName, replacing string values using
         /// the specified IVariableSource.
         /// </summary>
         /// <param name="objectDefinition">The object definition.</param>
@@ -132,7 +126,7 @@ namespace Spring.Objects.Factory.Config
         /// specified IVariableSource.
         /// </summary>
         /// <param name="ias">The indexed argument values.</param>
-        protected virtual void VisitIndexedArgumentValues(IDictionary<int, ConstructorArgumentValues.ValueHolder> ias)
+        protected virtual void VisitIndexedArgumentValues(IReadOnlyDictionary<int, ConstructorArgumentValues.ValueHolder> ias)
         {
             foreach (ConstructorArgumentValues.ValueHolder valueHolder in ias.Values)
             {
@@ -145,7 +139,7 @@ namespace Spring.Objects.Factory.Config
         /// specified IVariableSource.
         /// </summary>
         /// <param name="nav">The named argument values.</param>
-        protected virtual void VisitNamedArgumentValues(IDictionary<string, object> nav)
+        protected virtual void VisitNamedArgumentValues(IReadOnlyDictionary<string, ConstructorArgumentValues.ValueHolder> nav)
         {
             foreach (ConstructorArgumentValues.ValueHolder valueHolder in nav.Values)
             {
@@ -158,11 +152,11 @@ namespace Spring.Objects.Factory.Config
         /// the specified IVariableSource.
         /// </summary>
         /// <param name="gav">The genreic argument values.</param>
-        protected virtual void VisitGenericArgumentValues(ICollection<ConstructorArgumentValues.ValueHolder> gav)
+        protected virtual void VisitGenericArgumentValues(IReadOnlyList<ConstructorArgumentValues.ValueHolder> gav)
         {
-            foreach (ConstructorArgumentValues.ValueHolder valueHolder in gav)
+            for (var i = 0; i < gav.Count; i++)
             {
-                ConfigureConstructorArgument(valueHolder);
+                ConfigureConstructorArgument(gav[i]);
             }
         }
 
@@ -186,17 +180,16 @@ namespace Spring.Objects.Factory.Config
         /// <returns>the resolved value</returns>
         protected virtual object ResolveValue(object value)
         {
-            if (value is IObjectDefinition)
+            if (value is IObjectDefinition definition)
             {
-                VisitObjectDefinition((IObjectDefinition)value);
+                VisitObjectDefinition(definition);
             }
-            else if (value is ObjectDefinitionHolder)
+            else if (value is ObjectDefinitionHolder definitionHolder)
             {
-                VisitObjectDefinition( ((ObjectDefinitionHolder)value).ObjectDefinition);
+                VisitObjectDefinition( definitionHolder.ObjectDefinition);
             }
-            else if (value is RuntimeObjectReference)
+            else if (value is RuntimeObjectReference ror)
             {
-                RuntimeObjectReference ror = (RuntimeObjectReference)value;
                 //name has to be of string type.
                 string newObjectName = ResolveStringValue(ror.ObjectName);
                 if (!newObjectName.Equals(ror.ObjectName))
@@ -204,25 +197,24 @@ namespace Spring.Objects.Factory.Config
                     return new RuntimeObjectReference(newObjectName);
                 }
             }
-            else if (value is ManagedList)
+            else if (value is ManagedList list)
             {
-                VisitManagedList((ManagedList)value);
+                VisitManagedList(list);
             }
-            else if (value is ManagedSet)
+            else if (value is ManagedSet set)
             {
-                VisitManagedSet((ManagedSet)value);
+                VisitManagedSet(set);
             }
-            else if (value is ManagedDictionary)
+            else if (value is ManagedDictionary dictionary)
             {
-                VisitManagedDictionary((ManagedDictionary)value);
+                VisitManagedDictionary(dictionary);
             }
-            else if (value is NameValueCollection)
+            else if (value is NameValueCollection collection)
             {
-                VisitNameValueCollection((NameValueCollection)value);
+                VisitNameValueCollection(collection);
             }
-            else if (value is TypedStringValue)
+            else if (value is TypedStringValue typedStringValue)
             {
-                TypedStringValue typedStringValue = (TypedStringValue)value;
                 String stringValue = typedStringValue.Value;
                 if (stringValue != null)
                 {
@@ -230,13 +222,12 @@ namespace Spring.Objects.Factory.Config
                     typedStringValue.Value = visitedString;
                 }
             }
-            else if (value is string)
+            else if (value is string s)
             {
-                return ResolveStringValue((string)value);
+                return ResolveStringValue(s);
             }
-            else if (value is ExpressionHolder)
+            else if (value is ExpressionHolder holder)
             {
-                ExpressionHolder holder = (ExpressionHolder)value;
                 string newExpressionString = ResolveStringValue(holder.ExpressionString);
                 return new ExpressionHolder(newExpressionString);
             }
@@ -244,11 +235,11 @@ namespace Spring.Objects.Factory.Config
         }
 
         /// <summary>
-        /// Visits the ManagedList property ElementTypeName and 
+        /// Visits the ManagedList property ElementTypeName and
         /// calls <see cref="ResolveValue"/> for list element.
         /// </summary>
         protected virtual void VisitManagedList(ManagedList listVal)
-        {            
+        {
             string elementTypeName = listVal.ElementTypeName;
             if (elementTypeName != null)
             {
@@ -271,7 +262,7 @@ namespace Spring.Objects.Factory.Config
         }
 
         /// <summary>
-        /// Visits the ManagedSet property ElementTypeName and 
+        /// Visits the ManagedSet property ElementTypeName and
         /// calls <see cref="ResolveValue"/> for list element.
         /// </summary>
         protected virtual void VisitManagedSet(ManagedSet setVal)
@@ -299,7 +290,7 @@ namespace Spring.Objects.Factory.Config
         }
 
         /// <summary>
-        /// Visits the ManagedSet properties KeyTypeName and ValueTypeName and 
+        /// Visits the ManagedSet properties KeyTypeName and ValueTypeName and
         /// calls <see cref="ResolveValue"/> for dictionary's value element.
         /// </summary>
         protected virtual void VisitManagedDictionary(ManagedDictionary dictVal)
@@ -337,9 +328,9 @@ namespace Spring.Objects.Factory.Config
                     mods[entry.Key] = newValue;
                 }*/
 
-                object key = entry.Key;                
+                object key = entry.Key;
                 object newKey = ResolveValue(key);
-                object oldValue = entry.Value;                
+                object oldValue = entry.Value;
                 object newValue = ResolveValue(oldValue);
 
                 if (!ObjectUtils.NullSafeEquals(newValue, oldValue) || key != newKey)

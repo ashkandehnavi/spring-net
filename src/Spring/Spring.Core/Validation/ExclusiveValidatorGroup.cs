@@ -18,8 +18,6 @@
 
 #endregion
 
-using System.Collections;
-using System.Collections.Generic;
 using Spring.Expressions;
 
 namespace Spring.Validation
@@ -32,7 +30,7 @@ namespace Spring.Validation
     /// This validator will be valid when <b>one and only one</b> of the validators in the <c>Validators</c> collection are valid
     /// </p>
     /// <p>
-    /// <c>ValidationErrors</c> property will return a union of all validation error messages 
+    /// <c>ValidationErrors</c> property will return a union of all validation error messages
     /// for the contained validators, but only if this validator is not valid (meaning, when none
     /// of the contained validators are valid).
     /// </p>
@@ -58,20 +56,20 @@ namespace Spring.Validation
         /// Initializes a new instance of the <see cref="ExclusiveValidatorGroup"/> class.
         /// </summary>
         /// <param name="when">The expression that determines if this validator should be evaluated.</param>
-        public ExclusiveValidatorGroup(string when) 
+        public ExclusiveValidatorGroup(string when)
             : base(when)
         {
-            this.FastValidate = true;            
+            this.FastValidate = true;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExclusiveValidatorGroup"/> class.
         /// </summary>
         /// <param name="when">The expression that determines if this validator should be evaluated.</param>
-        public ExclusiveValidatorGroup(IExpression when) 
+        public ExclusiveValidatorGroup(IExpression when)
             : base(when)
         {
-            this.FastValidate = true;            
+            this.FastValidate = true;
         }
 
         #endregion
@@ -109,7 +107,7 @@ namespace Spring.Validation
                 errors.MergeErrors(tmpErrors);
             }
 
-            return valid;            
+            return valid;
         }
 
     }

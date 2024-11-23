@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +14,9 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
-
-#endregion
 
 namespace Spring.Util
 {
@@ -45,12 +35,14 @@ namespace Spring.Util
     /// <author>Mark Pollack (.NET)</author>
     /// <author>Rick Evans (.NET)</author>
     /// <author>Erich Eichinger (.NET)</author>
-    public sealed class StringUtils
+    public static class StringUtils
     {
         /// <summary>
         /// An empty array of <see cref="System.String"/> instances.
         /// </summary>
-        public static readonly string[] EmptyStrings = new string[] { };
+        public static readonly string[] EmptyStrings = { };
+
+        public static readonly IReadOnlyList<string> EmptyStringsList = new List<string>();
 
         /// <summary>
         /// The string that signals the start of an Ant-style expression.
@@ -61,26 +53,6 @@ namespace Spring.Util
         /// The string that signals the end of an Ant-style expression.
         /// </summary>
         private const string AntExpressionSuffix = "}";
-
-        #region Constructor (s) / Destructor
-
-        // CLOVER:OFF
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="Spring.Util.StringUtils"/> class.
-        /// </summary>
-        /// <remarks>
-        /// <p>
-        /// This is a utility class, and as such exposes no public constructors.
-        /// </p>
-        /// </remarks>
-        private StringUtils()
-        {
-        }
-
-        // CLOVER:ON
-
-        #endregion
 
         /// <summary>
         /// Tokenize the given <see cref="System.String"/> into a
@@ -151,14 +123,14 @@ namespace Spring.Util
             }
             if (string.IsNullOrEmpty(delimiters))
             {
-                return new string[] { s };
+                return new[] { s };
             }
             if (quoteChars == null)
             {
                 quoteChars = string.Empty;
             }
             AssertUtils.IsTrue( quoteChars.Length % 2 == 0, "the number of quote characters must be even" );
-            
+
             char[] delimiterChars = delimiters.ToCharArray();
 
             // scan separator positions
@@ -180,7 +152,7 @@ namespace Spring.Util
 				}
                 startIndex = delimiterPositions[ixSep] + 1;
             }
-            // add remainder            
+            // add remainder
             if (startIndex < s.Length)
             {
                 string token = s.Substring(startIndex);
@@ -283,7 +255,7 @@ namespace Spring.Util
         /// If the supplied <paramref name="delimiter"/> is a
         /// <cref lang="null"/> or zero-length string, then a single element
         /// <see cref="System.String"/> array composed of the supplied
-        /// <paramref name="input"/> <see cref="System.String"/> will be 
+        /// <paramref name="input"/> <see cref="System.String"/> will be
         /// eturned. If the supplied <paramref name="input"/>
         /// <see cref="System.String"/> is <cref lang="null"/>, then an empty,
         /// zero-length <see cref="System.String"/> array will be returned.
@@ -391,10 +363,8 @@ namespace Spring.Util
             {
                 return "null";
             }
-            else
-            {
-                return StringUtils.CollectionToDelimitedString(source, delimiter);
-            }
+
+            return CollectionToDelimitedString(source, delimiter);
         }
 
         /// <summary>Checks if a string has length.</summary>
@@ -413,9 +383,10 @@ namespace Spring.Util
         /// StringUtils.HasLength("Hello") = true
         /// </code>
         /// </example>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasLength(string target)
         {
-            return (target != null && target.Length > 0);
+            return !string.IsNullOrEmpty(target);
         }
 
         /// <summary>
@@ -446,16 +417,10 @@ namespace Spring.Util
         /// StringUtils.HasText(" 12345 ") = true
         /// </code>
         /// </example>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasText(string target)
         {
-            if (target == null)
-            {
-                return false;
-            }
-            else
-            {
-                return HasLength(target.Trim());
-            }
+            return !string.IsNullOrWhiteSpace(target);
         }
 
         /// <summary>
@@ -574,7 +539,7 @@ namespace Spring.Util
         /// </summary>
         /// <remarks>
         /// <p>
-        /// 
+        ///
         /// </p>
         /// </remarks>
         /// <param name="text">The string to set the value in.</param>

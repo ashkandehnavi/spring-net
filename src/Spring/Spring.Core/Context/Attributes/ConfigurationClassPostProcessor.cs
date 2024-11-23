@@ -18,9 +18,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-
 using Common.Logging;
 
 using Spring.Core;
@@ -37,11 +34,7 @@ namespace Spring.Context.Attributes
     /// </summary>
     public class ConfigurationClassPostProcessor : IObjectDefinitionRegistryPostProcessor, IOrdered
     {
-        #region Logging
-
         private static readonly ILog Logger = LogManager.GetLogger<ConfigurationClassPostProcessor>();
-
-        #endregion
 
         private bool _postProcessObjectDefinitionRegistryCalled;
 
@@ -66,10 +59,7 @@ namespace Spring.Context.Attributes
         /// </p>
         /// </remarks>
         /// <returns>The order value.</returns>
-        public int Order
-        {
-            get { return int.MinValue; }
-        }
+        public int Order => int.MinValue;
 
         /// <summary>
         /// Sets the problem reporter.
@@ -124,7 +114,7 @@ namespace Spring.Context.Attributes
         {
             ConfigurationClassEnhancer enhancer = new ConfigurationClassEnhancer(objectFactory);
 
-            IList<string> objectNames = objectFactory.GetObjectDefinitionNames();
+            var objectNames = objectFactory.GetObjectDefinitionNames();
 
             foreach (string name in objectNames)
             {

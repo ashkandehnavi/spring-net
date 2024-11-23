@@ -1,5 +1,3 @@
-#region License
-
 /*
  * Copyright 2002-2010 the original author or authors.
  *
@@ -16,11 +14,7 @@
  * limitations under the License.
  */
 
-#endregion
-
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using Common.Logging;
 using Spring.Collections;
@@ -34,11 +28,11 @@ namespace Spring.Objects.Factory.Config
     /// </summary>
     /// <remarks>
     /// The placeholder syntax follows the NAnt style: <c>${...}</c>.
-    /// Placeholders values are resolved against a list of 
+    /// Placeholders values are resolved against a list of
     /// <see cref="IVariableSource"/>s.  In case of multiple definitions
-    /// for the same property placeholder name, the first one in the 
+    /// for the same property placeholder name, the first one in the
     /// list is used.
-    /// <para>Variable substitution is performed on simple property values, 
+    /// <para>Variable substitution is performed on simple property values,
     /// lists, dictionaries, sets, constructor
     /// values, object type name, and object names in
     /// runtime object references (
@@ -75,8 +69,6 @@ namespace Spring.Objects.Factory.Config
         /// </summary>
         public static readonly string DefaultPlaceholderSuffix = "}";
 
-        #region Fields
-
         private int order = Int32.MaxValue; // default: same as non-Ordered
 
         private bool includeAncestors;
@@ -85,8 +77,6 @@ namespace Spring.Objects.Factory.Config
         private string placeholderSuffix = DefaultPlaceholderSuffix;
 
         private IList variableSourceList = new ArrayList();
-
-        #endregion
 
         /// <summary>
         /// Create a new instance without any variable sources
@@ -110,8 +100,6 @@ namespace Spring.Objects.Factory.Config
         {
             this.VariableSources = variableSources;
         }
-
-        #region Properties
 
         /// <summary>
         /// Sets the list of <see cref="IVariableSource"/>s that will be used to resolve placeholder names.
@@ -166,10 +154,6 @@ namespace Spring.Objects.Factory.Config
             set { includeAncestors = value;  }
         }
 
-        #endregion
-
-        #region IObjectFactoryPostProcessor Members
-
         /// <summary>
         /// Modify the application context's internal object factory after its
         /// standard initialization.
@@ -216,10 +200,6 @@ namespace Spring.Objects.Factory.Config
             }
         }
 
-        #endregion
-
-        #region IOrdered Members
-
         /// <summary>
         /// Return the order value of this object, where a higher value means greater in
         /// terms of sorting.
@@ -231,8 +211,6 @@ namespace Spring.Objects.Factory.Config
             get { return order; }
             set { order = value; }
         }
-
-        #endregion
 
         /// <summary>
         /// Apply the property replacement using the specified <see cref="IVariableSource"/>s for all
@@ -252,12 +230,12 @@ namespace Spring.Objects.Factory.Config
             TextProcessor tp = new TextProcessor(this, compositeVariableSource);
             ObjectDefinitionVisitor visitor = new ObjectDefinitionVisitor(new ObjectDefinitionVisitor.ResolveHandler(tp.ParseAndResolveVariables));
 
-            IList<string> objectDefinitionNames = factory.GetObjectDefinitionNames(includeAncestors);
+            var objectDefinitionNames = factory.GetObjectDefinitionNames(includeAncestors);
             for (int i = 0; i < objectDefinitionNames.Count; ++i)
             {
                 string name = objectDefinitionNames[i];
                 IObjectDefinition definition = factory.GetObjectDefinition( name, includeAncestors );
-                
+
                 if (definition == null)
                     continue;
 
@@ -272,8 +250,6 @@ namespace Spring.Objects.Factory.Config
                 }
             }
         }
-
-        #region Helper class
 
         private class TextProcessor
         {
@@ -323,16 +299,12 @@ namespace Spring.Objects.Factory.Config
                             string resolvedValue = variableSource.ResolveVariable(placeholder);
                             resolvedValue = ParseAndResolveVariables(resolvedValue, visitedPlaceholders);
 
-                            #region Instrumentation
-
                             if (logger.IsDebugEnabled)
                             {
                                 logger.Debug(string.Format(
                                                  CultureInfo.InvariantCulture,
                                                  "Resolving placeholder '{0}' to '{1}'.", placeholder, resolvedValue));
                             }
-
-                            #endregion
 
                             if (resolvedValue == null
                                 && startIndex == 0
@@ -362,7 +334,7 @@ namespace Spring.Objects.Factory.Config
                     }
                 }
                 return strVal;
-            }            
+            }
         }
 
         private class CompositeVariableSource : IVariableSource
@@ -395,7 +367,5 @@ namespace Spring.Objects.Factory.Config
                 return false;
             }
         }
-
-        #endregion
     }
 }

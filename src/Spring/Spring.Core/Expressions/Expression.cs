@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,7 @@
 
 #endregion
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Spring.Expressions.Parser;
@@ -40,8 +37,8 @@ namespace Spring.Expressions
     /// <remarks>
     /// <p>
     /// Preparing this object once and reusing it many times for expression
-    /// evaluation can result in significant performance improvements, as 
-    /// expression parsing and reflection lookups are only performed once. 
+    /// evaluation can result in significant performance improvements, as
+    /// expression parsing and reflection lookups are only performed once.
     /// </p>
     /// </remarks>
     /// <author>Aleksandar Seovic</author>
@@ -99,9 +96,9 @@ namespace Spring.Expressions
                 Typename2Creator = new Hashtable();
                 foreach (Type type in typeof(SpringASTFactory).Assembly.GetTypes())
                 {
-                    if (BASENODE_TYPE.IsAssignableFrom(type))
+                    if (BASENODE_TYPE.IsAssignableFrom(type) && !type.IsAbstract)
                     {
-                        ConstructorInfo ctor = type.GetConstructor(new Type[0]);
+                        ConstructorInfo ctor = type.GetConstructor(System.Type.EmptyTypes);
                         if (ctor != null)
                         {
                             ASTNodeCreator creator = new ASTNodeCreator(ctor);
@@ -258,7 +255,7 @@ namespace Spring.Expressions
         { }
 
         /// <summary>
-        /// Evaluates this expression for the specified root object and returns 
+        /// Evaluates this expression for the specified root object and returns
         /// value of the last node.
         /// </summary>
         /// <param name="context">Context to evaluate expressions against.</param>
@@ -283,7 +280,7 @@ namespace Spring.Expressions
         }
 
         /// <summary>
-        /// Evaluates this expression for the specified root object and sets 
+        /// Evaluates this expression for the specified root object and sets
         /// value of the last node.
         /// </summary>
         /// <param name="context">Context to evaluate expressions against.</param>
@@ -319,7 +316,7 @@ namespace Spring.Expressions
         }
 
         /// <summary>
-        /// Evaluates this expression for the specified root object and returns 
+        /// Evaluates this expression for the specified root object and returns
         /// <see cref="PropertyInfo"/> of the last node, if possible.
         /// </summary>
         /// <param name="context">Context to evaluate expression against.</param>

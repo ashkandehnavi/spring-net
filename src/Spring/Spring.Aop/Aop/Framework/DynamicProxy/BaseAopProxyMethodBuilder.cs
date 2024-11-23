@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,20 @@
 
 #endregion
 
-#region Imports
-
-using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 
 using Spring.Util;
 
-#endregion
-
 namespace Spring.Aop.Framework.DynamicProxy
 {
     /// <summary>
-    /// <see cref="Spring.Proxy.IProxyMethodBuilder"/> implementation 
+    /// <see cref="Spring.Proxy.IProxyMethodBuilder"/> implementation
     /// that delegates method calls to the base method.
     /// </summary>
     /// <author>Bruno Baia</author>
     public class BaseAopProxyMethodBuilder : AbstractAopProxyMethodBuilder
     {
-        #region Constructor(s) / Destructor
-
         /// <summary>
         /// Creates a new instance of the method builder.
         /// </summary>
@@ -47,23 +40,19 @@ namespace Spring.Aop.Framework.DynamicProxy
         /// The <see cref="IAopProxyTypeGenerator"/> implementation to use.
         /// </param>
         /// <param name="targetMethods">
-        /// The dictionary to cache the list of target 
+        /// The dictionary to cache the list of target
         /// <see cref="System.Reflection.MethodInfo"/>s.
         /// </param>
         /// <param name="onProxyTargetMethods">
-        /// The dictionary to cache the list of target  
+        /// The dictionary to cache the list of target
         /// <see cref="System.Reflection.MethodInfo"/>s defined on the proxy.
         /// </param>
         public BaseAopProxyMethodBuilder(
-            TypeBuilder typeBuilder, IAopProxyTypeGenerator aopProxyGenerator, 
-            IDictionary targetMethods, IDictionary onProxyTargetMethods)
+            TypeBuilder typeBuilder, IAopProxyTypeGenerator aopProxyGenerator,
+            IDictionary<string, MethodInfo> targetMethods, IDictionary<string, MethodInfo> onProxyTargetMethods)
             : base(typeBuilder, aopProxyGenerator, false, targetMethods, onProxyTargetMethods)
         {
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// Create static field that will cache target method when defined on the proxy.
@@ -101,7 +90,7 @@ namespace Spring.Aop.Framework.DynamicProxy
                 onProxyTargetMethods.Add(methodId, method);
 
                 onProxyTargetMethodCacheField = typeBuilder.DefineField(
-                    methodId, typeof(MethodInfo), FieldAttributes.Private | FieldAttributes.Static | FieldAttributes.InitOnly);
+                    methodId, typeof(MethodInfo), FieldAttributes.Private | FieldAttributes.Static);
 
                 MakeGenericMethod(il, method, onProxyTargetMethodCacheField, genericOnProxyTargetMethod);
             }
@@ -120,7 +109,5 @@ namespace Spring.Aop.Framework.DynamicProxy
         {
             CallDirectBaseMethod(il, method);
         }
-
-        #endregion
     }
 }

@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Security.Permissions;
@@ -29,11 +28,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 using Common.Logging;
-using Spring.Core;
+
 using Spring.Core.TypeResolution;
 using Spring.DataBinding;
 using Spring.Globalization;
-using Spring.Objects;
 using Spring.Util;
 using AttributeCollection=System.Web.UI.AttributeCollection;
 using BindingDirection=Spring.DataBinding.BindingDirection;
@@ -43,15 +41,15 @@ using BindingDirection=Spring.DataBinding.BindingDirection;
 namespace Spring.Web.UI.Controls
 {
     /// <summary>
-    /// Any WebControl placed on a DataBindingPanel may be bound 
+    /// Any WebControl placed on a DataBindingPanel may be bound
     /// to a model by adding an attribute "BindingTarget"
     /// </summary>
     /// <author>Erich Eichinger</author>
     [PersistChildren(true),
-    ToolboxData("<{0}:DataBindingPanel runat=\"server\" Width=\"125px\" Height=\"50px\"> </{0}:DataBindingPanel>"), 
+    ToolboxData("<{0}:DataBindingPanel runat=\"server\" Width=\"125px\" Height=\"50px\"> </{0}:DataBindingPanel>"),
     ParseChildren(false),
-    Designer("System.Web.UI.Design.WebControls.PanelContainerDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"), 
-    AspNetHostingPermission(SecurityAction.InheritanceDemand, Level = AspNetHostingPermissionLevel.Minimal), 
+    Designer("System.Web.UI.Design.WebControls.PanelContainerDesigner, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"),
+    AspNetHostingPermission(SecurityAction.InheritanceDemand, Level = AspNetHostingPermissionLevel.Minimal),
     AspNetHostingPermission(SecurityAction.LinkDemand, Level = AspNetHostingPermissionLevel.Minimal)]
     public class DataBindingPanel : Panel
     {

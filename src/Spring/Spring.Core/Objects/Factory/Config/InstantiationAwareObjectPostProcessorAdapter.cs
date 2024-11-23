@@ -1,7 +1,5 @@
-#region License
-
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +14,6 @@
  * limitations under the License.
  */
 
-#endregion
-
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Spring.Objects.Factory.Config
@@ -41,8 +35,6 @@ namespace Spring.Objects.Factory.Config
     /// <author>Mark Pollack (.NET)</author>
     public abstract class InstantiationAwareObjectPostProcessorAdapter : SmartInstantiationAwareObjectPostProcessor
     {
-        #region SmartInstantiationAwareObjectPostProcessor Members
-
         /// <summary>
         /// Predicts the type of the object to be eventually returned from this
         /// processors PostProcessBeforeInstantiation callback.
@@ -67,10 +59,6 @@ namespace Spring.Objects.Factory.Config
         {
             return null;
         }
-
-        #endregion
-
-        #region IInstantiationAwareObjectPostProcessor Members
 
         /// <summary>
         /// Apply this
@@ -128,7 +116,7 @@ namespace Spring.Objects.Factory.Config
         /// <param name="objectName">Name of the object.</param>
         /// <returns>true if properties should be set on the object; false if property population
         /// should be skipped.  Normal implementations should return true.  Returning false will also
-        /// prevent any subsequent InstantiationAwareObjectPostProcessor instances from being 
+        /// prevent any subsequent InstantiationAwareObjectPostProcessor instances from being
         /// invoked on this object instance.</returns>
         public virtual bool PostProcessAfterInstantiation(object objectInstance, string objectName)
         {
@@ -149,19 +137,15 @@ namespace Spring.Objects.Factory.Config
         /// <param name="pvs">The property values that the factory is about to apply (never <code>null</code>).</param>
         /// <param name="pis">he relevant property infos for the target object (with ignored
         /// dependency types - which the factory handles specifically - already filtered out)</param>
-        /// <param name="objectInstance">The object instance created, but whose properties have not yet 
+        /// <param name="objectInstance">The object instance created, but whose properties have not yet
         /// been set.</param>
         /// <param name="objectName">Name of the object.</param>
-        /// <returns>The actual property values to apply to the given object (can be the 
+        /// <returns>The actual property values to apply to the given object (can be the
         /// passed-in PropertyValues instances0 or null to skip property population.</returns>
         public virtual IPropertyValues PostProcessPropertyValues(IPropertyValues pvs, IList<PropertyInfo> pis, object objectInstance, string objectName)
         {
             return pvs;
         }
-
-        #endregion
-
-        #region IObjectPostProcessor Members
 
         /// <summary>
         /// Apply this <see cref="Spring.Objects.Factory.Config.IObjectPostProcessor"/>
@@ -216,7 +200,5 @@ namespace Spring.Objects.Factory.Config
         {
             return instance;
         }
-
-        #endregion
     }
 }

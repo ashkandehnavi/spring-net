@@ -1,5 +1,4 @@
-﻿#if NET_3_5
-#region License
+﻿#region License
 
 /*
  * Copyright © 2002-2011 the original author or authors.
@@ -19,17 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using Spring.Util;
 using Spring.Context;
 using Spring.Context.Support;
 using Spring.ServiceModel.Support;
 using Spring.Objects.Factory;
 using System.ServiceModel.Web;
-
-#endregion
 
 namespace Spring.ServiceModel
 {
@@ -110,10 +104,9 @@ namespace Spring.ServiceModel
             }
 
             return new ServiceProxyTypeBuilder(serviceName, objectFactory, useServiceProxyTypeCache)
-                .BuildProxyType();                    
+                .BuildProxyType();
         }
 
         #endregion
     }
 }
-#endif

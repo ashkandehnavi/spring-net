@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ using System;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 
 using NUnit.Framework;
@@ -66,7 +65,11 @@ namespace Spring.Objects.Factory.Config
             }
             catch (ConfigurationErrorsException cfgex)
             {
+#if NETFRAMEWORK
+                Assert.IsInstanceOf(typeof(NotSupportedException), cfgex.InnerException);
+#else
                 Assert.IsInstanceOf(typeof(ArgumentException), cfgex.InnerException);
+#endif
             }
         }
 
@@ -87,8 +90,6 @@ namespace Spring.Objects.Factory.Config
                                 props["jenny"],
                                 "Wrong value for second property");
             }
-
-            string machineConfig = RuntimeEnvironment.SystemConfigurationFile;
         }
 
         [Test]
@@ -221,13 +222,15 @@ namespace Spring.Objects.Factory.Config
         }
 
         [Test]
-        [ExpectedException(typeof(ConfigurationErrorsException), ExpectedMessage = "Cannot read config section 'ELNOMBRE' - section not found.")]
         public void TryReadFromNonExistantConfigSection()
         {
-            using (Stream stream = new MemoryStream(Encoding.UTF8.GetBytes(SunnyDayXml)))
+            Assert.Throws<ConfigurationErrorsException>(() =>
             {
-                ConfigurationReader.Read(new InputStreamResource(stream, ""), "ELNOMBRE", null);
-            }
+                using (Stream stream = new MemoryStream(Encoding.UTF8.GetBytes(SunnyDayXml)))
+                {
+                    ConfigurationReader.Read(new InputStreamResource(stream, ""), "ELNOMBRE", null);
+                }
+            }, "Cannot read config section 'ELNOMBRE' - section not found.");
         }
     }
 }

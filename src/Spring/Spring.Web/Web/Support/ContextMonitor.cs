@@ -18,9 +18,6 @@
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Web;
 
 using Spring.Context;
@@ -31,12 +28,12 @@ using Spring.Objects.Factory.Support;
 namespace Spring.Web.Support
 {
     /// <summary>
-    /// <see cref="IHttpHandler"/> implementation that allows users to monitor state 
+    /// <see cref="IHttpHandler"/> implementation that allows users to monitor state
     /// of the Spring.NET web application context.
     /// </summary>
     /// <remarks>
     /// <p>
-    /// 
+    ///
     /// </p>
     /// </remarks>
     /// <author>Aleksandar Seovic</author>
@@ -59,18 +56,16 @@ namespace Spring.Web.Support
 
             RenderHeader(res.Output, context.Request.ApplicationPath);
 
-
-            IConfigurableApplicationContext appContext =
-                WebApplicationContext.Current as IConfigurableApplicationContext;
-            if (appContext == null)
+            if (!(WebApplicationContext.Current is IConfigurableApplicationContext appContext))
             {
                 throw new InvalidOperationException(
                     "Implementations of IApplicationContext must also implement IConfigurableApplicationContext");
             }
 
-            IList<string> names = appContext.GetObjectDefinitionNames();
-            foreach (string name in names)
+            var names = appContext.GetObjectDefinitionNames();
+            for (var i = 0; i < names.Count; i++)
             {
+                string name = names[i];
                 RenderObjectDefinition(res.Output, name, appContext.ObjectFactory.GetObjectDefinition(name));
             }
 

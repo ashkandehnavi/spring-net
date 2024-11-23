@@ -18,12 +18,9 @@
 
 #endregion
 
-
-using System;
 using System.Data;
 using Spring.Data.Common;
 using Spring.Data.Core;
-using Spring.Objects.Factory.Config;
 
 namespace Spring.Testing.Microsoft
 {
@@ -56,7 +53,7 @@ namespace Spring.Testing.Microsoft
         /// Initializes a new instance of the <see cref="AbstractTransactionalDbProviderSpringContextTests"/> class.
         /// </summary>
         public AbstractTransactionalDbProviderSpringContextTests()
-        {            
+        {
         }
 
         /// <summary>
@@ -134,10 +131,10 @@ namespace Spring.Testing.Microsoft
         /// <returns>The number of rows in the table</returns>
         protected int CountRowsInTable(String tableName)
         {
-            return (int) adoTemplate.ExecuteScalar(CommandType.Text, "SELECT COUNT(0) FROM " + tableName); 
+            return (int) adoTemplate.ExecuteScalar(CommandType.Text, "SELECT COUNT(0) FROM " + tableName);
 
         }
-         
+
          //TODO ExecuteScript...
 
     }

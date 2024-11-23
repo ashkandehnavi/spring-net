@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,20 @@
 
 #endregion
 
-#region Imports
-
 using System;
 using System.IO;
-using System.Security.Policy;
 using System.Collections;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Web;
 
 using AopAlliance.Aop;
 using AopAlliance.Intercept;
+
+using FakeItEasy;
+
 using NUnit.Framework;
-using Rhino.Mocks;
 using Spring.Aop.Advice;
-using Spring.Aop.Framework.Adapter;
 using Spring.Aop.Interceptor;
 using Spring.Aop.Support;
 using Spring.Aop.Target;
@@ -46,8 +43,6 @@ using Spring.Objects.Factory.Support;
 using Spring.Objects.Factory.Xml;
 using Spring.Proxy;
 using Spring.Threading;
-
-#endregion
 
 namespace Spring.Aop.Framework
 {
@@ -61,16 +56,13 @@ namespace Spring.Aop.Framework
     [TestFixture]
     public sealed class ProxyFactoryObjectTests
     {
-        private MockRepository mocks;
         private IObjectFactory factory;
 
         [SetUp]
         public void SetUp()
         {
-            mocks = new MockRepository();
             factory = new XmlObjectFactory(new ReadOnlyXmlTestResource("proxyFactoryTests.xml", GetType()));
         }
-
 
         [Test]
         public void TargetThrowsInvalidCastException()
@@ -407,16 +399,16 @@ namespace Spring.Aop.Framework
             Assert.AreEqual("set_Name", PointcutForVoid.methodNames[1]);
         }
 
+#if !NETCOREAPP
         [Test]
         public void CanAddThrowsAdviceWithoutAdvisor()
         {
             IObjectFactory f = new XmlObjectFactory(new ReadOnlyXmlTestResource("throwsAdvice.xml", GetType()));
-            ThrowsAdviceInterceptorTests.MyThrowsHandler th =
-                (ThrowsAdviceInterceptorTests.MyThrowsHandler)f.GetObject("throwsAdvice");
+            var th = (Spring.Aop.Framework.Adapter.ThrowsAdviceInterceptorTests.MyThrowsHandler) f.GetObject("throwsAdvice");
             CountingBeforeAdvice cba = (CountingBeforeAdvice)f.GetObject("countingBeforeAdvice");
             Assert.AreEqual(0, cba.GetCalls());
             Assert.AreEqual(0, th.GetCalls());
-            ThrowsAdviceInterceptorTests.IEcho echo = (ThrowsAdviceInterceptorTests.IEcho)f.GetObject("throwsAdvised");
+            var echo = (Spring.Aop.Framework.Adapter.ThrowsAdviceInterceptorTests.IEcho) f.GetObject("throwsAdvised");
             echo.A = 12;
             Assert.AreEqual(1, cba.GetCalls());
             Assert.AreEqual(0, th.GetCalls());
@@ -434,19 +426,20 @@ namespace Spring.Aop.Framework
             Assert.AreEqual(0, th.GetCalls());
 
             // Handler knows how to handle this exception
-            expected = new HttpException();
+            expected = new System.Web.HttpException();
             try
             {
                 echo.EchoException(1, expected);
                 Assert.Fail();
             }
-            catch (HttpException ex)
+            catch (System.Web.HttpException ex)
             {
                 Assert.AreEqual(expected, ex);
             }
             // One match
             Assert.AreEqual(1, th.GetCalls("HttpException"));
         }
+#endif
 
         /// <summary> Checks that globals get invoked,
         /// and that they can add aspect interfaces unavailable
@@ -454,33 +447,31 @@ namespace Spring.Aop.Framework
         /// to be included in proxiedInterface [].
         /// </summary>
         [Test]
-        [ExpectedException(typeof(InvalidCastException))]
         public void GlobalsCanAddAspectInterfaces()
         {
-            IAddedGlobalInterface agi = (IAddedGlobalInterface)factory.GetObject("autoInvoker");
+            IAddedGlobalInterface agi = (IAddedGlobalInterface) factory.GetObject("autoInvoker");
             Assert.IsTrue(agi.GlobalsAdded == -1);
 
-            ProxyFactoryObject pfb = (ProxyFactoryObject)factory.GetObject("&validGlobals");
+            ProxyFactoryObject pfb = (ProxyFactoryObject) factory.GetObject("&validGlobals");
             pfb.GetObject(); // for creation
             Assert.AreEqual(2, pfb.Advisors.Count, "Proxy should have 1 global and 1 explicit advisor");
             Assert.AreEqual(1, pfb.Introductions.Count, "Proxy should have 1 global introduction");
 
-            agi.GlobalsAdded = ((IAdvised)agi).Introductions.Count;
+            agi.GlobalsAdded = ((IAdvised) agi).Introductions.Count;
             Assert.IsTrue(agi.GlobalsAdded == 1);
 
-            IApplicationEventListener l = (IApplicationEventListener)factory.GetObject("validGlobals");
-            agi = (IAddedGlobalInterface)l;
+            IApplicationEventListener l = (IApplicationEventListener) factory.GetObject("validGlobals");
+            agi = (IAddedGlobalInterface) l;
             Assert.IsTrue(agi.GlobalsAdded == -1);
-            agi = (IAddedGlobalInterface)factory.GetObject("test1");
+            Assert.Throws<InvalidCastException>(() => factory.GetObject<IAddedGlobalInterface>("test1"));
         }
 
         [Test]
         public void IsSingletonFalseReturnsNew_ProxyInstance_NotNewProxyTargetSource()
         {
             GoodCommand target = new GoodCommand();
-            IObjectFactory mock = (IObjectFactory) mocks.CreateMock(typeof(IObjectFactory));
-            Expect.Call(mock.GetObject("singleton")).Return(target).Repeat.Twice();
-            mocks.ReplayAll();
+            IObjectFactory mock = A.Fake<IObjectFactory>();
+            A.CallTo(() => mock.GetObject("singleton")).Returns(target).Twice();
 
             ProxyFactoryObject fac = new ProxyFactoryObject();
             fac.ProxyInterfaces = new string[] { typeof(ICommand).FullName };
@@ -492,17 +483,14 @@ namespace Spring.Aop.Framework
             ICommand one = (ICommand)fac.GetObject();
             ICommand two = (ICommand)fac.GetObject();
             Assert.IsFalse(ReferenceEquals(one, two));
-
-            mocks.VerifyAll();
         }
 
         [Test]
         public void IsSingletonTrueReturnsNew_ProxyInstance_NotNewProxyTargetSource()
         {
             GoodCommand target = new GoodCommand();
-            IObjectFactory mock = (IObjectFactory)mocks.CreateMock(typeof(IObjectFactory));
-            Expect.Call(mock.GetObject("singleton")).Return(target);
-            mocks.ReplayAll();
+            IObjectFactory mock = A.Fake<IObjectFactory>();
+            A.CallTo(() => mock.GetObject("singleton")).Returns(target);
 
             ProxyFactoryObject fac = new ProxyFactoryObject();
             fac.ProxyInterfaces = new string[] { typeof(ICommand).FullName };
@@ -514,8 +502,6 @@ namespace Spring.Aop.Framework
             ICommand one = (ICommand)fac.GetObject();
             ICommand two = (ICommand)fac.GetObject();
             Assert.IsTrue(ReferenceEquals(one, two));
-
-            mocks.VerifyAll();
         }
 
         private ProxyFactoryObject CreateFrozenProxyFactory()
@@ -542,21 +528,19 @@ namespace Spring.Aop.Framework
         }
 
         [Test]
-        [ExpectedException(typeof(AopConfigException))]
         public void RemoveAdvisorWhenConfigIsFrozen()
         {
             ProxyFactoryObject fac = CreateFrozenProxyFactory();
             fac.IsFrozen = true;
-            fac.RemoveAdvisor(new PointcutForVoid());
+            Assert.Throws<AopConfigException>(() => fac.RemoveAdvisor(new PointcutForVoid()));
         }
 
         [Test]
-        [ExpectedException(typeof(AopConfigException))]
         public void ReplaceAdvisorWhenConfigIsFrozen()
         {
             ProxyFactoryObject fac = CreateFrozenProxyFactory();
             fac.IsFrozen = true;
-            fac.ReplaceAdvisor(new PointcutForVoid(), new PointcutForVoid());
+            Assert.Throws<AopConfigException>(() => fac.ReplaceAdvisor(new PointcutForVoid(), new PointcutForVoid()));
         }
 
         [Test]
@@ -565,11 +549,10 @@ namespace Spring.Aop.Framework
             GoodCommand target = new GoodCommand();
             NopInterceptor advice = new NopInterceptor();
 
-            IObjectFactory mock = (IObjectFactory) mocks.CreateMock(typeof(IObjectFactory));
-            Expect.Call(mock.GetObject("advice")).Return(advice);
-            Expect.Call(mock.GetObject("singleton")).Return(target);
-            Expect.Call(mock.GetType("singleton")).Return(typeof(GoodCommand));
-            mocks.ReplayAll();
+            IObjectFactory mock = A.Fake<IObjectFactory>();
+            A.CallTo(() => mock.GetObject("advice")).Returns(advice);
+            A.CallTo(() => mock.GetObject("singleton")).Returns(target);
+            A.CallTo(() => mock.GetType("singleton")).Returns(typeof(GoodCommand));
 
             ProxyFactoryObject fac = new ProxyFactoryObject();
             fac.ProxyInterfaces = new string[] { typeof(ICommand).FullName };
@@ -584,8 +567,6 @@ namespace Spring.Aop.Framework
             Assert.AreEqual(1, advice.Count);
             two.Execute();
             Assert.AreEqual(2, advice.Count);
-
-            mocks.VerifyAll();
         }
 
         [Test]
@@ -594,32 +575,20 @@ namespace Spring.Aop.Framework
             GoodCommand target = new GoodCommand();
             NopInterceptor advice = new NopInterceptor();
 
-            MockRepository mocks = new MockRepository();
-            IObjectFactory factory = (IObjectFactory) mocks.CreateMock(typeof(IObjectFactory));
+            IObjectFactory factory = A.Fake<IObjectFactory>();
 
             ProxyFactoryObject fac = new ProxyFactoryObject();
-            fac.ProxyInterfaces = new string[] { typeof(ICommand).FullName };
+            fac.ProxyInterfaces = new[] {typeof(ICommand).FullName};
             fac.IsSingleton = false;
-            fac.InterceptorNames = new string[] { "advice", "prototype" };
+            fac.InterceptorNames = new[] {"advice", "prototype"};
             fac.ObjectFactory = factory;
 
-//            using (mocks.Record())
-            {
-                using (mocks.Unordered())
-                {
-                    Expect.Call(factory.IsSingleton("advice")).Return(true);
-                    Expect.Call(factory.GetObject("advice")).Return(advice);
-                    Expect.Call(factory.GetType("prototype")).Return(target.GetType());
-                    Expect.Call(factory.GetObject("prototype")).Return(target);
-                }
-            }
-            mocks.ReplayAll();
+            A.CallTo(() => factory.IsSingleton("advice")).Returns(true);
+            A.CallTo(() => factory.GetObject("advice")).Returns(advice);
+            A.CallTo(() => factory.GetType("prototype")).Returns(target.GetType());
+            A.CallTo(() => factory.GetObject("prototype")).Returns(target);
 
-//            using(mocks.Playback())
-            {
-                fac.GetObject();
-            }
-            mocks.VerifyAll();
+            fac.GetObject();
         }
 
         [Test]
@@ -709,26 +678,20 @@ namespace Spring.Aop.Framework
         [Test]
         public void NullNameInInterceptorNamesArrayThrowAopConfigException()
         {
-            IObjectFactory factory = (IObjectFactory) mocks.CreateMock(typeof(IObjectFactory));
+            IObjectFactory factory = A.Fake<IObjectFactory>();
 
             ProxyFactoryObject fac = new ProxyFactoryObject();
             fac.ProxyInterfaces = new string[] { typeof(ICommand).FullName };
             fac.IsSingleton = false;
             fac.InterceptorNames = new string[] { null, null };
             fac.ObjectFactory = factory;
-            try
-            {
-                fac.GetObject();
-                Assert.Fail();
-            }
-            catch (AopConfigException)
-            {}
+            Assert.Throws<AopConfigException>(() => fac.GetObject());
         }
 
         [Test]
         public void PassEmptyInterceptorNamesArray_WithTargetThatImplementsAnInterfaceCanBeCastToSaidInterface()
         {
-            IObjectFactory factory = (IObjectFactory) mocks.CreateMock(typeof(IObjectFactory));
+            IObjectFactory factory = A.Fake<IObjectFactory>();
 
             ProxyFactoryObject fac = new ProxyFactoryObject();
             fac.ProxyInterfaces = new string[] { };
@@ -746,35 +709,31 @@ namespace Spring.Aop.Framework
         }
 
         [Test]
-        [ExpectedException(typeof(AopConfigException))]
         public void PassNullToTheProxyInterfacesProperty()
         {
             ProxyFactoryObject fac = new ProxyFactoryObject();
-            fac.ProxyInterfaces = null;
+            Assert.Throws<AopConfigException>(() => fac.ProxyInterfaces = null);
         }
 
         [Test]
-        [ExpectedException(typeof(AopConfigException))]
         public void PassClassNotInterfaceNameToTheProxyInterfacesProperty()
         {
             ProxyFactoryObject fac = new ProxyFactoryObject();
-            fac.ProxyInterfaces = new string[] { typeof(GoodCommand).FullName };
+            Assert.Throws<AopConfigException>(() => fac.ProxyInterfaces = new string[] { typeof(GoodCommand).FullName });
         }
 
         [Test]
-        [ExpectedException(typeof(AopConfigException))]
         public void PassRubbishNameToTheProxyInterfacesProperty()
         {
             ProxyFactoryObject fac = new ProxyFactoryObject();
-            fac.ProxyInterfaces = new string[] { "Hey" };
+            Assert.Throws<AopConfigException>(() => fac.ProxyInterfaces = new string[] { "Hey" });
         }
 
         [Test]
-        [ExpectedException(typeof(AopConfigException))]
         public void PassNullElementListToTheProxyInterfacesProperty()
         {
             ProxyFactoryObject fac = new ProxyFactoryObject();
-            fac.ProxyInterfaces = new string[] { null };
+            Assert.Throws<AopConfigException>(() => fac.ProxyInterfaces = new string[] { null });
         }
 
         [Test]
@@ -813,6 +772,7 @@ namespace Spring.Aop.Framework
             Assert.AreEqual(typeof(SingletonTargetSource), pfb.TargetSource.GetType(), "Incorrect target source, expected singleton");
         }
 
+#if !NETCOREAPP
         [Test(Description = "http://opensource.atlassian.com/projects/spring/browse/SPRNET-293")]
         public void SupportsTransparentProxyAsTarget()
         {
@@ -821,7 +781,7 @@ namespace Spring.Aop.Framework
             {
                 AppDomainSetup setup = new AppDomainSetup();
                 setup.ApplicationBase = Environment.CurrentDirectory;
-                domain = AppDomain.CreateDomain("Spring", new Evidence(AppDomain.CurrentDomain.Evidence), setup);
+                domain = AppDomain.CreateDomain("Spring", new System.Security.Policy.Evidence(AppDomain.CurrentDomain.Evidence), setup);
                 object command = domain.CreateInstanceAndUnwrap(GetType().Assembly.FullName, typeof(RemotableCommand).FullName);
 
                 ProxyFactoryObject fac = new ProxyFactoryObject();
@@ -842,6 +802,7 @@ namespace Spring.Aop.Framework
                 AppDomain.Unload(domain);
             }
         }
+#endif
 
         [Test(Description = "http://opensource.atlassian.com/projects/spring/browse/SPRNET-500")]
         public void NotAccessibleInterfaceProxying()

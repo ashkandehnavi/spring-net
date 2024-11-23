@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>$(TargetFullFrameworkVersion)</TargetFramework>
+    <Description>Interfaces and classes that provide ASP.NET MVC5 application support in Spring.Net</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Spring.Core\Spring.Core.csproj" />
+    <ProjectReference Include="..\Spring.Web\Spring.Web.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Mvc" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+</Project>

@@ -1,14 +1,12 @@
-#region License
-
 /*
  * Copyright 2002-2010 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,17 +14,10 @@
  * limitations under the License.
  */
 
-#endregion
-
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using Common.Logging;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Aop.Support
 {
@@ -48,13 +39,13 @@ namespace Spring.Aop.Support
 	[Serializable]
 	public class SdkRegularExpressionMethodPointcut : AbstractRegularExpressionMethodPointcut
 	{
-		private ILog _logger = LogManager.GetLogger(typeof(SdkRegularExpressionMethodPointcut));
+        [NonSerialized]
+		private static readonly ILog _logger = LogManager.GetLogger(typeof(SdkRegularExpressionMethodPointcut));
+
 		private Regex[] _compiledPatterns = new Regex[0];
         private RegexOptions _defaultOptions = RegexOptions.None;
-	    
-		#region Constructors
 
-		/// <summary>
+	    /// <summary>
 		/// Creates a new instance of the
 		/// <see cref="SdkRegularExpressionMethodPointcut"/> class.
 		/// </summary>
@@ -75,36 +66,18 @@ namespace Spring.Aop.Support
             Patterns = patterns;
         }
 
-	    /// <summary>
-	    /// Creates a new instance of the
-	    /// <see cref="SdkRegularExpressionMethodPointcut"/> class.
-	    /// </summary>
-	    /// <param name="info">
-	    /// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-	    /// that holds the serialized object data about the exception being thrown.
-	    /// </param>
-	    /// <param name="context">
-	    /// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-	    /// that contains contextual information about the source or destination.
-	    /// </param>
-	    /// <exception cref="AopAlliance.Aop.AspectException">
-	    /// If an error was encountered during the deserialization process.
-	    /// </exception>
+	    /// <inheritdoc />
 	    protected SdkRegularExpressionMethodPointcut(SerializationInfo info, StreamingContext context)
 	        : base(info, context)
 	    {
 	    }
-
-	    #endregion
-
-	    #region Properties
 
 	    /// <summary>
 	    /// Gets or sets default options that should be used by
 	    /// regular expressions that don't have options explicitly set.
 	    /// </summary>
 	    /// <value>
-	    /// Default options that should be used by regular expressions 
+	    /// Default options that should be used by regular expressions
 	    /// that don't have options explicitly set.
 	    /// </value>
 	    public RegexOptions DefaultOptions
@@ -116,10 +89,6 @@ namespace Spring.Aop.Support
 	            InitPatternRepresentation(Patterns);
 	        }
 	    }
-
-	    #endregion
-
-	    #region Methods
 
 	    /// <summary>
 	    /// Initializes the regular expression pointcuts.
@@ -189,19 +158,13 @@ namespace Spring.Aop.Support
 	        Match match = _compiledPatterns[patternIndex].Match(pattern);
 	        bool matched = match.Success;
 
-	        #region Instrumentation
-
 	        if (_logger.IsDebugEnabled)
 	        {
 	            _logger.Debug("Candidate is: '" + pattern + "'; pattern is '" +
 	                          _compiledPatterns[patternIndex].ToString() + "'; matched=" + matched);
 	        }
 
-	        #endregion
-
 	        return matched;
 	    }
-
-	    #endregion
 	}
 }

@@ -18,11 +18,8 @@
 
 #endregion
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using Common.Logging;
 using Spring.Util;
 
@@ -39,7 +36,7 @@ namespace Spring.Context.Attributes
         /// </summary>
         protected static readonly ILog Logger = LogManager.GetLogger<AssemblyTypeSource>();
 
-        private readonly _Assembly _assembly;
+        private readonly Assembly _assembly;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyTypeSource"/> class.

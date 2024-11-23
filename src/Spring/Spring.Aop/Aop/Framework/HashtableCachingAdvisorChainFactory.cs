@@ -18,24 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-
-#if NET_4_0
-using System.Collections.Concurrent;
-#else
 using System.Runtime.Serialization;
-using System.Threading;
-#endif
-
-#endregion
 
 namespace Spring.Aop.Framework
 {
-    /// <summary> 
+    /// <summary>
     /// <see cref="Spring.Aop.Framework.IAdvisorChainFactory"/> implementation
     /// that caches advisor chains on a per-advised-method basis.
     /// </summary>
@@ -44,36 +32,13 @@ namespace Spring.Aop.Framework
     [Serializable]
     public sealed class HashtableCachingAdvisorChainFactory : IAdvisorChainFactory
     {
-#if !NET_4_0
-        private readonly IDictionary<MethodInfo, IList<object>> methodCache = new Dictionary<MethodInfo, IList<object>>();
-
-        // ReaderWriterLockSlim is not serializable. Cannot set value using field initializer as it won't 
-        // run on deserialization. Instead c'tor and OnDeserialized will take care of creating the lock instance.
         [NonSerialized]
-        private ReaderWriterLockSlim cacheLock;
+        private Dictionary<MethodInfo, IList<object>> methodCache = new Dictionary<MethodInfo, IList<object>>();
 
-        [OnDeserialized]
-        private void OnDeserialized(StreamingContext c)
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext c)
         {
-            CreateCacheLock();
-        }
-
-        private void CreateCacheLock()
-        {
-            cacheLock = new ReaderWriterLockSlim();
-        }
-#else
-        private readonly ConcurrentDictionary<MethodInfo, IList<object>> methodCache = new ConcurrentDictionary<MethodInfo, IList<object>>();
-#endif
-
-        /// <summary>
-        /// Default c'tor
-        /// </summary>
-        public HashtableCachingAdvisorChainFactory()
-        {
-#if !NET_4_0
-            CreateCacheLock();
-#endif
+            methodCache = new Dictionary<MethodInfo, IList<object>>();
         }
 
         /// <summary>
@@ -89,54 +54,25 @@ namespace Spring.Aop.Framework
         /// <param name="targetType">
         /// The <see cref="System.Type"/> of the target object.
         /// </param>
-        /// <returns> 
+        /// <returns>
         /// The list of <see cref="AopAlliance.Intercept.IInterceptor"/> and
         /// <see cref="Spring.Aop.Framework.InterceptorAndDynamicMethodMatcher"/>
         /// instances for the supplied <paramref name="proxy"/>.
         /// </returns>
         public IList<object> GetInterceptors(IAdvised advised, object proxy, MethodInfo method, Type targetType)
         {
-#if !NET_4_0
-            IList<object> cached;
-            cacheLock.EnterReadLock();
-            try {
-                if (this.methodCache.TryGetValue(method, out cached)) 
-                {
-                    return cached;
-                }
-            } 
-            finally
+            if (!methodCache.TryGetValue(method, out var interceptors))
             {
-                cacheLock.ExitReadLock();
-            }
-            // Apparently not in the cache - calculate the value outside of any locks then enter upgradeable read lock and check again
-            IList<object> calculated = AdvisorChainFactoryUtils.CalculateInterceptors(advised, proxy, method, targetType);
-            cacheLock.EnterUpgradeableReadLock();
-            try 
-            {
-                if (!this.methodCache.TryGetValue(method, out cached)) 
+                lock (methodCache)
                 {
-                    // Still not in the cache - enter write lock and add the pre-calculated value
-                    cacheLock.EnterWriteLock();
-                    try 
+                    if (!methodCache.TryGetValue(method, out interceptors))
                     {
-                        cached = calculated;
-                        this.methodCache[method] = cached;
-                    }
-                    finally
-                    {
-                        cacheLock.ExitWriteLock();
+                        interceptors = AdvisorChainFactoryUtils.CalculateInterceptors(advised, proxy, method, targetType);
+                        methodCache[method] = interceptors;
                     }
                 }
-            } 
-            finally 
-            {
-                cacheLock.ExitUpgradeableReadLock();
             }
-            return cached;
-#else
-            return methodCache.GetOrAdd(method, m => AdvisorChainFactoryUtils.CalculateInterceptors(advised, proxy, m, targetType));
-#endif
+            return interceptors;
         }
 
         /// <summary>
@@ -157,19 +93,7 @@ namespace Spring.Aop.Framework
         /// </param>
         public void AdviceChanged(AdvisedSupport source)
         {
-#if !NET_4_0
-            cacheLock.EnterWriteLock();
-            try
-            {
-#endif
             methodCache.Clear();
-#if !NET_4_0
-            } 
-            finally
-            {
-                cacheLock.ExitWriteLock();
-            }
-#endif
         }
 
         /// <summary>

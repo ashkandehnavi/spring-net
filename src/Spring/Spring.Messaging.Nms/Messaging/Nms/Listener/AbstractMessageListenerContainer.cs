@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,6 @@
 
 #endregion
 
-using System;
-using System.Collections;
-using System.IO;
 using Common.Logging;
 using Spring.Messaging.Nms.Core;
 using Spring.Messaging.Nms.Support;
@@ -172,6 +169,11 @@ namespace Spring.Messaging.Nms.Listener
             set { subscriptionDurable = value; }
         }
 
+        
+        public bool SubscriptionShared { get; set; }
+        
+        public string SubscriptionName { get; set; }
+        
 
         /// <summary>
         /// Gets or sets the name of the durable subscription to create.
@@ -505,6 +507,10 @@ namespace Spring.Messaging.Nms.Listener
                 // Transacted session created by this container -> rollback
                 NmsUtils.RollbackIfNecessary(session);
             }
+            else if (IsClientAcknowledge(session))
+            {
+                session.Recover();
+            }
         }
         /// <summary>
         /// Perform a rollback, handling rollback excepitons properly.
@@ -525,7 +531,12 @@ namespace Spring.Messaging.Nms.Listener
                     }
                     NmsUtils.RollbackIfNecessary(session);
                 }
-            } catch (NMSException)
+                else if (IsClientAcknowledge(session))
+                {
+                    session.Recover();
+                }
+            }
+            catch (NMSException)
             {
                 logger.Error("Application exception overriden by rollback exception", ex);
                 throw;

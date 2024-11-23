@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,9 @@
 
 #region Imports
 
-using System;
 using System.Collections;
 using System.Collections.Specialized;
-using System.Globalization;
-using System.Reflection;
 using System.Web;
-using System.Web.UI;
-using Common.Logging;
-using Spring.Context;
-using Spring.Objects.Factory;
 
 #endregion
 
@@ -59,8 +52,8 @@ namespace Spring.Util
         /// The virtual (rooted) path of the currently executing script
         /// </summary>
         /// <remarks>
-        /// Normally this property is the same as <see cref="CurrentVirtualPath"/>. 
-        /// In case of <see cref="HttpServerUtility.Transfer(string,bool)"/>, this property returns the current script 
+        /// Normally this property is the same as <see cref="CurrentVirtualPath"/>.
+        /// In case of <see cref="HttpServerUtility.Transfer(string,bool)"/>, this property returns the current script
         /// whereas CurrentVirtualPath returns the original script path.
         /// </remarks>
         string CurrentExecutionFilePath { get; }

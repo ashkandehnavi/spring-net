@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;$(TargetFullFrameworkVersion)</TargetFrameworks>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Spring\Spring.Aop\Spring.Aop.csproj" />
+    <ProjectReference Include="..\..\..\src\Spring\Spring.Core\Spring.Core.csproj" />
+    <ProjectReference Include="..\..\..\src\Spring\Spring.Data\Spring.Data.csproj" />
+    <ProjectReference Include="..\Spring.Core.Tests\Spring.Core.Tests.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == '$(TargetFullFrameworkVersion)' ">
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Transactions" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" />
+    <PackageReference Include="FakeItEasy.Analyzer.CSharp" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="System.Data.SqlClient" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <Compile Remove="Data\Core\ServiceDomainTransactionManagerTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Spring.Core.Tests\TestAssemblySetup.cs" Link="TestAssemblySetup.cs" />
+    <Content Include="Data\**\*.xml" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="App.config" />
+    <Content Include="Transaction\Config\TxNamespaceParserTests_TxAttributeDriven.xml" />
+    <EmbeddedResource Include="Data\AutoDeclarativeTxTests.xml" />
+    <EmbeddedResource Include="Data\Common\AdditionalProviders.xml" />
+    <EmbeddedResource Include="Data\Common\DbProviderFactoryTests.xml" />
+    <EmbeddedResource Include="Transaction\Interceptor\MatchAlwaysTransactionAttributeSourceTests.xml" />
+    <EmbeddedResource Include="Transaction\Config\TxNamespaceParserTests.xml" />
+  </ItemGroup>
+</Project>

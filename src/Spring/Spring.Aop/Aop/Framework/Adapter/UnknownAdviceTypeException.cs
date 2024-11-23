@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using System.Runtime.Serialization;
 
 #endregion
@@ -41,10 +40,7 @@ namespace Spring.Aop.Framework.Adapter
         /// Creates a new instance of the
         /// <see cref="Spring.Aop.Framework.Adapter.UnknownAdviceTypeException"/> class.
         /// </summary>
-        /// <param name="advice">The advice that caused the exception.</param>
-        public UnknownAdviceTypeException(object advice)
-            : base("No adapter for IAdvice of type ["
-                   + (advice != null ? advice.GetType().FullName : "null") + "].")
+        public UnknownAdviceTypeException()
         {
         }
 
@@ -52,7 +48,10 @@ namespace Spring.Aop.Framework.Adapter
         /// Creates a new instance of the
         /// <see cref="Spring.Aop.Framework.Adapter.UnknownAdviceTypeException"/> class.
         /// </summary>
-        public UnknownAdviceTypeException()
+        /// <param name="advice">The advice that caused the exception.</param>
+        public UnknownAdviceTypeException(object advice)
+            : base("No adapter for IAdvice of type ["
+                   + (advice != null ? advice.GetType().FullName : "null") + "].")
         {
         }
 
@@ -84,18 +83,7 @@ namespace Spring.Aop.Framework.Adapter
         {
         }
 
-        /// <summary>
-        /// Creates a new instance of the
-        /// <see cref="Spring.Aop.Framework.Adapter.UnknownAdviceTypeException"/> class.
-        /// </summary>
-        /// <param name="info">
-        /// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-        /// that holds the serialized object data about the exception being thrown.
-        /// </param>
-        /// <param name="context">
-        /// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-        /// that contains contextual information about the source or destination.
-        /// </param>
+        /// <inheritdoc />
         protected UnknownAdviceTypeException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

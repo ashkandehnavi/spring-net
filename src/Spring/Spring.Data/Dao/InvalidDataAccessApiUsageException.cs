@@ -18,16 +18,11 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-	/// <summary> 
+	/// <summary>
 	/// Exception thrown on incorrect usage of the API, such as failing to "compile" a query
 	/// object that needed compilation before execution.
 	/// </summary>
@@ -70,18 +65,7 @@ namespace Spring.Dao
 		public InvalidDataAccessApiUsageException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Dao.InvalidDataAccessApiUsageException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected InvalidDataAccessApiUsageException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

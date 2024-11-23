@@ -1,4 +1,4 @@
- 
+
 
 #region License
 
@@ -20,8 +20,6 @@
 
 #endregion
 
-using System;
-using Spring.Dao;
 using Spring.Data.Support;
 
 namespace Spring.Dao.Support
@@ -52,7 +50,7 @@ namespace Spring.Dao.Support
         /// </para>
         /// <para>
         /// Of particular importance is the correct translation to <see cref="DataIntegrityViolationException"/>
-        /// for example on constraint violation.  Implementations may use Spring ADO.NET Framework's 
+        /// for example on constraint violation.  Implementations may use Spring ADO.NET Framework's
         /// sophisticated exception translation to provide further information in the event of SQLException as a root cause.
         /// </para>
         /// </remarks>

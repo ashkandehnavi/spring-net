@@ -18,17 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
 using System.Runtime.Serialization;
-
-#endregion
 
 namespace Spring.Dao
 {
-    /// <summary> 
-    /// Root of the hierarchy of data access exception that are considered non-transient - 
+    /// <summary>
+    /// Root of the hierarchy of data access exception that are considered non-transient -
     /// where a retry of the same operation would fail unless the cause of the Exception is
     /// corrected.
     /// </summary>
@@ -65,18 +60,7 @@ namespace Spring.Dao
 		public NonTransientDataAccessException( string message, Exception rootCause)
 			: base( message , rootCause ) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-        /// <see cref="Spring.Dao.NonTransientDataAccessException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
         protected NonTransientDataAccessException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}

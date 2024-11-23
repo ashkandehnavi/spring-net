@@ -3,7 +3,6 @@ using System.Collections;
 using System.Data;
 using Spring.Data.Common;
 using Spring.Data.Core;
-using Spring.Data.Support;
 using Spring.Objects;
 
 namespace Spring.Data
@@ -146,5 +145,10 @@ namespace Spring.Data
             #endregion
 
         }
-	}
+
+        public void Cleanup()
+        {
+            AdoTemplate.ExecuteNonQuery(CommandType.Text, "delete from TestObjects ");
+        }
+    }
 }

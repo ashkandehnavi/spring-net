@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright ï¿½ 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,9 @@
 
 #endregion
 
-#region Imports
+using System.Runtime.Serialization;
 
-using System;
 using AopAlliance.Intercept;
-
-#endregion
 
 namespace Spring.Aop.Framework
 {
@@ -78,7 +75,7 @@ namespace Spring.Aop.Framework
 	    }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="ProxyFactory"/> class for the 
+        /// Creates a new instance of the <see cref="ProxyFactory"/> class for the
         /// given interface and interceptor.
         /// </summary>
         /// <remarks>Convenience method for creating a proxy for a single interceptor
@@ -106,6 +103,18 @@ namespace Spring.Aop.Framework
             TargetSource = targetSource;
         }
 
+		/// <inheritdoc />
+		protected ProxyFactory(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+		}
+
+		/// <inheritdoc />
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			base.GetObjectData(info, context);
+		}
+
 	    /// <summary>
 	    /// Creates a new proxy according to the settings in this factory.
 	    /// </summary>
@@ -122,9 +131,7 @@ namespace Spring.Aop.Framework
 	        return proxy.GetProxy();
 	    }
 
-        #region Convenience Methods (Static) For Proxy Creation
-
-	    /// <summary>
+		/// <summary>
 	    /// Creates a new proxy for the supplied <paramref name="proxyInterface"/>
 	    /// and <paramref name="interceptor"/>.
 	    /// </summary>
@@ -151,8 +158,5 @@ namespace Spring.Aop.Framework
 	        proxyFactory.AddAdvice(interceptor);
 	        return proxyFactory.GetProxy();
 	    }
-
-	    #endregion
-
 	}
 }

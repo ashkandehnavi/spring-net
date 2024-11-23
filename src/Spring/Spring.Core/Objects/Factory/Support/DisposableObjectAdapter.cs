@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Common.Logging;
-using Spring.Collections;
 using Spring.Objects.Factory.Config;
 using Spring.Util;
 
@@ -32,7 +28,7 @@ namespace Spring.Objects.Factory.Support
         /// <param name="objectName">Name of the bean.</param>
         /// <param name="objectDefinition">The merged bean definition.</param>
         /// <param name="postProcessors">the List of BeanPostProcessors (potentially IDestructionAwareBeanPostProcessor), if any.</param>
-        public DisposableObjectAdapter(object instance, string objectName, RootObjectDefinition objectDefinition, ISet postProcessors)
+        public DisposableObjectAdapter(object instance, string objectName, RootObjectDefinition objectDefinition, IReadOnlyCollection<IObjectPostProcessor> postProcessors)
         {
             AssertUtils.ArgumentNotNull(instance, "Disposable object must not be null");
 
@@ -49,7 +45,7 @@ namespace Spring.Objects.Factory.Support
 
             string definedDestroyMethodName = objectDefinition.DestroyMethodName;
 
-            if (definedDestroyMethodName != null && !(this.invokeDisposableObject && "Destroy".Equals(definedDestroyMethodName))) // && !beanDefinition.isExternallyManagedDestroyMethod(destroyMethodName)) 
+            if (definedDestroyMethodName != null && !(this.invokeDisposableObject && "Destroy".Equals(definedDestroyMethodName))) // && !beanDefinition.isExternallyManagedDestroyMethod(destroyMethodName))
             {
                 this.destroyMethodName = definedDestroyMethodName;
                 this.destroyMethod = DetermineDestroyMethod();
@@ -104,7 +100,7 @@ namespace Spring.Objects.Factory.Support
         /// </summary>
         /// <param name="postProcessors">The List to search.</param>
         /// <returns>the filtered List of IDestructionAwareObjectPostProcessors.</returns>
-        private List<IDestructionAwareObjectPostProcessor> FilterPostProcessors(ISet postProcessors)
+        private List<IDestructionAwareObjectPostProcessor> FilterPostProcessors(IReadOnlyCollection<IObjectPostProcessor> postProcessors)
         {
             List<IDestructionAwareObjectPostProcessor> filteredPostProcessors = null;
             if (postProcessors != null && postProcessors.Count != 0)
@@ -114,8 +110,6 @@ namespace Spring.Objects.Factory.Support
             }
             return filteredPostProcessors;
         }
-
-
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

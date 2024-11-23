@@ -18,19 +18,14 @@
 
 #endregion
 
-#region Imports
-
 using System.Xml;
 
-using Spring.Context.Support;
 using Spring.Core.TypeResolution;
 using Spring.Objects;
 using Spring.Objects.Factory.Support;
 using Spring.Objects.Factory.Config;
 using Spring.Objects.Factory.Xml;
 using Spring.Util;
-
-#endregion
 
 namespace Spring.Remoting.Config
 {
@@ -60,13 +55,13 @@ namespace Spring.Remoting.Config
                 RemotingTypePrefix + CaoFactoryObjectConstants.CaoFactoryObjectElement,
                 typeof(CaoFactoryObject));
             TypeRegistry.RegisterType(
-                RemotingTypePrefix + RemoteObjectFactoryConstants.RemoteObjectFactoryElement, 
+                RemotingTypePrefix + RemoteObjectFactoryConstants.RemoteObjectFactoryElement,
                 typeof(RemoteObjectFactory));
             TypeRegistry.RegisterType(
-                RemotingTypePrefix + SaoExporterConstants.SaoExporterElement, 
+                RemotingTypePrefix + SaoExporterConstants.SaoExporterElement,
                 typeof(SaoExporter));
             TypeRegistry.RegisterType(
-                RemotingTypePrefix + CaoExporterConstants.CaoExporterElement, 
+                RemotingTypePrefix + CaoExporterConstants.CaoExporterElement,
                 typeof(CaoExporter));
         }
 

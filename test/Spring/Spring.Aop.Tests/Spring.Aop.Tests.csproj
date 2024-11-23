@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;$(TargetFullFrameworkVersion)</TargetFrameworks>
+    <NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Spring\Spring.Aop\Spring.Aop.csproj" />
+    <ProjectReference Include="..\Spring.Core.Tests\Spring.Core.Tests.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FakeItEasy" />
+    <PackageReference Include="FakeItEasy.Analyzer.CSharp" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == '$(TargetFullFrameworkVersion)' ">
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <Compile Remove="Aop\Framework\AutoProxy\AbstractAutoProxyCreatorTests.cs" />
+    <Compile Remove="Aop\Framework\Adapter\ThrowsAdviceInterceptorTests.cs" />
+    <Compile Remove="Aop\Framework\AutoProxy\AbstractAutoProxyCreatorTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Spring.Core.Tests\TestAssemblySetup.cs" Link="TestAssemblySetup.cs" />
+    <Content Include="App.config" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Data\**\*">
+      <Link>Data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\**\*">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="Aop\Config\AopNamespaceParserTests.xml" />
+    <EmbeddedResource Include="Data\Spring\Aop\Framework\adapter\withBPPContext.xml" />
+    <EmbeddedResource Include="Data\Spring\Aop\Framework\adapter\withoutBPPContext.xml" />
+    <EmbeddedResource Include="Aop\Framework\AutoProxy\advisorAutoProxyCreatorCircularReferencesTests.xml" />
+    <EmbeddedResource Include="Aop\Framework\DynamicProxy\IsAopProxyTests.xml" />
+  </ItemGroup>
+</Project>

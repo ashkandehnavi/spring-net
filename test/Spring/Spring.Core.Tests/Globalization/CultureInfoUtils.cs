@@ -18,7 +18,6 @@
 
 #endregion
 
-using System;
 using System.Globalization;
 
 namespace Spring.Globalization
@@ -43,33 +42,26 @@ namespace Spring.Globalization
         {
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
             {
+                //address changes in 2006 (see blog posts above)
                 if (ci.Name.Equals("sr-Latn-CS"))
                 {
                     srLatn = "sr-Latn-CS";
                     srCyrl = "sr-Cyrl-CS";
                     break;
                 }
+
+                //address changes introduced in Windows 10 "November 2015 Update" (build 10586)
+                if (ci.Name.Equals("sr-Latn-RS"))
+                {
+                    srLatn = "sr-Latn-RS";
+                    srCyrl = "sr-Cyrl-RS";
+                    break;
+                }
             }
         }
 
-        public static string SerbianCyrillicCultureName
-        {
-            get { return srCyrl; }
-        }
+        public static string SerbianCyrillicCultureName => srCyrl;
 
-        public static string SerbianLatinCultureName
-        {
-            get { return srLatn; }
-        }
-
-        public static bool OperatingSystemIsLaterThanWindows7
-        {
-            get { return Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 2; }
-        }
-        
-        public static bool ClrIsVersion4OrLater
-        {
-            get { return Environment.Version.Major >= 4; }
-        }
+        public static string SerbianLatinCultureName => srLatn;
     }
 }

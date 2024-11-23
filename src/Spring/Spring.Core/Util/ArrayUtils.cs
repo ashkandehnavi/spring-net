@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 
 #region Imports
 
-using System;
 using System.Collections;
 using System.Text;
 
@@ -41,11 +40,17 @@ namespace Spring.Util
         /// <returns>true if the collection has a length and contains only non-null elements.</returns>
         public static bool HasElements(ICollection collection)
         {
-            if (!HasLength(collection)) return false;
-            IEnumerator it = collection.GetEnumerator();
-            while(it.MoveNext())
+            if (!HasLength(collection))
             {
-                if (it.Current == null ) return false;
+                return false;
+            }
+
+            foreach (var item in collection)
+            {
+                if (item == null)
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -72,7 +77,7 @@ namespace Spring.Util
         /// <returns></returns>
         public static bool HasLength(ICollection collection)
         {
-            return !( (collection == null) || (collection.Count == 0) );
+            return collection != null && collection.Count > 0;
         }
 
         /// <summary>
@@ -97,7 +102,7 @@ namespace Spring.Util
                     {
                         object elemA = a.GetValue(i);
                         object elemB = b.GetValue(i);
-                        
+
                         if (elemA is Array && elemB is Array)
                         {
                             if (!AreEqual(elemA as Array, elemB as Array))
@@ -178,10 +183,10 @@ namespace Spring.Util
             {
                 object val = array.GetValue(i);
                 sb.Append(val == null ? "null" : val.ToString());
-                
+
                 if (i < array.Length - 1)
                 {
-                    sb.Append(", ");    
+                    sb.Append(", ");
                 }
             }
 
@@ -194,7 +199,7 @@ namespace Spring.Util
         /// Concatenates 2 arrays of compatible element types
         /// </summary>
         /// <remarks>
-        /// If either of the arguments is null, the other array is returned as the result. 
+        /// If either of the arguments is null, the other array is returned as the result.
         /// The array element types may differ as long as they are assignable. The result array will be of the "smaller" element type.
         /// </remarks>
         public static Array Concat(Array first, Array second)

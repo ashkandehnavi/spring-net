@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,11 @@
 
 #endregion
 
-#region Imports
-
 using System;
 using Microsoft.Win32;
 using NUnit.Framework;
 
-#endregion
+#pragma warning disable CA1416 // is only supported on windows
 
 namespace Spring.Objects.Factory.Config
 {
@@ -32,7 +30,7 @@ namespace Spring.Objects.Factory.Config
 	/// Unit tests for the RegistryVariableSource class.
     /// </summary>
     /// <author>Aleksandar Seovic</author>
-    [TestFixture]
+    [Platform("Win")]
     public sealed class RegistryVariableSourceTests
     {
 	    private RegistryKey key;

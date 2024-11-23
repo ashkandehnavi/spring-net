@@ -28,15 +28,13 @@ namespace Spring.Globalization.Formatters
 	/// Unit tests for PercentFormatter class.
 	/// </summary>
     /// <author>Aleksandar Seovic</author>
-    [TestFixture]
     public class PercentFormatterTests
 	{
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FormatNullValue()
         {
             PercentFormatter fmt = new PercentFormatter();
-            fmt.Format(null);
+            Assert.Throws<ArgumentNullException>(() => fmt.Format(null));
         }
 
         [Test]
@@ -48,23 +46,28 @@ namespace Spring.Globalization.Formatters
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void FormatNonNumber()
         {
             PercentFormatter fmt = new PercentFormatter();
-            fmt.Format("not a number");
+            Assert.Throws<ArgumentException>(() => fmt.Format("not a number"));
         }
 
         [Test]
+        [Platform("Win")]
         public void FormatUsingDefaults()
         {
             PercentFormatter fmt = new PercentFormatter("en-US");
-            Assert.AreEqual("25.00 %", fmt.Format(0.25));
-            Assert.AreEqual("25.34 %", fmt.Format(0.2534));
+            Assert.AreEqual("25.00%", fmt.Format(0.25).Replace(" ", ""));
+            Assert.AreEqual("25.34%", fmt.Format(0.2534).Replace(" ", ""));
 
             fmt = new PercentFormatter("sr-SP-Latn");
+#if NETFRAMEWORK
             Assert.AreEqual("25,00%", fmt.Format(0.25));
             Assert.AreEqual("25,34%", fmt.Format(0.2534));
+#else
+            Assert.AreEqual("25,000%", fmt.Format(0.25));
+            Assert.AreEqual("25,340%", fmt.Format(0.2534));
+#endif
         }
 
         [Test]

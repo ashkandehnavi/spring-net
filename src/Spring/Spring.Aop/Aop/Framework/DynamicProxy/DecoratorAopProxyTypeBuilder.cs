@@ -1,7 +1,7 @@
 #region License
 
 /*
- * Copyright © 2002-2011 the original author or authors.
+ * Copyright Â© 2002-2011 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,12 @@
 
 #endregion
 
-#region Imports
-
-using System;
-using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
 
 using Spring.Util;
 using Spring.Proxy;
-
-#endregion
 
 namespace Spring.Aop.Framework.DynamicProxy
 {
@@ -39,8 +33,6 @@ namespace Spring.Aop.Framework.DynamicProxy
     /// <author>Bruno Baia</author>
     public class DecoratorAopProxyTypeBuilder : AbstractAopProxyTypeBuilder
     {
-        #region Fields
-
         private const string PROXY_TYPE_NAME = "DecoratorAopProxy";
 
         private IAdvised advised;
@@ -49,13 +41,9 @@ namespace Spring.Aop.Framework.DynamicProxy
         /// AdvisedProxy instance calls should be delegated to.
         /// </summary>
         protected FieldBuilder advisedProxyField;
-        
-        #endregion
-
-        #region Constructor (s) / Destructor
 
         /// <summary>
-        /// Creates a new instance of the 
+        /// Creates a new instance of the
         /// <see cref="DecoratorAopProxyTypeBuilder"/> class.
         /// </summary>
         /// <param name="advised">The proxy configuration.</param>
@@ -82,17 +70,13 @@ namespace Spring.Aop.Framework.DynamicProxy
             ProxyTargetAttributes = advised.ProxyTargetAttributes;
         }
 
-        #endregion
-
-        #region IProxyTypeBuilder Members
-
         /// <summary>
         /// Creates the proxy type.
         /// </summary>
         /// <returns>The generated proxy class.</returns>
         public override Type BuildProxyType()
         {
-            IDictionary targetMethods = new Hashtable();
+            var targetMethods = new Dictionary<string, MethodInfo>();
 
             TypeBuilder typeBuilder = CreateTypeBuilder(Name, BaseType);
 
@@ -115,11 +99,11 @@ namespace Spring.Aop.Framework.DynamicProxy
             ImplementConstructors(typeBuilder);
 
             // implement interfaces
-            IDictionary interfaceMap = advised.InterfaceMap;
+            var interfaceMap = advised.InterfaceMap;
             foreach (Type intf in Interfaces)
             {
-                object target = interfaceMap[intf];
-                if (target == null)
+                interfaceMap.TryGetValue(intf, out var target);
+                if (target is null)
                 {
                     // implement interface (proxy only final methods)
                     ImplementInterface(typeBuilder,
@@ -136,8 +120,8 @@ namespace Spring.Aop.Framework.DynamicProxy
             }
 
             // inherit from target type
-            InheritType(typeBuilder, 
-                new TargetAopProxyMethodBuilder(typeBuilder, this, false, targetMethods), 
+            InheritType(typeBuilder,
+                new TargetAopProxyMethodBuilder(typeBuilder, this, false, targetMethods),
                 TargetType);
 
             // implement IAdvised interface
@@ -148,26 +132,21 @@ namespace Spring.Aop.Framework.DynamicProxy
             // implement IAopProxy interface
             ImplementIAopProxy(typeBuilder);
 
-            Type proxyType;
-            proxyType = typeBuilder.CreateType();
+            Type proxyType = typeBuilder.CreateTypeInfo();
 
             // set target method references
-            foreach (DictionaryEntry entry in targetMethods)
+            foreach (var entry in targetMethods)
             {
-                FieldInfo field = proxyType.GetField((string)entry.Key, BindingFlags.NonPublic | BindingFlags.Static);
+                FieldInfo field = proxyType.GetField(entry.Key, BindingFlags.NonPublic | BindingFlags.Static);
                 field.SetValue(proxyType, entry.Value);
             }
 
             return proxyType;
         }
 
-        #endregion
-
-        #region IAopProxyTypeGenerator Members
-
         /// <summary>
-        /// Generates the IL instructions that pushes  
-        /// the current <see cref="Spring.Aop.Framework.DynamicProxy.AdvisedProxy"/> 
+        /// Generates the IL instructions that pushes
+        /// the current <see cref="Spring.Aop.Framework.DynamicProxy.AdvisedProxy"/>
         /// instance on stack.
         /// </summary>
         /// <param name="il">The IL generator to use.</param>
@@ -176,10 +155,6 @@ namespace Spring.Aop.Framework.DynamicProxy
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, advisedProxyField);
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// Declares field that holds the <see cref="Spring.Aop.Framework.DynamicProxy.AdvisedProxy"/>
@@ -203,7 +178,7 @@ namespace Spring.Aop.Framework.DynamicProxy
 
             MethodBuilder mb =
                 typeBuilder.DefineMethod("GetObjectData",
-                                         MethodAttributes.Public | MethodAttributes.HideBySig | 
+                                         MethodAttributes.Public | MethodAttributes.HideBySig |
                                          MethodAttributes.NewSlot | MethodAttributes.Virtual,
                                          typeof (void),
                                          new Type[] {typeof (SerializationInfo), typeof (StreamingContext)});
@@ -248,7 +223,7 @@ namespace Spring.Aop.Framework.DynamicProxy
         /// </summary>
         /// <remarks>
         /// <p>
-        /// This implementation creates a new instance 
+        /// This implementation creates a new instance
         /// of the <see cref="Spring.Aop.Framework.DynamicProxy.AdvisedProxy"/> class.
         /// </p>
         /// </remarks>
@@ -293,12 +268,8 @@ namespace Spring.Aop.Framework.DynamicProxy
             typeBuilder.DefineMethodOverride(mb, getProxyMethod);
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
-        /// Determines if the specified <paramref name="type"/> 
+        /// Determines if the specified <paramref name="type"/>
         /// is one of those generated by this builder.
         /// </summary>
         /// <param name="type">The type to check.</param>
@@ -310,7 +281,5 @@ namespace Spring.Aop.Framework.DynamicProxy
         {
             return type.FullName.StartsWith(PROXY_TYPE_NAME);
         }
-
-        #endregion
     }
 }

@@ -18,16 +18,19 @@
 
 #endregion
 
-
-using System;
-using System.Messaging;
 using Spring.Util;
+
+#if NETSTANDARD
+using Experimental.System.Messaging;
+#else
+using System.Messaging;
+#endif
 
 namespace Spring.Messaging.Support.Converters
 {
     /// <summary>
     /// An <see cref="IMessageConverter"/> implementation that delegates to an instance of
-    /// <see cref="XmlMessageFormatter"/> to convert messages.  
+    /// <see cref="XmlMessageFormatter"/> to convert messages.
     /// </summary>
     /// <author>Mark Pollack</author>
     public class XmlMessageConverter : IMessageConverter

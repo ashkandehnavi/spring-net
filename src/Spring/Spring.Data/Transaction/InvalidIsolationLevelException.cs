@@ -18,12 +18,11 @@
 
 #endregion
 
-using System;
 using System.Runtime.Serialization;
 
 namespace Spring.Transaction
 {
-	
+
 	/// <summary>
 	/// Exception that gets thrown when an invalid isolation level is specified,
 	/// i.e. an isolation level that the transaction manager implementation
@@ -62,18 +61,7 @@ namespace Spring.Transaction
 		public InvalidIsolationLevelException(string message, Exception rootCause)
 			: base(message, rootCause) {}
 
-		/// <summary>
-		/// Creates a new instance of the
-		/// <see cref="Spring.Transaction.InvalidIsolationLevelException"/> class.
-		/// </summary>
-		/// <param name="info">
-		/// The <see cref="System.Runtime.Serialization.SerializationInfo"/>
-		/// that holds the serialized object data about the exception being thrown.
-		/// </param>
-		/// <param name="context">
-		/// The <see cref="System.Runtime.Serialization.StreamingContext"/>
-		/// that contains contextual information about the source or destination.
-		/// </param>
+		/// <inheritdoc />
 		protected InvalidIsolationLevelException(
 			SerializationInfo info, StreamingContext context ) : base( info, context ) {}
 	}
